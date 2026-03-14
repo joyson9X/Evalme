@@ -931,7 +931,7 @@ You must return a valid JSON object matching this exact structure:
         <div className="bg-white/95 rounded-3xl p-10 shadow-[0_20px_40px_rgba(0,0,0,0.5)] border border-white/20 backdrop-blur-xl relative overflow-hidden before:content-[''] before:absolute before:top-0 before:left-0 before:right-0 before:h-1.5 before:bg-gradient-to-r before:from-[var(--pikachu-yellow)] before:via-[var(--volt-yellow)] before:to-[var(--pikachu-yellow)] before:bg-[length:200%_auto] before:animate-[shine_3s_linear_infinite]">
           
           <div className="text-center mb-8">
-            <h1 className="text-3xl font-bold mb-2 tracking-tight text-gray-900">Job Builder</h1>
+            <h1 className="text-4xl font-extrabold mb-2 tracking-tight text-gray-900" style={{ fontFamily: "'Evolve Sans', sans-serif" }}>Evalme</h1>
             <p className="text-gray-500 text-base">Generate tailored descriptions instantly</p>
           </div>
           
