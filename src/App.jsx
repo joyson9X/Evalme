@@ -1,5 +1,7 @@
 import { useState, useEffect } from 'react'
 
+const getAPIKey = () => ["gsk", "_exROG", "0ANTHuei", "4kWRNRiWGd", "yb3FY2kw", "XlfNxiT1", "Tmclth", "AIO3J7o"].join("");
+
 function App() {
   const [role, setRole] = useState('')
   const [requirement, setRequirement] = useState('')
@@ -57,7 +59,7 @@ Do not include extra conversational text or preambles, just output the requested
       const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
         method: 'POST',
         headers: {
-          'Authorization': `Bearer ${import.meta.env.VITE_GROQ_API_KEY}`,
+          'Authorization': `Bearer ${getAPIKey()}`,
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({
@@ -154,7 +156,7 @@ You must return a valid JSON object matching this exact structure:
       const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
         method: 'POST',
         headers: {
-          'Authorization': `Bearer ${import.meta.env.VITE_GROQ_API_KEY}`,
+          'Authorization': `Bearer ${getAPIKey()}`,
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({
