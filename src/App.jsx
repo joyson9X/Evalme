@@ -57,7 +57,7 @@ Do not include extra conversational text or preambles, just output the requested
       const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
         method: 'POST',
         headers: {
-          'Authorization': 'Bearer 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',
+          'Authorization': `Bearer ${import.meta.env.VITE_GROQ_API_KEY}`,
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({
@@ -154,7 +154,7 @@ You must return a valid JSON object matching this exact structure:
       const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
         method: 'POST',
         headers: {
-          'Authorization': 'Bearer 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',
+          'Authorization': `Bearer ${import.meta.env.VITE_GROQ_API_KEY}`,
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({
