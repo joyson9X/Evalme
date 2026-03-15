@@ -858,82 +858,71 @@ You must return a valid JSON object matching this exact structure:
     })();
 
     return (
-      <div className="w-full h-screen flex flex-col bg-[#F7F8FA] overflow-hidden font-sans">
+      <div className="w-full h-screen flex flex-col bg-white overflow-hidden font-sans">
 
         {/* ═══ TOP NAV BAR ═══ */}
-        <div className="h-[64px] bg-[#1C1D1F] border-b border-[#2D2F31] flex items-center px-4 sm:px-6 gap-3 sm:gap-4 flex-shrink-0 z-50 relative text-white shadow-md">
+        <div className="h-[64px] bg-white border-b border-gray-100 flex items-center px-4 sm:px-6 gap-3 sm:gap-4 flex-shrink-0 z-50 relative text-gray-900 shadow-[0_2px_10px_rgba(0,0,0,0.02)]">
           
+          {/* Menu / Sidebar Toggle (Leftmost, Udemy style) */}
+          <button 
+            onClick={() => setIsSidebarOpen(prev => !prev)}
+            className="flex items-center justify-center text-gray-600 hover:text-gray-900 transition-colors border-none bg-transparent cursor-pointer flex-shrink-0 h-10 w-10 sm:h-11 sm:w-11 rounded-full hover:bg-gray-50 -ml-2"
+            title={isSidebarOpen ? "Hide course content" : "Show course content"}
+          >
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+              {isSidebarOpen ? (
+                <path d="M18 6L6 18M6 6l12 12" />
+              ) : (
+                <path d="M3 12h18M3 6h18M3 18h18" />
+              )}
+            </svg>
+          </button>
+
+          {/* Divider */}
+          <div className="w-px h-6 bg-gray-200 hidden sm:block"></div>
+
           {/* Back/Exit */}
           <button 
             onClick={() => setViewState('PLAN')}
-            className="flex items-center justify-center text-gray-300 hover:text-white transition-colors border-none bg-transparent cursor-pointer flex-shrink-0 h-10 w-10 sm:h-11 sm:w-11 rounded-full hover:bg-white/10 -ml-2"
+            className="flex items-center justify-center text-gray-500 hover:text-gray-900 font-bold text-sm transition-colors border-none bg-transparent cursor-pointer flex-shrink-0 gap-2 pr-2"
             title="Back to Dashboard"
           >
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+            <span className="hidden sm:inline">Back</span>
           </button>
 
           {/* Evalme Branding */}
-          <div className="hidden sm:flex items-center justify-center font-extrabold text-xl tracking-tighter text-white pr-5 border-r border-[#3E4143]">
+          <div className="hidden sm:flex items-center justify-center font-extrabold text-xl tracking-tighter text-gray-900 pr-5 border-r border-gray-100">
             Evalme<span className="text-[var(--pikachu-yellow)]">.</span>
           </div>
 
           {/* Course Title */}
-          <h1 className="flex-1 text-[15px] sm:text-[16px] font-bold text-gray-100 truncate ml-1 sm:ml-2 tracking-wide flex items-center gap-3">
+          <h1 className="flex-1 text-[15px] sm:text-[16px] font-bold text-gray-800 truncate ml-1 sm:ml-2 tracking-wide flex items-center gap-3">
             {jobData.role}
           </h1>
 
-          {/* Progress & Sidebar Toggle */}
+          {/* Progress Pill */}
           <div className="flex items-center gap-3 sm:gap-4 flex-shrink-0 ml-auto">
             {/* Progress Pill Desktop */}
-            <div className="hidden md:flex items-center gap-3 bg-[#2D2F31] px-4 py-2 rounded-full border border-[#3E4143]">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="text-[var(--pikachu-yellow)]"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+            <div className="hidden md:flex items-center gap-3 bg-white px-4 py-2 rounded-full border border-gray-200 shadow-sm">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="text-gray-900"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
               <div className="flex flex-col gap-1.5 mt-[2px]">
-                <div className="w-24 h-[4px] bg-[#1C1D1F] rounded-full overflow-hidden">
+                <div className="w-24 h-[5px] bg-gray-100 rounded-full overflow-hidden">
                   <div 
-                    className="h-full bg-[var(--pikachu-yellow)] rounded-full transition-all duration-500 shadow-[0_0_10px_rgba(255,222,0,0.5)]"
+                    className="h-full bg-gray-900 rounded-full transition-all duration-500"
                     style={{ width: `${totalLessons > 0 ? (completedTopics.size / totalLessons) * 100 : 0}%` }}
                   ></div>
                 </div>
               </div>
-              <span className="text-[12px] font-bold text-gray-300 tabular-nums whitespace-nowrap ml-1">
+              <span className="text-[12px] font-bold text-gray-600 tabular-nums whitespace-nowrap ml-1">
                 {completedTopics.size} / {totalLessons}
               </span>
             </div>
             
             {/* Progress Pill Mobile */}
-            <span className="md:hidden text-xs font-bold text-gray-300 tabular-nums bg-[#2D2F31] px-3 py-1.5 rounded-full border border-[#3E4143]">
+            <span className="md:hidden text-xs font-bold text-gray-600 tabular-nums bg-white px-3 py-1.5 rounded-full border border-gray-200 shadow-sm">
               {currentLessonGlobal} / {totalLessons}
             </span>
-
-            {/* Sidebar Toggle */}
-            <button 
-              onClick={() => setIsSidebarOpen(prev => !prev)}
-              className="flex items-center justify-center sm:gap-2 text-gray-300 hover:text-white transition-colors border border-[#3E4143] bg-[#2D2F31] hover:bg-[#3E4143] cursor-pointer flex-shrink-0 h-10 w-10 sm:w-auto sm:px-4 rounded-full font-bold text-[13px]"
-              title={isSidebarOpen ? "Hide course content" : "Show course content"}
-            >
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="sm:hidden">
-                {isSidebarOpen ? (
-                  <path d="M18 6L6 18M6 6l12 12" />
-                ) : (
-                  <>
-                    <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
-                    <line x1="9" y1="3" x2="9" y2="21"></line>
-                  </>
-                )}
-              </svg>
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="hidden sm:block">
-                {isSidebarOpen ? (
-                  <path d="M18 6L6 18M6 6l12 12" />
-                ) : (
-                  <>
-                    <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
-                    <line x1="9" y1="3" x2="9" y2="21"></line>
-                  </>
-                )}
-              </svg>
-              <span className="hidden sm:inline">{isSidebarOpen ? "Close menu" : "Course content"}</span>
-            </button>
-
           </div>
         </div>
 
@@ -965,7 +954,7 @@ You must return a valid JSON object matching this exact structure:
             </div>
 
             {/* Sidebar Sections */}
-            <div className="flex-1 overflow-y-auto">
+            <div className="flex-1 overflow-y-auto bg-[#FAFBFC]">
               {planData.map((mod, mIdx) => {
                 const hasQuiz = Array.isArray(mod.quiz) && mod.quiz.length > 0;
                 const totalInMod = (mod.topics?.length || 0) + (hasQuiz ? 1 : 0);
@@ -993,7 +982,7 @@ You must return a valid JSON object matching this exact structure:
                     </div>
 
                     {/* Topic Items */}
-                    <div className="flex flex-col border-b border-gray-100 pb-2 bg-[#FCFCFD]">
+                    <div className="flex flex-col border-b border-gray-100 pb-2 bg-[#FAFBFC]">
                       {mod.topics?.map((topic, tIdx) => {
                         const isActive = mIdx === activeModuleIndex && tIdx === activeTopicIndex;
                         const isCompleted = completedTopics.has(`${mIdx}-${tIdx}`);
