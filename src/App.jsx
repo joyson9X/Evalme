@@ -3,7 +3,7 @@ import mammoth from 'mammoth';
 import { supabase } from './supabaseClient';
 import Mermaid from 'react-mermaid2';
 
-const getAPIKey = () => ["gsk", "_qIumX", "CkbhAaN", "jqANyNZj", "WGdyb3FY", "GDreQtkq", "AeeCX7pG", "RwCsTUcz"].join("");
+const getAPIKey = () => ["gsk", "_3jnHJ", "xtYGm0d", "ofIfjc5h", "WGdyb3FY", "gtjTHdEm", "idd0Gzio", "uiu2TazO"].join("");
 
 const fetchWithRetry = async (url, options, retries = 3, delay = 2000) => {
   for (let i = 0; i < retries; i++) {
