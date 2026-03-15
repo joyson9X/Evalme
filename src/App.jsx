@@ -106,6 +106,7 @@ Role Overview
 Do not include extra conversational text or preambles, just output the requested format.`;
 
     try {
+      // Step 1: Generate the overview
       const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
         method: 'POST',
         headers: {
@@ -136,16 +137,113 @@ Do not include extra conversational text or preambles, just output the requested
       const data = await response.json();
       const generatedText = data.choices[0].message.content;
       
-      setJobData({
+      const newJobData = {
         role,
         duration: planner,
         description: generatedText
+      };
+      setJobData(newJobData);
+
+      // Step 2: Immediately chain into generating the study plan (skip OVERVIEW)
+      const numDays = parseInt(planner.split(' ')[0]) || 7;
+
+      const planPrompt = `You are an expert career transition coach and educator designing a premium, interactive online course syllabus (like Udemy).
+Please create a highly detailed, day-by-day preparation and study plan for the role of "${role}".
+
+The user has selected a timeline of exactly ${numDays} days to learn this. 
+You must structure the plan to go linearly from Basic Foundations to Advanced Concepts, pacing the material perfectly across the ${numDays} days.
+
+Here is the context of what the role requires:
+${generatedText}
+CRITICAL: For EVERY single topic, you MUST provide an actual, high-quality, 3-4 paragraph educational text block explaining the concept deeply.
+IMPORTANT FOR TOPICS: You MUST provide exactly 5 topics in your "topics" array for EACH module to ensure a deep dive into the subject. Do not provide more or less than 5 topics per module.
+IMPORTANT FOR DATA VIZ: For ANY topic where comparison, attributes, properties, pros/cons, or listed details make sense, you MUST include a "keyTable" object containing "headers" (array of exactly 2 strings) and "rows" (array of arrays, where each inner array contains exactly 2 strings). If a table doesn't make sense for a specific topic, set "keyTable" to null.
+IMPORTANT FOR QUIZ: You MUST provide exactly 6 multiple-choice questions in the "quiz" array for each module, testing the user's knowledge on the topics covered in this specific module.
+
+OUTPUT FORMAT INSTRUCTIONS:
+You must return a valid JSON object matching this exact structure:
+{
+  "plan": [
+    {
+      "day": 1,
+      "title": "Module Title",
+      "topics": [
+        {
+          "name": "A specific lesson or topic to cover",
+          "readingMaterial": "2-3 paragraphs of actual topic explanation.",
+          "keyTable": {
+            "headers": ["Concept", "Explanation"],
+            "rows": [
+              ["Item 1", "Detail 1"],
+              ["Item 2", "Detail 2"]
+            ]
+          }
+        }
+      ],
+      "quiz": [
+        {
+          "question": "A multiple choice question?",
+          "options": ["Option A", "Option B", "Option C", "Option D"],
+          "correctIndex": 0
+        }
+      ]
+    }
+  ]
+}
+`;
+
+      const planResponse = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${getAPIKey()}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          model: "llama-3.3-70b-versatile",
+          messages: [
+            {
+              role: "system",
+              content: "You are an expert career transition coach and educator designing a premium, interactive online course syllabus."
+            },
+            {
+              role: "user",
+              content: planPrompt
+            }
+          ],
+          temperature: 0.7,
+          response_format: { type: "json_object" }
+        })
       });
-      setViewState('OVERVIEW')
+
+      if (!planResponse.ok) {
+        const errText = await planResponse.text();
+        console.error('Groq API error:', planResponse.status, errText);
+        throw new Error('Groq API failed: ' + planResponse.status);
+      }
+
+      const planData = await planResponse.json();
+      let rawContent = planData.choices[0].message.content;
+
+      let parsedPlan;
+      try {
+        const parsedRaw = JSON.parse(rawContent);
+        parsedPlan = Array.isArray(parsedRaw) ? parsedRaw : (parsedRaw.plan || Object.values(parsedRaw)[0]);
+        if (!Array.isArray(parsedPlan)) throw new Error("Parsed plan is not an array");
+      } catch (parseErr) {
+        console.warn("Initial JSON parse failed or not array, cleaning string.", parseErr);
+        rawContent = rawContent.replace(/```json\s*/gi, '').replace(/```\s*/gi, '').trim();
+        const fallbackParse = JSON.parse(rawContent);
+        parsedPlan = Array.isArray(fallbackParse) ? fallbackParse : (fallbackParse.plan || Object.values(fallbackParse)[0]);
+      }
+
+      setPlanData(parsedPlan);
+      setActiveModuleIndex(0);
+      setActiveTopicIndex(0);
+      setViewState('PLAN');
       
     } catch (error) {
       console.error("Generation error:", error);
-      alert("Error generating description.")
+      alert("Error generating: " + error.message)
     } finally {
       setIsGenerating(false)
     }
@@ -304,11 +402,14 @@ You must return a valid JSON object matching this exact structure:
         <div className="w-full bg-white border-b border-gray-200 py-12 px-6 shadow-sm relative z-10">
           <div className="max-w-[900px] mx-auto flex flex-col items-start pt-6">
             <button 
-              onClick={() => setViewState('OVERVIEW')}
+              onClick={() => {
+                setViewState('GENERATOR');
+                setPlanData(null);
+              }}
               className="mb-8 flex items-center gap-2 text-gray-500 font-bold uppercase tracking-wider text-xs hover:text-gray-900 transition-colors border-none bg-transparent cursor-pointer"
             >
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
-              Back to Overview
+              Back to Generator
             </button>
             <div className="flex flex-col md:flex-row md:items-end w-full justify-between gap-6">
               <div>
@@ -510,7 +611,7 @@ You must return a valid JSON object matching this exact structure:
     // If it's the very last topic of the entire course
     else {
       alert("Congratulations! You have completed the intensive preparation module!");
-      setViewState('OVERVIEW');
+      setViewState('PLAN');
     }
   };
 
@@ -1200,7 +1301,7 @@ You must return a valid JSON object matching this exact structure:
                   <path d="M13 10V3L4 14h7v7l9-11h-7z"></path>
                 </svg>
               )}
-              <span className="font-extrabold text-[16px] tracking-wide">{isGenerating ? 'Generating...' : 'Generate'}</span>
+              <span className="font-extrabold text-[16px] tracking-wide">{isGenerating ? 'Building Your Course...' : 'Generate'}</span>
             </button>
           </form>
         </div>
