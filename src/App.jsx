@@ -21,6 +21,8 @@ function App() {
   const [parseError, setParseError] = useState('')
   const [jobData, setJobData] = useState(null)
   const [planData, setPlanData] = useState(null)
+  const [couponCode, setCouponCode] = useState('')
+  const [couponError, setCouponError] = useState('')
   
   // Course Player Tracking State
   const [activeModuleIndex, setActiveModuleIndex] = useState(0)
@@ -167,6 +169,33 @@ function App() {
 
     const rzp = new window.Razorpay(options)
     rzp.open()
+  }
+
+  const handleCoupon = async () => {
+    setCouponError('')
+    if (!session?.user) return alert('Please sign in first')
+    if (couponCode.trim().toLowerCase() === 'joysondalmeida') {
+      try {
+        const { error } = await supabase.from('subscriptions').insert({
+          user_id: session.user.id,
+          plan: 'lifetime',
+          payment_id: 'COUPON_' + couponCode.trim(),
+          amount: 0,
+          expires_at: null,
+        })
+        if (error) throw error
+        setIsPremium(true)
+        setPremiumExpiry(null)
+        setCouponCode('')
+        setViewState('HOME')
+        alert('\u{1F389} Coupon applied! You now have lifetime premium access!')
+      } catch (err) {
+        console.error('Coupon save error:', err)
+        setCouponError('Something went wrong. Please try again.')
+      }
+    } else {
+      setCouponError('Invalid coupon code')
+    }
   }
 
   const handleFileUpload = async (e) => {
@@ -1275,6 +1304,27 @@ You must return a valid JSON object matching this exact structure:
                 </button>
               </div>
             ))}
+          </div>
+
+          {/* Coupon Code Section */}
+          <div className="mt-8 w-full max-w-[400px] bg-white rounded-2xl p-5 shadow-[0_4px_15px_rgb(0,0,0,0.04)] border border-gray-100">
+            <p className="text-sm font-bold text-[#111827] mb-3 text-center">Have a coupon code?</p>
+            <div className="flex gap-2">
+              <input
+                type="text"
+                value={couponCode}
+                onChange={e => { setCouponCode(e.target.value); setCouponError('') }}
+                placeholder="Enter coupon code"
+                className="flex-1 bg-[#FAFAFA] border border-gray-200 rounded-xl px-4 py-2.5 text-sm text-gray-900 outline-none focus:border-amber-400 focus:shadow-[0_0_0_3px_rgba(245,158,11,0.1)] transition-all placeholder:text-gray-400"
+              />
+              <button
+                onClick={handleCoupon}
+                className="px-5 py-2.5 bg-[#111827] text-white font-bold text-sm rounded-xl cursor-pointer border-none hover:bg-[#1f2937] transition-all active:scale-[0.97]"
+              >
+                Apply
+              </button>
+            </div>
+            {couponError && <p className="text-red-500 text-xs mt-2 text-center font-medium">{couponError}</p>}
           </div>
         </div>
       </div>
