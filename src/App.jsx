@@ -892,8 +892,8 @@ You must return a valid JSON object matching this exact structure:
           </button>
 
           {/* Evalme Branding */}
-          <div className="hidden sm:flex items-center justify-center font-extrabold text-xl tracking-tighter text-gray-900 pr-5 border-r border-gray-100">
-            Evalme<span className="text-[var(--pikachu-yellow)]">.</span>
+          <div className="hidden sm:flex items-center justify-center pr-5 border-r border-gray-100">
+            <img src="/logo.jpg" alt="Evalme" className="h-[28px] object-contain" />
           </div>
 
           {/* Course Title */}
@@ -1531,8 +1531,8 @@ You must return a valid JSON object matching this exact structure:
         <div className="decoration dec-2"></div>
 
         <div className="w-full max-w-[440px] relative z-10 flex flex-col items-center">
-          <div className="text-center mb-10 w-full">
-            <h1 className="text-[3.5rem] font-extrabold mb-2 tracking-tight text-[#111827]" style={{ fontFamily: "'Evolve Sans', sans-serif" }}>Evalme</h1>
+          <div className="text-center mb-10 w-full flex flex-col items-center">
+            <img src="/logo.jpg" alt="Evalme" className="h-[48px] mb-6 object-contain" />
             <p className="text-gray-500 text-[18px]">Sign in to access AI interview prep & coding paths</p>
           </div>
 
@@ -1596,8 +1596,8 @@ You must return a valid JSON object matching this exact structure:
 
         <div className="flex-1 w-full flex items-center justify-center p-4">
           <div className="w-full max-w-[800px] relative z-10 flex flex-col items-center">
-            <div className="text-center mb-12">
-              <h1 className="text-[3.5rem] font-extrabold mb-2 tracking-tight text-[#111827]" style={{ fontFamily: "'Evolve Sans', sans-serif" }}>Evalme</h1>
+            <div className="text-center mb-12 flex flex-col items-center">
+              <img src="/logo.jpg" alt="Evalme" className="h-[48px] mb-6 object-contain" />
               <p className="text-gray-500 text-[18px]">Select a powerful AI learning tool to begin</p>
             </div>
 
@@ -1744,8 +1744,8 @@ You must return a valid JSON object matching this exact structure:
 
         <div className="bg-white rounded-3xl p-8 sm:p-10 shadow-[0_8px_30px_rgb(0,0,0,0.06)] relative overflow-hidden">
           
-          <div className="text-center mb-8">
-            <h1 className="text-[2.5rem] font-extrabold mb-1 tracking-tight text-[#111827]" style={{ fontFamily: "'Evolve Sans', sans-serif" }}>Evalme</h1>
+          <div className="text-center mb-8 flex flex-col items-center">
+            <img src="/logo.jpg" alt="Evalme" className="h-[40px] mb-4 object-contain" />
             <p className="text-gray-500 text-[15px]">Generate tailored descriptions instantly</p>
           </div>
           
