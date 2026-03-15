@@ -862,9 +862,9 @@ You must return a valid JSON object matching this exact structure:
           <div className="flex-1 overflow-y-auto">
             {planData.map((mod, mIdx) => (
               <div key={mIdx} className="border-b border-gray-100">
-                <div className="bg-[#FAFAFA] px-5 py-3.5 border-l-4 border-transparent text-gray-900">
+                <div className="bg-[#FAFAFA] px-5 py-3.5 border-l-4 border-transparent text-gray-900 w-full overflow-hidden">
                   <span className="text-xs font-bold text-gray-500 uppercase block mb-0.5">Section {mod.day}</span>
-                  <div className="text-[0.95rem] font-bold leading-tight">{mod.title}</div>
+                  <div className="text-[0.95rem] font-bold leading-tight block truncate" title={mod.title}>{mod.title}</div>
                 </div>
                 
                 <div className="flex flex-col">
@@ -878,16 +878,17 @@ You must return a valid JSON object matching this exact structure:
                           setActiveModuleIndex(mIdx);
                           setActiveTopicIndex(tIdx);
                         }}
-                        className={`text-left border-none bg-transparent px-5 py-3 cursor-pointer transition-all flex items-start gap-3 border-l-4 ${isActive ? 'bg-[#FEFEFA] border-[var(--volt-yellow)] shadow-[inset_4px_0_0_var(--volt-yellow)]' : 'border-transparent hover:bg-gray-50'}`}
+                        className={`text-left w-full border-none bg-transparent px-5 py-3 cursor-pointer transition-all flex items-center gap-3 border-l-4 overflow-hidden ${isActive ? 'bg-[#FEFEFA] border-[var(--volt-yellow)] shadow-[inset_4px_0_0_var(--volt-yellow)]' : 'border-transparent hover:bg-gray-50'}`}
+                        title={`${tIdx + 1}. ${topic.name}`}
                       >
-                         <div className={`mt-0.5 w-5 h-5 rounded flex items-center justify-center flex-shrink-0 ${isCompleted ? 'bg-green-500' : 'bg-white border border-gray-300'}`}>
+                         <div className={`w-5 h-5 rounded flex items-center justify-center flex-shrink-0 ${isCompleted ? 'bg-green-500' : 'bg-white border border-gray-300'}`}>
                            {isCompleted && (
                              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
                                <polyline points="20 6 9 17 4 12"></polyline>
                              </svg>
                            )}
                          </div>
-                         <span className={`text-[0.9rem] leading-snug ${isCompleted ? 'text-gray-400 line-through' : isActive ? 'font-bold text-gray-900' : 'text-gray-600 font-medium'}`}>
+                         <span className={`flex-1 block truncate text-[0.9rem] leading-snug ${isCompleted ? 'text-gray-400 line-through' : isActive ? 'font-bold text-gray-900' : 'text-gray-600 font-medium'}`}>
                            {tIdx + 1}. {topic.name}
                          </span>
                       </button>
@@ -904,9 +905,10 @@ You must return a valid JSON object matching this exact structure:
                           setActiveModuleIndex(mIdx);
                           setActiveTopicIndex(tIdx);
                         }}
-                        className={`text-left border-none bg-transparent px-5 py-3 cursor-pointer transition-all flex items-start gap-3 border-l-4 ${isActive ? 'bg-[#FEFEFA] border-[var(--volt-yellow)] shadow-[inset_4px_0_0_var(--volt-yellow)]' : 'border-transparent hover:bg-gray-50'}`}
+                        className={`text-left w-full border-none bg-transparent px-5 py-3 cursor-pointer transition-all flex items-center gap-3 border-l-4 overflow-hidden ${isActive ? 'bg-[#FEFEFA] border-[var(--volt-yellow)] shadow-[inset_4px_0_0_var(--volt-yellow)]' : 'border-transparent hover:bg-gray-50'}`}
+                        title={`Module ${mod.day} Quiz`}
                       >
-                         <div className={`mt-0.5 w-5 h-5 rounded flex items-center justify-center flex-shrink-0 ${isCompleted ? 'bg-purple-500 border-purple-500' : 'bg-purple-50 border-purple-200 border'}`}>
+                         <div className={`w-5 h-5 rounded flex items-center justify-center flex-shrink-0 ${isCompleted ? 'bg-purple-500 border-purple-500' : 'bg-purple-50 border-purple-200 border'}`}>
                            {isCompleted ? (
                              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
                                <polyline points="20 6 9 17 4 12"></polyline>
@@ -915,7 +917,7 @@ You must return a valid JSON object matching this exact structure:
                              <span className="text-purple-600 font-bold text-[10px]">?</span>
                            )}
                          </div>
-                         <span className={`text-[0.9rem] leading-snug ${isCompleted ? 'text-gray-400 line-through' : isActive ? 'font-bold text-purple-700' : 'text-purple-600 font-semibold'}`}>
+                         <span className={`block truncate flex-1 text-[0.9rem] leading-snug ${isCompleted ? 'text-gray-400 line-through' : isActive ? 'font-bold text-purple-700' : 'text-purple-600 font-semibold'}`}>
                            Module {mod.day} Quiz
                          </span>
                       </button>
