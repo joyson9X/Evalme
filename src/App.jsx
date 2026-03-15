@@ -37,6 +37,7 @@ const GoogleAd = ({ slot, className = '', style = {} }) => {
   useEffect(() => {
     // Inject AdSense script if not present
     if (!document.querySelector('script[src*="adsbygoogle"]')) {
+      const script = document.createElement('script');
       script.src = "https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=pub-1467905577153156";
       script.async = true;
       script.crossOrigin = "anonymous";
