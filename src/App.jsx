@@ -5,6 +5,16 @@ import Mermaid from 'react-mermaid2';
 
 const getAPIKey = () => ["gsk", "_exROG", "0ANTHuei", "4kWRNRiWGd", "yb3FY2kw", "XlfNxiT1", "Tmclth", "AIO3J7o"].join("");
 
+const sanitizeMermaid = (chart) => {
+  if (!chart) return '';
+  let str = chart.replace(/\\n/g, '\n');
+  if (!str.includes('\n') && str.includes('flowchart')) {
+    str = str.replace(/(flowchart\s+\w+)\s+/, "$1\n");
+    str = str.replace(/([\])}])\s+(?=[A-Za-z0-9_-]+(\s+-->|\[|\(|\{))/g, "$1\n");
+  }
+  return str;
+};
+
 function App() {
   const [session, setSession] = useState(null)
   const [isPremium, setIsPremium] = useState(false)
@@ -352,7 +362,7 @@ ${generatedText}
 CRITICAL: For EVERY single topic, you MUST provide an actual, high-quality, 3-4 paragraph educational text block explaining the concept deeply.
 IMPORTANT FOR TOPICS: You MUST provide exactly 5 topics in your "topics" array for EACH module to ensure a deep dive into the subject. Do not provide more or less than 5 topics per module.
 IMPORTANT FOR DATA VIZ: For ANY topic where comparison, attributes, properties, pros/cons, or listed details make sense, you MUST include a "keyTable" object containing "headers" (array of exactly 2 strings) and "rows" (array of arrays, where each inner array contains exactly 2 strings). If a table doesn't make sense for a specific topic, set "keyTable" to null.
-IMPORTANT FOR DIAGRAMS: You MUST provide a "mermaidDiagram" string for AT LEAST 1 OR 2 topics in each module (the more the better). This string should be a valid Mermaid.js graph code (e.g., flowchart TD, sequenceDiagram) that visualizes the concept. Use simple and short node names. E.g. "flowchart LR\\n  A[Concept 1] --> B[Concept 2]". If no diagram makes sense, set it to null.
+IMPORTANT FOR DIAGRAMS: You MUST provide a "mermaidDiagram" string for AT LEAST 1 OR 2 topics in each module. This string should be a valid Mermaid.js graph code (e.g., flowchart TD) that visualizes the concept. CRITICAL: You MUST use the exact string '\\n' to separate EVERY SINGLE line and node connection! DO NOT put multiple connections on one line. Example: "flowchart LR\\n  A[Start] --> B[Step 1]\\n  B --> C[Step 2]". If no diagram makes sense, set it to null.
 IMPORTANT FOR QUIZ: You MUST provide exactly 6 multiple-choice questions in the "quiz" array for each module, testing the user's knowledge on the topics covered in this specific module.
 
 OUTPUT FORMAT INSTRUCTIONS:
@@ -366,7 +376,7 @@ You must return a valid JSON object matching this exact structure:
         {
           "name": "A specific lesson or topic to cover",
           "readingMaterial": "2-3 paragraphs of actual topic explanation.",
-          "mermaidDiagram": "flowchart LR\\n  A[Start] --> B[End]",
+          "mermaidDiagram": "flowchart TD\\n  A[Start] --> B[Middle]\\n  B --> C[End]",
           "keyTable": {
             "headers": ["Concept", "Explanation"],
             "rows": [
@@ -1002,7 +1012,7 @@ You must return a valid JSON object matching this exact structure:
                            {currentTopic.mermaidDiagram && (
                              <div className="overflow-hidden rounded-2xl border border-gray-200 shadow-[0_4px_20px_rgba(0,0,0,0.03)] my-6 bg-white w-full p-6 flex items-center justify-center">
                                <div className="w-full overflow-x-auto flex justify-center text-sm md:text-base">
-                                 <Mermaid chart={currentTopic.mermaidDiagram} />
+                                 <Mermaid chart={sanitizeMermaid(currentTopic.mermaidDiagram)} />
                                </div>
                              </div>
                            )}
