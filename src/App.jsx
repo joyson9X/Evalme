@@ -999,25 +999,33 @@ You must return a valid JSON object matching this exact structure:
             </div>
 
             <div>
-              <div className="flex justify-between items-end mb-2">
-                <label className="block font-semibold text-sm text-gray-900">Job Requirement</label>
-                <label className={`cursor-pointer text-xs font-bold bg-[#EFEFEF] hover:bg-[#E0E0E0] text-gray-700 px-3 py-1.5 rounded-lg transition-colors flex items-center gap-1.5 border border-gray-200 ${isParsing ? 'opacity-70 pointer-events-none' : ''}`}>
-                  {isParsing ? (
-                    <div className="w-3.5 h-3.5 border-2 border-gray-400 border-t-gray-700 rounded-full animate-spin"></div>
-                  ) : (
-                    <svg className="w-4 h-4 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"></path></svg>
-                  )}
-                  {isParsing ? "Scanning File..." : "Attach JD (.pdf / .docx)"}
-                  <input type="file" className="hidden" accept=".pdf,.docx,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document" onChange={handleFileUpload} disabled={isParsing} />
-                </label>
+              <label className="block font-semibold mb-2 text-sm text-gray-900">Job Requirement</label>
+              
+              <label className={`cursor-pointer mb-3 w-full bg-[#FAFAFA] border-2 border-dashed border-gray-300 hover:border-[var(--pikachu-yellow)] hover:bg-[#FFFDF5] rounded-xl flex flex-col items-center justify-center p-6 transition-all group ${isParsing ? 'opacity-70 pointer-events-none' : ''}`}>
+                {isParsing ? (
+                  <div className="w-8 h-8 border-4 border-gray-200 border-t-[var(--pikachu-yellow)] rounded-full animate-spin mb-3"></div>
+                ) : (
+                  <div className="w-10 h-10 bg-white shadow-sm border border-gray-100 rounded-full flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
+                    <svg className="w-5 h-5 text-gray-400 group-hover:text-amber-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path></svg>
+                  </div>
+                )}
+                <span className="font-bold text-gray-700 text-base mb-1">
+                  {isParsing ? "Scanning Document..." : "Upload Job Description"}
+                </span>
+                <span className="text-gray-400 text-xs font-medium">Supports PDF and Word Documents (.docx)</span>
+                <input type="file" className="hidden" accept=".pdf,.docx,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document" onChange={handleFileUpload} disabled={isParsing} />
+              </label>
+
+              {parseError && <p className="text-red-500 text-xs mb-3 text-center font-medium animate-pulse">{parseError}</p>}
+              
+              <div className="relative">
+                <textarea 
+                  className={`w-full bg-[#F5F5F5] border-2 border-transparent rounded-xl px-5 py-4 text-base text-gray-900 transition-all outline-none placeholder:text-[#A0A0A0] hover:bg-[#EFEFEF] focus:bg-white focus:border-[var(--pikachu-yellow)] focus:shadow-[0_0_0_4px_rgba(255,222,0,0.15)] resize-y min-h-[120px] ${isParsing ? 'opacity-50 blur-[1px] pointer-events-none' : ''}`}
+                  placeholder="Or paste the text manually..." 
+                  value={requirement}
+                  onChange={e => setRequirement(e.target.value)}
+                />
               </div>
-              {parseError && <p className="text-red-500 text-xs mb-2 font-medium animate-pulse">{parseError}</p>}
-              <textarea 
-                className={`w-full bg-[#F5F5F5] border-2 border-transparent rounded-xl px-5 py-4 text-base text-gray-900 transition-all outline-none placeholder:text-[#A0A0A0] hover:bg-[#EFEFEF] focus:bg-white focus:border-[var(--pikachu-yellow)] focus:shadow-[0_0_0_4px_rgba(255,222,0,0.15)] resize-y min-h-[120px] ${isParsing ? 'opacity-50 blur-[1px] pointer-events-none' : ''}`}
-                placeholder="Describe the responsibilities, skills, and experience needed..." 
-                value={requirement}
-                onChange={e => setRequirement(e.target.value)}
-              />
             </div>
 
             <div>
