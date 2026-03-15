@@ -32,39 +32,6 @@ const sanitizeMermaid = (chart) => {
   return str;
 };
 
-// Google AdSense Component
-const GoogleAd = ({ slot, className = '', style = {} }) => {
-  useEffect(() => {
-    // Inject AdSense script if not present
-    if (!document.querySelector('script[src*="adsbygoogle"]')) {
-      const script = document.createElement('script');
-      script.src = "https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=pub-1467905577153156";
-      script.async = true;
-      script.crossOrigin = "anonymous";
-      document.head.appendChild(script);
-    }
-    
-    try {
-      (window.adsbygoogle = window.adsbygoogle || []).push({});
-    } catch (e) {
-      console.error('AdSense error:', e);
-    }
-  }, []);
-
-  return (
-    <div className={`flex items-center justify-center bg-gray-50/30 rounded-2xl border border-dashed border-gray-200/50 overflow-hidden ${className}`} style={{ minHeight: '600px', ...style }}>
-      <ins className="adsbygoogle"
-           style={{ display: 'block', width: '100%', height: '100%', ...style }}
-           data-ad-client="pub-1467905577153156"
-           data-ad-slot={slot}
-           data-ad-format="auto"
-           data-full-width-responsive="true"></ins>
-      <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-        <span className="text-[10px] font-bold text-gray-300 uppercase tracking-widest">Advertisement</span>
-      </div>
-    </div>
-  );
-};
 
 function App() {
   const [session, setSession] = useState(null)
@@ -1618,48 +1585,33 @@ You must return a valid JSON object matching this exact structure:
   // AUTH VIEW
   if (viewState === 'AUTH') {
     return (
-      <div className="w-full min-h-[100dvh] flex flex-col relative bg-[#FAFAFA] overflow-x-hidden overflow-y-auto">
+      <div className="w-full min-h-[100dvh] flex items-center justify-center relative bg-[#FAFAFA] overflow-x-hidden overflow-y-auto py-12 px-4">
         <div className="decoration dec-1"></div>
         <div className="decoration dec-2"></div>
 
-        <div className="flex-1 w-full max-w-[1440px] mx-auto px-6 py-4 flex flex-col xl:flex-row items-center justify-center gap-8 relative z-10">
-          
-          {/* Left Ad Space - Skyscraper */}
-          <div className="hidden xl:block w-[160px] sticky top-24 self-start">
-            <GoogleAd slot="auth-left-skyscraper" className="w-[160px] h-[600px]" />
+        <div className="w-full max-w-[440px] relative z-10 flex flex-col items-center">
+          <div className="text-center mb-10 w-full flex flex-col items-center">
+            <img src="/logo.svg" alt="Evalme" className="h-[48px] mb-6 object-contain" />
+            <p className="text-gray-500 text-[18px]">Sign in to access AI interview prep & coding paths</p>
           </div>
 
-          {/* Main Content */}
-          <div className="flex-1 max-w-[440px] flex flex-col items-center">
-            <div className="text-center mb-10 w-full flex flex-col items-center">
-              <img src="/logo.svg" alt="Evalme" className="h-[48px] mb-6 object-contain" />
-              <p className="text-gray-500 text-[18px]">Sign in to access AI interview prep & coding paths</p>
-            </div>
-
-            <div className="bg-white rounded-3xl p-8 shadow-[0_8px_30px_rgb(0,0,0,0.06)] border border-gray-100 w-full relative overflow-hidden flex flex-col gap-6">
-              <button 
-                onClick={handleGoogleSignIn}
-                className="w-full flex items-center justify-center gap-4 bg-white border border-gray-200 text-gray-800 font-bold px-6 py-4 rounded-xl hover:bg-gray-50 hover:border-gray-300 transition-all cursor-pointer shadow-sm active:scale-[0.98]"
-              >
-                <svg viewBox="0 0 24 24" width="24" height="24" xmlns="http://www.w3.org/2000/svg">
-                  <g transform="matrix(1, 0, 0, 1, 27.009001, -39.238998)">
-                    <path fill="#4285F4" d="M -3.264 51.509 C -3.264 50.719 -3.334 49.969 -3.454 49.239 L -14.754 49.239 L -14.754 53.749 L -8.284 53.749 C -8.574 55.229 -9.424 56.479 -10.684 57.329 L -10.684 60.329 L -6.824 60.329 C -4.564 58.239 -3.264 55.159 -3.264 51.509 Z"/>
-                    <path fill="#34A853" d="M -14.754 63.239 C -11.514 63.239 -8.804 62.159 -6.824 60.329 L -10.684 57.329 C -11.764 58.049 -13.134 58.489 -14.754 58.489 C -17.884 58.489 -20.534 56.379 -21.484 53.529 L -25.464 53.529 L -25.464 56.619 C -23.494 60.539 -19.444 63.239 -14.754 63.239 Z"/>
-                    <path fill="#FBBC05" d="M -21.484 53.529 C -21.734 52.809 -21.864 52.039 -21.864 51.239 C -21.864 50.439 -21.724 49.669 -21.484 48.949 L -21.484 45.859 L -25.464 45.859 C -26.284 47.479 -26.754 49.299 -26.754 51.239 C -26.754 53.179 -26.284 54.999 -25.464 56.619 L -21.484 53.529 Z"/>
-                    <path fill="#EA4335" d="M -14.754 43.989 C -12.984 43.989 -11.404 44.599 -10.154 45.789 L -6.734 42.369 C -8.804 40.429 -11.514 39.239 -14.754 39.239 C -19.444 39.239 -23.494 41.939 -25.464 45.859 L -21.484 48.949 C -20.534 46.099 -17.884 43.989 -14.754 43.989 Z"/>
-                  </g>
-                </svg>
-                <span>Continue with Google</span>
-              </button>
-              <p className="text-gray-400 text-xs text-center mt-2 px-6">By signing in, you agree to our Terms of Service and Privacy Policy.</p>
-            </div>
+          <div className="bg-white rounded-3xl p-8 shadow-[0_8px_30px_rgb(0,0,0,0.06)] border border-gray-100 w-full relative overflow-hidden flex flex-col gap-6">
+            <button 
+              onClick={handleGoogleSignIn}
+              className="w-full flex items-center justify-center gap-4 bg-white border border-gray-200 text-gray-800 font-bold px-6 py-4 rounded-xl hover:bg-gray-50 hover:border-gray-300 transition-all cursor-pointer shadow-sm active:scale-[0.98]"
+            >
+              <svg viewBox="0 0 24 24" width="24" height="24" xmlns="http://www.w3.org/2000/svg">
+                <g transform="matrix(1, 0, 0, 1, 27.009001, -39.238998)">
+                  <path fill="#4285F4" d="M -3.264 51.509 C -3.264 50.719 -3.334 49.969 -3.454 49.239 L -14.754 49.239 L -14.754 53.749 L -8.284 53.749 C -8.574 55.229 -9.424 56.479 -10.684 57.329 L -10.684 60.329 L -6.824 60.329 C -4.564 58.239 -3.264 55.159 -3.264 51.509 Z"/>
+                  <path fill="#34A853" d="M -14.754 63.239 C -11.514 63.239 -8.804 62.159 -6.824 60.329 L -10.684 57.329 C -11.764 58.049 -13.134 58.489 -14.754 58.489 C -17.884 58.489 -20.534 56.379 -21.484 53.529 L -25.464 53.529 L -25.464 56.619 C -23.494 60.539 -19.444 63.239 -14.754 63.239 Z"/>
+                  <path fill="#FBBC05" d="M -21.484 53.529 C -21.734 52.809 -21.864 52.039 -21.864 51.239 C -21.864 50.439 -21.724 49.669 -21.484 48.949 L -21.484 45.859 L -25.464 45.859 C -26.284 47.479 -26.754 49.299 -26.754 51.239 C -26.754 53.179 -26.284 54.999 -25.464 56.619 L -21.484 53.529 Z"/>
+                  <path fill="#EA4335" d="M -14.754 43.989 C -12.984 43.989 -11.404 44.599 -10.154 45.789 L -6.734 42.369 C -8.804 40.429 -11.514 39.239 -14.754 39.239 C -19.444 39.239 -23.494 41.939 -25.464 45.859 L -21.484 48.949 C -20.534 46.099 -17.884 43.989 -14.754 43.989 Z"/>
+                </g>
+              </svg>
+              <span>Continue with Google</span>
+            </button>
+            <p className="text-gray-400 text-xs text-center mt-2 px-6">By signing in, you agree to our Terms of Service and Privacy Policy.</p>
           </div>
-
-          {/* Right Ad Space - Skyscraper */}
-          <div className="hidden xl:block w-[160px] sticky top-24 self-start">
-            <GoogleAd slot="auth-right-skyscraper" className="w-[160px] h-[600px]" />
-          </div>
-
         </div>
       </div>
     )
@@ -1707,84 +1659,69 @@ You must return a valid JSON object matching this exact structure:
           )}
         </div>
 
-        <div className="flex-1 w-full max-w-[1440px] mx-auto px-6 py-4 flex flex-col xl:flex-row items-center justify-center gap-8 relative z-10">
-          
-          {/* Left Ad Space - Skyscraper */}
-          <div className="hidden xl:block w-[160px] sticky top-24 self-start">
-            <GoogleAd slot="left-skyscraper" className="w-[160px] h-[600px]" />
+        <div className="flex-1 max-w-[850px] flex flex-col items-center mx-auto px-6 py-12">
+          <div className="text-center mb-10 flex flex-col items-center">
+            <img src="/logo.svg" alt="Evalme" className="h-[44px] mb-5 object-contain" />
+            <p className="text-gray-500 text-[18px]">Select a powerful AI learning tool to begin</p>
           </div>
 
-          {/* Main Content */}
-          <div className="flex-1 max-w-[850px] flex flex-col items-center">
-            <div className="text-center mb-10 flex flex-col items-center">
-              <img src="/logo.svg" alt="Evalme" className="h-[44px] mb-5 object-contain" />
-              <p className="text-gray-500 text-[18px]">Select a powerful AI learning tool to begin</p>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full">
+            
+            {/* Tile 1: Job Plan Maker */}
+            <button 
+              onClick={() => navigateTo('GENERATOR')}
+              className="group text-left bg-white rounded-3xl p-8 shadow-[0_8px_30px_rgb(0,0,0,0.06)] border border-gray-100 hover:border-[var(--pikachu-yellow)] transition-all cursor-pointer hover:-translate-y-1 hover:shadow-xl relative overflow-hidden flex flex-col items-start"
+            >
+              <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-[var(--pikachu-yellow)] to-transparent opacity-10 rounded-bl-full transform translate-x-8 -translate-y-8 group-hover:scale-110 transition-transform duration-500"></div>
               
-              {/* Tile 1: Job Plan Maker */}
-              <button 
-                onClick={() => navigateTo('GENERATOR')}
-                className="group text-left bg-white rounded-3xl p-8 shadow-[0_8px_30px_rgb(0,0,0,0.06)] border border-gray-100 hover:border-[var(--pikachu-yellow)] transition-all cursor-pointer hover:-translate-y-1 hover:shadow-xl relative overflow-hidden flex flex-col items-start"
-              >
-                <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-[var(--pikachu-yellow)] to-transparent opacity-10 rounded-bl-full transform translate-x-8 -translate-y-8 group-hover:scale-110 transition-transform duration-500"></div>
-                
-                <div className="w-14 h-14 bg-[#FFFDF5] border border-[var(--pikachu-yellow)] rounded-2xl flex items-center justify-center mb-6 text-amber-500 shadow-sm relative z-10">
-                  <svg className="w-7 h-7" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
-                  </svg>
-                </div>
-                
-                <h2 className="text-2xl font-bold text-[#111827] mb-2 tracking-tight relative z-10">Interview Prep Planner</h2>
-                <p className="text-gray-500 text-[15px] leading-relaxed mb-8 relative z-10">
-                  Generate a highly tailored day-by-day interview preparation planner to ace your interview.
-                </p>
-                
-                <div className="mt-auto text-amber-500 font-bold flex items-center gap-2 group-hover:gap-3 transition-all text-[15px] drop-shadow-sm brightness-95 relative z-10">
-                  Start Building 
-                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="3"><path strokeLinecap="round" strokeLinejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
-                </div>
-              </button>
+              <div className="w-14 h-14 bg-[#FFFDF5] border border-[var(--pikachu-yellow)] rounded-2xl flex items-center justify-center mb-6 text-amber-500 shadow-sm relative z-10">
+                <svg className="w-7 h-7" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+                </svg>
+              </div>
+              
+              <h2 className="text-2xl font-bold text-[#111827] mb-2 tracking-tight relative z-10">Interview Prep Planner</h2>
+              <p className="text-gray-500 text-[15px] leading-relaxed mb-8 relative z-10">
+                Generate a highly tailored day-by-day interview preparation planner to ace your interview.
+              </p>
+              
+              <div className="mt-auto text-amber-500 font-bold flex items-center gap-2 group-hover:gap-3 transition-all text-[15px] drop-shadow-sm brightness-95 relative z-10">
+                Start Building 
+                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="3"><path strokeLinecap="round" strokeLinejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+              </div>
+            </button>
 
-              {/* Tile 2: Learn Coding */}
-              <button 
-                onClick={() => isPremium ? navigateTo('CODING_COURSES') : navigateTo('PRICING')}
-                className="group text-left bg-white rounded-3xl p-8 shadow-[0_8px_30px_rgb(0,0,0,0.06)] border border-gray-100 hover:border-[#8BE9FD] transition-all cursor-pointer hover:-translate-y-1 hover:shadow-xl relative overflow-hidden flex flex-col items-start"
-              >
-                <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-[#8BE9FD] to-transparent opacity-10 rounded-bl-full transform translate-x-8 -translate-y-8 group-hover:scale-110 transition-transform duration-500"></div>
+            {/* Tile 2: Learn Coding */}
+            <button 
+              onClick={() => isPremium ? navigateTo('CODING_COURSES') : navigateTo('PRICING')}
+              className="group text-left bg-white rounded-3xl p-8 shadow-[0_8px_30px_rgb(0,0,0,0.06)] border border-gray-100 hover:border-[#8BE9FD] transition-all cursor-pointer hover:-translate-y-1 hover:shadow-xl relative overflow-hidden flex flex-col items-start"
+            >
+              <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-[#8BE9FD] to-transparent opacity-10 rounded-bl-full transform translate-x-8 -translate-y-8 group-hover:scale-110 transition-transform duration-500"></div>
 
-                {!isPremium && (
-                  <div className="absolute top-4 right-4 z-20 bg-gradient-to-r from-amber-400 to-yellow-400 text-[#111827] text-[10px] font-extrabold uppercase tracking-widest px-2.5 py-1 rounded-full flex items-center gap-1">
-                    <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clipRule="evenodd"></path></svg>
-                    PRO
-                  </div>
-                )}
+              {!isPremium && (
+                <div className="absolute top-4 right-4 z-20 bg-gradient-to-r from-amber-400 to-yellow-400 text-[#111827] text-[10px] font-extrabold uppercase tracking-widest px-2.5 py-1 rounded-full flex items-center gap-1">
+                  <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clipRule="evenodd"></path></svg>
+                  PRO
+                </div>
+              )}
 
-                <div className="w-14 h-14 bg-[#F2FDFE] border border-[#8BE9FD] rounded-2xl flex items-center justify-center mb-6 text-[#17a2b8] shadow-sm relative z-10">
-                  <svg className="w-7 h-7" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path>
-                  </svg>
-                </div>
-                
-                <h2 className="text-2xl font-bold text-[#111827] mb-2 tracking-tight relative z-10">Learn Coding</h2>
-                <p className="text-gray-500 text-[15px] leading-relaxed mb-6 relative z-10">
-                  Interactive AI-powered coding editor with live personalized challenges.
-                </p>
-                
-                <div className={`mt-auto font-bold flex items-center gap-2 group-hover:gap-3 transition-all text-[15px] drop-shadow-sm brightness-95 relative z-10 ${isPremium ? 'text-[#17a2b8]' : 'text-amber-500'}`}>
-                  {isPremium ? 'Browse Courses' : 'Unlock with Premium'}
-                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="3"><path strokeLinecap="round" strokeLinejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
-                </div>
-              </button>
-            </div>
+              <div className="w-14 h-14 bg-[#F2FDFE] border border-[#8BE9FD] rounded-2xl flex items-center justify-center mb-6 text-[#17a2b8] shadow-sm relative z-10">
+                <svg className="w-7 h-7" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path>
+                </svg>
+              </div>
+              
+              <h2 className="text-2xl font-bold text-[#111827] mb-2 tracking-tight relative z-10">Learn Coding</h2>
+              <p className="text-gray-500 text-[15px] leading-relaxed mb-6 relative z-10">
+                Interactive AI-powered coding editor with live personalized challenges.
+              </p>
+              
+              <div className={`mt-auto font-bold flex items-center gap-2 group-hover:gap-3 transition-all text-[15px] drop-shadow-sm brightness-95 relative z-10 ${isPremium ? 'text-[#17a2b8]' : 'text-amber-500'}`}>
+                {isPremium ? 'Browse Courses' : 'Unlock with Premium'}
+                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="3"><path strokeLinecap="round" strokeLinejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+              </div>
+            </button>
           </div>
-
-          {/* Right Ad Space - Skyscraper */}
-          <div className="hidden xl:block w-[160px] sticky top-24 self-start">
-            <GoogleAd slot="right-skyscraper" className="w-[160px] h-[600px]" />
-          </div>
-
         </div>
       </div>
     )
@@ -1853,110 +1790,99 @@ You must return a valid JSON object matching this exact structure:
 
   // GENERATOR VIEW
   return (
-    <div className="w-full min-h-[100dvh] flex flex-col relative bg-[#FAFAFA] overflow-x-hidden overflow-y-auto">
+    <div className="w-full min-h-[100dvh] flex items-center justify-center relative bg-[#FAFAFA] overflow-x-hidden overflow-y-auto py-12 px-4">
       <div className="decoration dec-1"></div>
       <div className="decoration dec-2"></div>
 
-      <div className="flex-1 w-full max-w-[1440px] mx-auto px-6 py-4 flex flex-col xl:flex-row items-center justify-center gap-8 relative z-10">
+      <div className="w-full max-w-[500px] relative z-10 p-4">
         
-        {/* Left Ad Space - Skyscraper */}
-        <div className="hidden xl:block w-[160px] sticky top-24 self-start">
-          <GoogleAd slot="generator-left-skyscraper" className="w-[160px] h-[600px]" />
-        </div>
 
-        {/* Main Content */}
-        <div className="flex-1 max-w-[500px] flex flex-col items-center">
-          <div className="bg-white rounded-3xl p-8 sm:p-10 shadow-[0_8px_30px_rgb(0,0,0,0.06)] relative overflow-hidden w-full">
-            
-            <div className="text-center mb-8 flex flex-col items-center">
-              <img src="/logo.svg" alt="Evalme" className="h-[40px] mb-4 object-contain" />
-              <p className="text-gray-500 text-[15px]">Generate tailored descriptions instantly</p>
+
+
+        <div className="bg-white rounded-3xl p-8 sm:p-10 shadow-[0_8px_30px_rgb(0,0,0,0.06)] relative overflow-hidden">
+          
+          <div className="text-center mb-8 flex flex-col items-center">
+            <img src="/logo.svg" alt="Evalme" className="h-[40px] mb-4 object-contain" />
+            <p className="text-gray-500 text-[15px]">Generate tailored descriptions instantly</p>
+          </div>
+          
+          <form className="flex flex-col gap-6" onSubmit={e => e.preventDefault()}>
+            <div>
+              <label className="block font-bold mb-2 text-[14px] text-[#111827]">Job Role</label>
+              <input 
+                type="text" 
+                className="w-full bg-white border-2 border-gray-200 rounded-xl px-4 py-3.5 text-[15px] text-gray-900 transition-all outline-none placeholder:text-gray-400 focus:shadow-[0_0_0_4px_rgba(255,222,0,0.15)] focus:border-[var(--pikachu-yellow)]"
+                placeholder="e.g. Frontend Developer" 
+                value={role}
+                onChange={e => setRole(e.target.value)}
+                autoFocus
+              />
             </div>
-            
-            <form className="flex flex-col gap-6" onSubmit={e => e.preventDefault()}>
-              <div>
-                <label className="block font-bold mb-2 text-[14px] text-[#111827]">Job Role</label>
-                <input 
-                  type="text" 
-                  className="w-full bg-white border-2 border-gray-200 rounded-xl px-4 py-3.5 text-[15px] text-gray-900 transition-all outline-none placeholder:text-gray-400 focus:shadow-[0_0_0_4px_rgba(255,222,0,0.15)] focus:border-[var(--pikachu-yellow)]"
-                  placeholder="e.g. Frontend Developer" 
-                  value={role}
-                  onChange={e => setRole(e.target.value)}
-                  autoFocus
+
+            <div>
+              <label className="block font-bold mb-2 text-[14px] text-[#111827]">Job Requirement</label>
+              
+              <label className={`cursor-pointer mb-4 w-full bg-white border border-dashed border-gray-300 hover:border-gray-400 rounded-xl flex flex-col items-center justify-center py-6 px-4 transition-all group ${isParsing ? 'opacity-70 pointer-events-none' : ''}`}>
+                {isParsing ? (
+                  <div className="w-8 h-8 border-4 border-gray-200 border-t-[var(--pikachu-yellow)] rounded-full animate-spin mb-3"></div>
+                ) : (
+                  <div className="w-10 h-10 bg-white shadow-sm border border-gray-100 rounded-full flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
+                    <svg className="w-5 h-5 text-gray-400 group-hover:text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="1.5"><path strokeLinecap="round" strokeLinejoin="round" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path></svg>
+                  </div>
+                )}
+                <span className="font-bold text-[#111827] text-[15px] mb-1">
+                  {isParsing ? "Scanning Document..." : "Upload Job Description"}
+                </span>
+                <span className="text-gray-400 text-xs font-normal">Supports PDF and Word Documents (.docx)</span>
+                <input type="file" className="hidden" accept=".pdf,.docx,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document" onChange={handleFileUpload} disabled={isParsing} />
+              </label>
+
+              {parseError && <p className="text-red-500 text-xs mb-3 text-center font-medium animate-pulse">{parseError}</p>}
+              
+              <div className="relative">
+                <textarea 
+                  className={`w-full bg-[#FAFAFA] border border-gray-100 rounded-xl px-5 py-4 text-[14px] text-gray-900 transition-all outline-none placeholder:text-gray-400 hover:bg-[#F5F5F5] focus:bg-white focus:border-[var(--pikachu-yellow)] focus:shadow-[0_0_0_4px_rgba(255,222,0,0.15)] resize-none min-h-[100px] ${isParsing ? 'opacity-50 blur-[1px] pointer-events-none' : ''}`}
+                  placeholder="Or paste the text manually..." 
+                  value={requirement}
+                  onChange={e => setRequirement(e.target.value)}
                 />
               </div>
+            </div>
 
-              <div>
-                <label className="block font-bold mb-2 text-[14px] text-[#111827]">Job Requirement</label>
-                
-                <label className={`cursor-pointer mb-4 w-full bg-white border border-dashed border-gray-300 hover:border-gray-400 rounded-xl flex flex-col items-center justify-center py-6 px-4 transition-all group ${isParsing ? 'opacity-70 pointer-events-none' : ''}`}>
-                  {isParsing ? (
-                    <div className="w-8 h-8 border-4 border-gray-200 border-t-[var(--pikachu-yellow)] rounded-full animate-spin mb-3"></div>
-                  ) : (
-                    <div className="w-10 h-10 bg-white shadow-sm border border-gray-100 rounded-full flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
-                      <svg className="w-5 h-5 text-gray-400 group-hover:text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="1.5"><path strokeLinecap="round" strokeLinejoin="round" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path></svg>
-                    </div>
-                  )}
-                  <span className="font-bold text-[#111827] text-[15px] mb-1">
-                    {isParsing ? "Scanning Document..." : "Upload Job Description"}
-                  </span>
-                  <span className="text-gray-400 text-xs font-normal">Supports PDF and Word Documents (.docx)</span>
-                  <input type="file" className="hidden" accept=".pdf,.docx,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document" onChange={handleFileUpload} disabled={isParsing} />
-                </label>
-
-                {parseError && <p className="text-red-500 text-xs mb-3 text-center font-medium animate-pulse">{parseError}</p>}
-                
-                <div className="relative">
-                  <textarea 
-                    className={`w-full bg-[#FAFAFA] border border-gray-100 rounded-xl px-5 py-4 text-[14px] text-gray-900 transition-all outline-none placeholder:text-gray-400 hover:bg-[#F5F5F5] focus:bg-white focus:border-[var(--pikachu-yellow)] focus:shadow-[0_0_0_4px_rgba(255,222,0,0.15)] resize-none min-h-[100px] ${isParsing ? 'opacity-50 blur-[1px] pointer-events-none' : ''}`}
-                    placeholder="Or paste the text manually..." 
-                    value={requirement}
-                    onChange={e => setRequirement(e.target.value)}
-                  />
-                </div>
+            <div>
+              <label className="block font-bold mb-4 text-[13px] uppercase tracking-widest text-gray-400">Planner Duration</label>
+              <div className="bg-[#F3F4F6] p-1.5 rounded-2xl flex gap-1 shadow-inner border border-gray-100/50">
+                {['3 Days', '7 Days', '10 Days'].map(duration => {
+                  const isActive = planner === duration;
+                  return (
+                    <button 
+                      key={duration} 
+                      type="button"
+                      onClick={() => setPlanner(duration)}
+                      className={`flex-1 py-3 px-4 rounded-[14px] text-[14px] font-bold transition-all duration-300 cursor-pointer border-none flex items-center justify-center ${isActive ? 'bg-white text-gray-900 shadow-[0_4px_12px_rgba(0,0,0,0.08)]' : 'bg-transparent text-gray-400 hover:text-gray-600'}`}
+                    >
+                      {duration}
+                    </button>
+                  );
+                })}
               </div>
+            </div>
 
-              <div>
-                <label className="block font-bold mb-4 text-[13px] uppercase tracking-widest text-gray-400">Planner Duration</label>
-                <div className="bg-[#F3F4F6] p-1.5 rounded-2xl flex gap-1 shadow-inner border border-gray-100/50">
-                  {['3 Days', '7 Days', '10 Days'].map(duration => {
-                    const isActive = planner === duration;
-                    return (
-                      <button 
-                        key={duration} 
-                        type="button"
-                        onClick={() => setPlanner(duration)}
-                        className={`flex-1 py-3 px-4 rounded-[14px] text-[14px] font-bold transition-all duration-300 cursor-pointer border-none flex items-center justify-center ${isActive ? 'bg-white text-gray-900 shadow-[0_4px_12px_rgba(0,0,0,0.08)]' : 'bg-transparent text-gray-400 hover:text-gray-600'}`}
-                      >
-                        {duration}
-                      </button>
-                    );
-                  })}
-                </div>
-              </div>
-
-              <button 
-                type="button" 
-                onClick={handleGenerate}
-                disabled={isGenerating}
-                className={`w-full bg-[#fce01a] text-[#111827] border-none rounded-xl py-4 flex items-center justify-center gap-2 cursor-pointer transition-all mt-2 shadow-[0_2px_10px_rgba(252,224,26,0.3)] hover:brightness-105 active:scale-[0.98] disabled:opacity-80 disabled:pointer-events-none ${hasError ? 'animate-shake' : ''}`}
-              >
-                {!isGenerating && (
-                  <svg className="w-5 h-5 fill-none stroke-current stroke-2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24">
-                    <path d="M13 10V3L4 14h7v7l9-11h-7z"></path>
-                  </svg>
-                )}
-                <span className="font-extrabold text-[16px] tracking-wide">{isGenerating ? 'Building Your Course...' : 'Generate'}</span>
-              </button>
-            </form>
-          </div>
+            <button 
+              type="button" 
+              onClick={handleGenerate}
+              disabled={isGenerating}
+              className={`w-full bg-[#fce01a] text-[#111827] border-none rounded-xl py-4 flex items-center justify-center gap-2 cursor-pointer transition-all mt-2 shadow-[0_2px_10px_rgba(252,224,26,0.3)] hover:brightness-105 active:scale-[0.98] disabled:opacity-80 disabled:pointer-events-none ${hasError ? 'animate-shake' : ''}`}
+            >
+              {!isGenerating && (
+                <svg className="w-5 h-5 fill-none stroke-current stroke-2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24">
+                  <path d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                </svg>
+              )}
+              <span className="font-extrabold text-[16px] tracking-wide">{isGenerating ? 'Building Your Course...' : 'Generate'}</span>
+            </button>
+          </form>
         </div>
-
-        {/* Right Ad Space - Skyscraper */}
-        <div className="hidden xl:block w-[160px] sticky top-24 self-start">
-          <GoogleAd slot="generator-right-skyscraper" className="w-[160px] h-[600px]" />
-        </div>
-
       </div>
     </div>
   )
