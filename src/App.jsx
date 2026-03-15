@@ -1618,33 +1618,48 @@ You must return a valid JSON object matching this exact structure:
   // AUTH VIEW
   if (viewState === 'AUTH') {
     return (
-      <div className="w-full min-h-[100dvh] flex items-center justify-center relative bg-[#FAFAFA] overflow-x-hidden overflow-y-auto py-12 px-4">
+      <div className="w-full min-h-[100dvh] flex flex-col relative bg-[#FAFAFA] overflow-x-hidden overflow-y-auto">
         <div className="decoration dec-1"></div>
         <div className="decoration dec-2"></div>
 
-        <div className="w-full max-w-[440px] relative z-10 flex flex-col items-center">
-          <div className="text-center mb-10 w-full flex flex-col items-center">
-            <img src="/logo.svg" alt="Evalme" className="h-[48px] mb-6 object-contain" />
-            <p className="text-gray-500 text-[18px]">Sign in to access AI interview prep & coding paths</p>
+        <div className="flex-1 w-full max-w-[1440px] mx-auto px-6 py-4 flex flex-col xl:flex-row items-center justify-center gap-8 relative z-10">
+          
+          {/* Left Ad Space - Skyscraper */}
+          <div className="hidden xl:block w-[160px] sticky top-24 self-start">
+            <GoogleAd slot="auth-left-skyscraper" className="w-[160px] h-[600px]" />
           </div>
 
-          <div className="bg-white rounded-3xl p-8 shadow-[0_8px_30px_rgb(0,0,0,0.06)] border border-gray-100 w-full relative overflow-hidden flex flex-col gap-6">
-            <button 
-              onClick={handleGoogleSignIn}
-              className="w-full flex items-center justify-center gap-4 bg-white border border-gray-200 text-gray-800 font-bold px-6 py-4 rounded-xl hover:bg-gray-50 hover:border-gray-300 transition-all cursor-pointer shadow-sm active:scale-[0.98]"
-            >
-              <svg viewBox="0 0 24 24" width="24" height="24" xmlns="http://www.w3.org/2000/svg">
-                <g transform="matrix(1, 0, 0, 1, 27.009001, -39.238998)">
-                  <path fill="#4285F4" d="M -3.264 51.509 C -3.264 50.719 -3.334 49.969 -3.454 49.239 L -14.754 49.239 L -14.754 53.749 L -8.284 53.749 C -8.574 55.229 -9.424 56.479 -10.684 57.329 L -10.684 60.329 L -6.824 60.329 C -4.564 58.239 -3.264 55.159 -3.264 51.509 Z"/>
-                  <path fill="#34A853" d="M -14.754 63.239 C -11.514 63.239 -8.804 62.159 -6.824 60.329 L -10.684 57.329 C -11.764 58.049 -13.134 58.489 -14.754 58.489 C -17.884 58.489 -20.534 56.379 -21.484 53.529 L -25.464 53.529 L -25.464 56.619 C -23.494 60.539 -19.444 63.239 -14.754 63.239 Z"/>
-                  <path fill="#FBBC05" d="M -21.484 53.529 C -21.734 52.809 -21.864 52.039 -21.864 51.239 C -21.864 50.439 -21.724 49.669 -21.484 48.949 L -21.484 45.859 L -25.464 45.859 C -26.284 47.479 -26.754 49.299 -26.754 51.239 C -26.754 53.179 -26.284 54.999 -25.464 56.619 L -21.484 53.529 Z"/>
-                  <path fill="#EA4335" d="M -14.754 43.989 C -12.984 43.989 -11.404 44.599 -10.154 45.789 L -6.734 42.369 C -8.804 40.429 -11.514 39.239 -14.754 39.239 C -19.444 39.239 -23.494 41.939 -25.464 45.859 L -21.484 48.949 C -20.534 46.099 -17.884 43.989 -14.754 43.989 Z"/>
-                </g>
-              </svg>
-              <span>Continue with Google</span>
-            </button>
-            <p className="text-gray-400 text-xs text-center mt-2 px-6">By signing in, you agree to our Terms of Service and Privacy Policy.</p>
+          {/* Main Content */}
+          <div className="flex-1 max-w-[440px] flex flex-col items-center">
+            <div className="text-center mb-10 w-full flex flex-col items-center">
+              <img src="/logo.svg" alt="Evalme" className="h-[48px] mb-6 object-contain" />
+              <p className="text-gray-500 text-[18px]">Sign in to access AI interview prep & coding paths</p>
+            </div>
+
+            <div className="bg-white rounded-3xl p-8 shadow-[0_8px_30px_rgb(0,0,0,0.06)] border border-gray-100 w-full relative overflow-hidden flex flex-col gap-6">
+              <button 
+                onClick={handleGoogleSignIn}
+                className="w-full flex items-center justify-center gap-4 bg-white border border-gray-200 text-gray-800 font-bold px-6 py-4 rounded-xl hover:bg-gray-50 hover:border-gray-300 transition-all cursor-pointer shadow-sm active:scale-[0.98]"
+              >
+                <svg viewBox="0 0 24 24" width="24" height="24" xmlns="http://www.w3.org/2000/svg">
+                  <g transform="matrix(1, 0, 0, 1, 27.009001, -39.238998)">
+                    <path fill="#4285F4" d="M -3.264 51.509 C -3.264 50.719 -3.334 49.969 -3.454 49.239 L -14.754 49.239 L -14.754 53.749 L -8.284 53.749 C -8.574 55.229 -9.424 56.479 -10.684 57.329 L -10.684 60.329 L -6.824 60.329 C -4.564 58.239 -3.264 55.159 -3.264 51.509 Z"/>
+                    <path fill="#34A853" d="M -14.754 63.239 C -11.514 63.239 -8.804 62.159 -6.824 60.329 L -10.684 57.329 C -11.764 58.049 -13.134 58.489 -14.754 58.489 C -17.884 58.489 -20.534 56.379 -21.484 53.529 L -25.464 53.529 L -25.464 56.619 C -23.494 60.539 -19.444 63.239 -14.754 63.239 Z"/>
+                    <path fill="#FBBC05" d="M -21.484 53.529 C -21.734 52.809 -21.864 52.039 -21.864 51.239 C -21.864 50.439 -21.724 49.669 -21.484 48.949 L -21.484 45.859 L -25.464 45.859 C -26.284 47.479 -26.754 49.299 -26.754 51.239 C -26.754 53.179 -26.284 54.999 -25.464 56.619 L -21.484 53.529 Z"/>
+                    <path fill="#EA4335" d="M -14.754 43.989 C -12.984 43.989 -11.404 44.599 -10.154 45.789 L -6.734 42.369 C -8.804 40.429 -11.514 39.239 -14.754 39.239 C -19.444 39.239 -23.494 41.939 -25.464 45.859 L -21.484 48.949 C -20.534 46.099 -17.884 43.989 -14.754 43.989 Z"/>
+                  </g>
+                </svg>
+                <span>Continue with Google</span>
+              </button>
+              <p className="text-gray-400 text-xs text-center mt-2 px-6">By signing in, you agree to our Terms of Service and Privacy Policy.</p>
+            </div>
           </div>
+
+          {/* Right Ad Space - Skyscraper */}
+          <div className="hidden xl:block w-[160px] sticky top-24 self-start">
+            <GoogleAd slot="auth-right-skyscraper" className="w-[160px] h-[600px]" />
+          </div>
+
         </div>
       </div>
     )
@@ -1838,98 +1853,110 @@ You must return a valid JSON object matching this exact structure:
 
   // GENERATOR VIEW
   return (
-    <div className="w-full min-h-[100dvh] flex items-center justify-center relative bg-[#FAFAFA] overflow-x-hidden overflow-y-auto py-12 px-4">
+    <div className="w-full min-h-[100dvh] flex flex-col relative bg-[#FAFAFA] overflow-x-hidden overflow-y-auto">
       <div className="decoration dec-1"></div>
       <div className="decoration dec-2"></div>
 
-      <div className="w-full max-w-[500px] relative z-10 p-4">
+      <div className="flex-1 w-full max-w-[1440px] mx-auto px-6 py-4 flex flex-col xl:flex-row items-center justify-center gap-8 relative z-10">
         
+        {/* Left Ad Space - Skyscraper */}
+        <div className="hidden xl:block w-[160px] sticky top-24 self-start">
+          <GoogleAd slot="generator-left-skyscraper" className="w-[160px] h-[600px]" />
+        </div>
 
-
-        <div className="bg-white rounded-3xl p-8 sm:p-10 shadow-[0_8px_30px_rgb(0,0,0,0.06)] relative overflow-hidden">
-          
-          <div className="text-center mb-8 flex flex-col items-center">
-            <img src="/logo.svg" alt="Evalme" className="h-[40px] mb-4 object-contain" />
-            <p className="text-gray-500 text-[15px]">Generate tailored descriptions instantly</p>
-          </div>
-          
-          <form className="flex flex-col gap-6" onSubmit={e => e.preventDefault()}>
-            <div>
-              <label className="block font-bold mb-2 text-[14px] text-[#111827]">Job Role</label>
-              <input 
-                type="text" 
-                className="w-full bg-white border-2 border-gray-200 rounded-xl px-4 py-3.5 text-[15px] text-gray-900 transition-all outline-none placeholder:text-gray-400 focus:shadow-[0_0_0_4px_rgba(255,222,0,0.15)] focus:border-[var(--pikachu-yellow)]"
-                placeholder="e.g. Frontend Developer" 
-                value={role}
-                onChange={e => setRole(e.target.value)}
-                autoFocus
-              />
+        {/* Main Content */}
+        <div className="flex-1 max-w-[500px] flex flex-col items-center">
+          <div className="bg-white rounded-3xl p-8 sm:p-10 shadow-[0_8px_30px_rgb(0,0,0,0.06)] relative overflow-hidden w-full">
+            
+            <div className="text-center mb-8 flex flex-col items-center">
+              <img src="/logo.svg" alt="Evalme" className="h-[40px] mb-4 object-contain" />
+              <p className="text-gray-500 text-[15px]">Generate tailored descriptions instantly</p>
             </div>
-
-            <div>
-              <label className="block font-bold mb-2 text-[14px] text-[#111827]">Job Requirement</label>
-              
-              <label className={`cursor-pointer mb-4 w-full bg-white border border-dashed border-gray-300 hover:border-gray-400 rounded-xl flex flex-col items-center justify-center py-6 px-4 transition-all group ${isParsing ? 'opacity-70 pointer-events-none' : ''}`}>
-                {isParsing ? (
-                  <div className="w-8 h-8 border-4 border-gray-200 border-t-[var(--pikachu-yellow)] rounded-full animate-spin mb-3"></div>
-                ) : (
-                  <div className="w-10 h-10 bg-white shadow-sm border border-gray-100 rounded-full flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
-                    <svg className="w-5 h-5 text-gray-400 group-hover:text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="1.5"><path strokeLinecap="round" strokeLinejoin="round" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path></svg>
-                  </div>
-                )}
-                <span className="font-bold text-[#111827] text-[15px] mb-1">
-                  {isParsing ? "Scanning Document..." : "Upload Job Description"}
-                </span>
-                <span className="text-gray-400 text-xs font-normal">Supports PDF and Word Documents (.docx)</span>
-                <input type="file" className="hidden" accept=".pdf,.docx,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document" onChange={handleFileUpload} disabled={isParsing} />
-              </label>
-
-              {parseError && <p className="text-red-500 text-xs mb-3 text-center font-medium animate-pulse">{parseError}</p>}
-              
-              <div className="relative">
-                <textarea 
-                  className={`w-full bg-[#FAFAFA] border border-gray-100 rounded-xl px-5 py-4 text-[14px] text-gray-900 transition-all outline-none placeholder:text-gray-400 hover:bg-[#F5F5F5] focus:bg-white focus:border-[var(--pikachu-yellow)] focus:shadow-[0_0_0_4px_rgba(255,222,0,0.15)] resize-none min-h-[100px] ${isParsing ? 'opacity-50 blur-[1px] pointer-events-none' : ''}`}
-                  placeholder="Or paste the text manually..." 
-                  value={requirement}
-                  onChange={e => setRequirement(e.target.value)}
+            
+            <form className="flex flex-col gap-6" onSubmit={e => e.preventDefault()}>
+              <div>
+                <label className="block font-bold mb-2 text-[14px] text-[#111827]">Job Role</label>
+                <input 
+                  type="text" 
+                  className="w-full bg-white border-2 border-gray-200 rounded-xl px-4 py-3.5 text-[15px] text-gray-900 transition-all outline-none placeholder:text-gray-400 focus:shadow-[0_0_0_4px_rgba(255,222,0,0.15)] focus:border-[var(--pikachu-yellow)]"
+                  placeholder="e.g. Frontend Developer" 
+                  value={role}
+                  onChange={e => setRole(e.target.value)}
+                  autoFocus
                 />
               </div>
-            </div>
 
-            <div>
-              <label className="block font-bold mb-4 text-[13px] uppercase tracking-widest text-gray-400">Planner Duration</label>
-              <div className="bg-[#F3F4F6] p-1.5 rounded-2xl flex gap-1 shadow-inner border border-gray-100/50">
-                {['3 Days', '7 Days', '10 Days'].map(duration => {
-                  const isActive = planner === duration;
-                  return (
-                    <button 
-                      key={duration} 
-                      type="button"
-                      onClick={() => setPlanner(duration)}
-                      className={`flex-1 py-3 px-4 rounded-[14px] text-[14px] font-bold transition-all duration-300 cursor-pointer border-none flex items-center justify-center ${isActive ? 'bg-white text-gray-900 shadow-[0_4px_12px_rgba(0,0,0,0.08)]' : 'bg-transparent text-gray-400 hover:text-gray-600'}`}
-                    >
-                      {duration}
-                    </button>
-                  );
-                })}
+              <div>
+                <label className="block font-bold mb-2 text-[14px] text-[#111827]">Job Requirement</label>
+                
+                <label className={`cursor-pointer mb-4 w-full bg-white border border-dashed border-gray-300 hover:border-gray-400 rounded-xl flex flex-col items-center justify-center py-6 px-4 transition-all group ${isParsing ? 'opacity-70 pointer-events-none' : ''}`}>
+                  {isParsing ? (
+                    <div className="w-8 h-8 border-4 border-gray-200 border-t-[var(--pikachu-yellow)] rounded-full animate-spin mb-3"></div>
+                  ) : (
+                    <div className="w-10 h-10 bg-white shadow-sm border border-gray-100 rounded-full flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
+                      <svg className="w-5 h-5 text-gray-400 group-hover:text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="1.5"><path strokeLinecap="round" strokeLinejoin="round" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path></svg>
+                    </div>
+                  )}
+                  <span className="font-bold text-[#111827] text-[15px] mb-1">
+                    {isParsing ? "Scanning Document..." : "Upload Job Description"}
+                  </span>
+                  <span className="text-gray-400 text-xs font-normal">Supports PDF and Word Documents (.docx)</span>
+                  <input type="file" className="hidden" accept=".pdf,.docx,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document" onChange={handleFileUpload} disabled={isParsing} />
+                </label>
+
+                {parseError && <p className="text-red-500 text-xs mb-3 text-center font-medium animate-pulse">{parseError}</p>}
+                
+                <div className="relative">
+                  <textarea 
+                    className={`w-full bg-[#FAFAFA] border border-gray-100 rounded-xl px-5 py-4 text-[14px] text-gray-900 transition-all outline-none placeholder:text-gray-400 hover:bg-[#F5F5F5] focus:bg-white focus:border-[var(--pikachu-yellow)] focus:shadow-[0_0_0_4px_rgba(255,222,0,0.15)] resize-none min-h-[100px] ${isParsing ? 'opacity-50 blur-[1px] pointer-events-none' : ''}`}
+                    placeholder="Or paste the text manually..." 
+                    value={requirement}
+                    onChange={e => setRequirement(e.target.value)}
+                  />
+                </div>
               </div>
-            </div>
 
-            <button 
-              type="button" 
-              onClick={handleGenerate}
-              disabled={isGenerating}
-              className={`w-full bg-[#fce01a] text-[#111827] border-none rounded-xl py-4 flex items-center justify-center gap-2 cursor-pointer transition-all mt-2 shadow-[0_2px_10px_rgba(252,224,26,0.3)] hover:brightness-105 active:scale-[0.98] disabled:opacity-80 disabled:pointer-events-none ${hasError ? 'animate-shake' : ''}`}
-            >
-              {!isGenerating && (
-                <svg className="w-5 h-5 fill-none stroke-current stroke-2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24">
-                  <path d="M13 10V3L4 14h7v7l9-11h-7z"></path>
-                </svg>
-              )}
-              <span className="font-extrabold text-[16px] tracking-wide">{isGenerating ? 'Building Your Course...' : 'Generate'}</span>
-            </button>
-          </form>
+              <div>
+                <label className="block font-bold mb-4 text-[13px] uppercase tracking-widest text-gray-400">Planner Duration</label>
+                <div className="bg-[#F3F4F6] p-1.5 rounded-2xl flex gap-1 shadow-inner border border-gray-100/50">
+                  {['3 Days', '7 Days', '10 Days'].map(duration => {
+                    const isActive = planner === duration;
+                    return (
+                      <button 
+                        key={duration} 
+                        type="button"
+                        onClick={() => setPlanner(duration)}
+                        className={`flex-1 py-3 px-4 rounded-[14px] text-[14px] font-bold transition-all duration-300 cursor-pointer border-none flex items-center justify-center ${isActive ? 'bg-white text-gray-900 shadow-[0_4px_12px_rgba(0,0,0,0.08)]' : 'bg-transparent text-gray-400 hover:text-gray-600'}`}
+                      >
+                        {duration}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+
+              <button 
+                type="button" 
+                onClick={handleGenerate}
+                disabled={isGenerating}
+                className={`w-full bg-[#fce01a] text-[#111827] border-none rounded-xl py-4 flex items-center justify-center gap-2 cursor-pointer transition-all mt-2 shadow-[0_2px_10px_rgba(252,224,26,0.3)] hover:brightness-105 active:scale-[0.98] disabled:opacity-80 disabled:pointer-events-none ${hasError ? 'animate-shake' : ''}`}
+              >
+                {!isGenerating && (
+                  <svg className="w-5 h-5 fill-none stroke-current stroke-2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24">
+                    <path d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                  </svg>
+                )}
+                <span className="font-extrabold text-[16px] tracking-wide">{isGenerating ? 'Building Your Course...' : 'Generate'}</span>
+              </button>
+            </form>
+          </div>
         </div>
+
+        {/* Right Ad Space - Skyscraper */}
+        <div className="hidden xl:block w-[160px] sticky top-24 self-start">
+          <GoogleAd slot="generator-right-skyscraper" className="w-[160px] h-[600px]" />
+        </div>
+
       </div>
     </div>
   )
