@@ -32,6 +32,40 @@ const sanitizeMermaid = (chart) => {
   return str;
 };
 
+// Google AdSense Component
+const GoogleAd = ({ slot, className = '', style = {} }) => {
+  useEffect(() => {
+    // Inject AdSense script if not present
+    if (!document.querySelector('script[src*="adsbygoogle"]')) {
+      const script = document.createElement('script');
+      script.src = "https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-xxxxxxxxxxxxxxxx"; // PLACEHOLDER
+      script.async = true;
+      script.crossOrigin = "anonymous";
+      document.head.appendChild(script);
+    }
+    
+    try {
+      (window.adsbygoogle = window.adsbygoogle || []).push({});
+    } catch (e) {
+      console.error('AdSense error:', e);
+    }
+  }, []);
+
+  return (
+    <div className={`flex items-center justify-center bg-gray-50/30 rounded-2xl border border-dashed border-gray-200/50 overflow-hidden ${className}`} style={{ minHeight: '600px', ...style }}>
+      <ins className="adsbygoogle"
+           style={{ display: 'block', width: '100%', height: '100%', ...style }}
+           data-ad-client="ca-pub-xxxxxxxxxxxxxxxx" // PLACEHOLDER
+           data-ad-slot={slot}
+           data-ad-format="auto"
+           data-full-width-responsive="true"></ins>
+      <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+        <span className="text-[10px] font-bold text-gray-300 uppercase tracking-widest">Advertisement</span>
+      </div>
+    </div>
+  );
+};
+
 function App() {
   const [session, setSession] = useState(null)
   const [isPremium, setIsPremium] = useState(false)
@@ -1658,73 +1692,85 @@ You must return a valid JSON object matching this exact structure:
           )}
         </div>
 
-        <div className="flex-1 w-full flex items-center justify-center p-4">
-          <div className="w-full max-w-[800px] relative z-10 flex flex-col items-center">
-            <div className="text-center mb-12 flex flex-col items-center">
-              <img src="/logo.svg" alt="Evalme" className="h-[48px] mb-6 object-contain" />
+        <div className="flex-1 w-full max-w-[1440px] mx-auto px-6 py-4 flex flex-col xl:flex-row items-center justify-center gap-8 relative z-10">
+          
+          {/* Left Ad Space - Skyscraper */}
+          <div className="hidden xl:block w-[160px] sticky top-24 self-start">
+            <GoogleAd slot="left-skyscraper" className="w-[160px] h-[600px]" />
+          </div>
+
+          {/* Main Content */}
+          <div className="flex-1 max-w-[850px] flex flex-col items-center">
+            <div className="text-center mb-10 flex flex-col items-center">
+              <img src="/logo.svg" alt="Evalme" className="h-[44px] mb-5 object-contain" />
               <p className="text-gray-500 text-[18px]">Select a powerful AI learning tool to begin</p>
             </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full">
-            
-            {/* Tile 1: Job Plan Maker */}
-            <button 
-              onClick={() => navigateTo('GENERATOR')}
-              className="group text-left bg-white rounded-3xl p-8 shadow-[0_8px_30px_rgb(0,0,0,0.06)] border border-gray-100 hover:border-[var(--pikachu-yellow)] transition-all cursor-pointer hover:-translate-y-1 hover:shadow-xl relative overflow-hidden flex flex-col items-start"
-            >
-              <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-[var(--pikachu-yellow)] to-transparent opacity-10 rounded-bl-full transform translate-x-8 -translate-y-8 group-hover:scale-110 transition-transform duration-500"></div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full">
               
-              <div className="w-14 h-14 bg-[#FFFDF5] border border-[var(--pikachu-yellow)] rounded-2xl flex items-center justify-center mb-6 text-amber-500 shadow-sm relative z-10">
-                <svg className="w-7 h-7" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
-                </svg>
-              </div>
-              
-              <h2 className="text-2xl font-bold text-[#111827] mb-2 tracking-tight relative z-10">Interview Prep Planner</h2>
-              <p className="text-gray-500 text-[15px] leading-relaxed mb-8 relative z-10">
-                Generate a highly tailored day-by-day interview preparation planner to ace your interview.
-              </p>
-              
-              <div className="mt-auto text-amber-500 font-bold flex items-center gap-2 group-hover:gap-3 transition-all text-[15px] drop-shadow-sm brightness-95 relative z-10">
-                Start Building 
-                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="3"><path strokeLinecap="round" strokeLinejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
-              </div>
-            </button>
-
-            {/* Tile 2: Learn Coding */}
-            <button 
-              onClick={() => isPremium ? navigateTo('CODING_COURSES') : navigateTo('PRICING')}
-              className="group text-left bg-white rounded-3xl p-8 shadow-[0_8px_30px_rgb(0,0,0,0.06)] border border-gray-100 hover:border-[#8BE9FD] transition-all cursor-pointer hover:-translate-y-1 hover:shadow-xl relative overflow-hidden flex flex-col items-start"
-            >
-              <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-[#8BE9FD] to-transparent opacity-10 rounded-bl-full transform translate-x-8 -translate-y-8 group-hover:scale-110 transition-transform duration-500"></div>
-
-              {!isPremium && (
-                <div className="absolute top-4 right-4 z-20 bg-gradient-to-r from-amber-400 to-yellow-400 text-[#111827] text-[10px] font-extrabold uppercase tracking-widest px-2.5 py-1 rounded-full flex items-center gap-1">
-                  <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clipRule="evenodd"></path></svg>
-                  PRO
+              {/* Tile 1: Job Plan Maker */}
+              <button 
+                onClick={() => navigateTo('GENERATOR')}
+                className="group text-left bg-white rounded-3xl p-8 shadow-[0_8px_30px_rgb(0,0,0,0.06)] border border-gray-100 hover:border-[var(--pikachu-yellow)] transition-all cursor-pointer hover:-translate-y-1 hover:shadow-xl relative overflow-hidden flex flex-col items-start"
+              >
+                <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-[var(--pikachu-yellow)] to-transparent opacity-10 rounded-bl-full transform translate-x-8 -translate-y-8 group-hover:scale-110 transition-transform duration-500"></div>
+                
+                <div className="w-14 h-14 bg-[#FFFDF5] border border-[var(--pikachu-yellow)] rounded-2xl flex items-center justify-center mb-6 text-amber-500 shadow-sm relative z-10">
+                  <svg className="w-7 h-7" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+                  </svg>
                 </div>
-              )}
+                
+                <h2 className="text-2xl font-bold text-[#111827] mb-2 tracking-tight relative z-10">Interview Prep Planner</h2>
+                <p className="text-gray-500 text-[15px] leading-relaxed mb-8 relative z-10">
+                  Generate a highly tailored day-by-day interview preparation planner to ace your interview.
+                </p>
+                
+                <div className="mt-auto text-amber-500 font-bold flex items-center gap-2 group-hover:gap-3 transition-all text-[15px] drop-shadow-sm brightness-95 relative z-10">
+                  Start Building 
+                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="3"><path strokeLinecap="round" strokeLinejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+                </div>
+              </button>
 
-              <div className="w-14 h-14 bg-[#F2FDFE] border border-[#8BE9FD] rounded-2xl flex items-center justify-center mb-6 text-[#17a2b8] shadow-sm relative z-10">
-                <svg className="w-7 h-7" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path>
-                </svg>
-              </div>
-              
-              <h2 className="text-2xl font-bold text-[#111827] mb-2 tracking-tight relative z-10">Learn Coding</h2>
-              <p className="text-gray-500 text-[15px] leading-relaxed mb-6 relative z-10">
-                Interactive AI-powered coding editor with live personalized challenges.
-              </p>
-              
-              <div className={`mt-auto font-bold flex items-center gap-2 group-hover:gap-3 transition-all text-[15px] drop-shadow-sm brightness-95 relative z-10 ${isPremium ? 'text-[#17a2b8]' : 'text-amber-500'}`}>
-                {isPremium ? 'Browse Courses' : 'Unlock with Premium'}
-                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="3"><path strokeLinecap="round" strokeLinejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
-              </div>
-            </button>
+              {/* Tile 2: Learn Coding */}
+              <button 
+                onClick={() => isPremium ? navigateTo('CODING_COURSES') : navigateTo('PRICING')}
+                className="group text-left bg-white rounded-3xl p-8 shadow-[0_8px_30px_rgb(0,0,0,0.06)] border border-gray-100 hover:border-[#8BE9FD] transition-all cursor-pointer hover:-translate-y-1 hover:shadow-xl relative overflow-hidden flex flex-col items-start"
+              >
+                <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-[#8BE9FD] to-transparent opacity-10 rounded-bl-full transform translate-x-8 -translate-y-8 group-hover:scale-110 transition-transform duration-500"></div>
 
+                {!isPremium && (
+                  <div className="absolute top-4 right-4 z-20 bg-gradient-to-r from-amber-400 to-yellow-400 text-[#111827] text-[10px] font-extrabold uppercase tracking-widest px-2.5 py-1 rounded-full flex items-center gap-1">
+                    <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clipRule="evenodd"></path></svg>
+                    PRO
+                  </div>
+                )}
+
+                <div className="w-14 h-14 bg-[#F2FDFE] border border-[#8BE9FD] rounded-2xl flex items-center justify-center mb-6 text-[#17a2b8] shadow-sm relative z-10">
+                  <svg className="w-7 h-7" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path>
+                  </svg>
+                </div>
+                
+                <h2 className="text-2xl font-bold text-[#111827] mb-2 tracking-tight relative z-10">Learn Coding</h2>
+                <p className="text-gray-500 text-[15px] leading-relaxed mb-6 relative z-10">
+                  Interactive AI-powered coding editor with live personalized challenges.
+                </p>
+                
+                <div className={`mt-auto font-bold flex items-center gap-2 group-hover:gap-3 transition-all text-[15px] drop-shadow-sm brightness-95 relative z-10 ${isPremium ? 'text-[#17a2b8]' : 'text-amber-500'}`}>
+                  {isPremium ? 'Browse Courses' : 'Unlock with Premium'}
+                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="3"><path strokeLinecap="round" strokeLinejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+                </div>
+              </button>
+            </div>
           </div>
+
+          {/* Right Ad Space - Skyscraper */}
+          <div className="hidden xl:block w-[160px] sticky top-24 self-start">
+            <GoogleAd slot="right-skyscraper" className="w-[160px] h-[600px]" />
+          </div>
+
         </div>
-      </div>
       </div>
     )
   }
