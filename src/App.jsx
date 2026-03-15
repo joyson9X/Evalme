@@ -1626,44 +1626,34 @@ You must return a valid JSON object matching this exact structure:
         {/* Simple Top Nav with User Profile */}
         <div className="w-full px-6 py-4 flex justify-end items-center relative z-20">
           {session?.user && (
-            <div className="flex items-center gap-4 bg-white px-3.5 py-2.5 rounded-full shadow-[0_2px_15px_rgba(0,0,0,0.04)] border border-gray-100 ring-1 ring-black/5 hover:shadow-md transition-all duration-300">
+            <div className="flex items-center gap-3 bg-white px-2 py-2 rounded-full shadow-[0_4px_20px_rgba(0,0,0,0.03)] border border-gray-100/80 hover:shadow-md transition-all duration-300">
                {session.user.user_metadata?.avatar_url ? (
-                 <div className="relative group/avatar">
-                   <img src={session.user.user_metadata.avatar_url} alt="Avatar" className="w-8 h-8 rounded-full border-2 border-white shadow-sm ring-1 ring-gray-100" />
-                   <div className="absolute inset-0 rounded-full bg-black/0 group-hover/avatar:bg-black/5 transition-colors"></div>
-                 </div>
+                 <img src={session.user.user_metadata.avatar_url} alt="Avatar" className="w-7 h-7 rounded-full border-2 border-white shadow-sm" />
                ) : (
-                 <div className="w-8 h-8 rounded-full bg-gradient-to-br from-[#8BE9FD] to-[#17a2b8] text-white flex items-center justify-center font-bold text-xs uppercase border-2 border-white shadow-sm ring-1 ring-[#8BE9FD]/20">
+                 <div className="w-7 h-7 rounded-full bg-[#111827] text-white flex items-center justify-center font-bold text-[10px] uppercase border-2 border-white shadow-sm">
                    {session.user.email?.[0]}
                  </div>
                )}
                
-               <div className="hidden sm:flex flex-col items-start -space-y-0.5">
-                 <span className="text-[13px] font-bold text-gray-900 max-w-[140px] truncate leading-tight">
+               <div className="flex items-center gap-3 pr-2">
+                 <span className="text-[13px] font-bold text-gray-900 tracking-tight">
                    {session.user.email.split('@')[0]}
                  </span>
-                 <span className="text-[11px] font-medium text-gray-400">
-                   {session.user.email.split('@')[1]}
-                 </span>
+
+                 {isPremium && (
+                   <div className="flex items-center bg-[#FDF2F8]/0 text-amber-500 gap-1 opacity-90">
+                     <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                     <span className="text-[10px] font-black uppercase tracking-[0.15em] border-b border-amber-500/30">PRO</span>
+                   </div>
+                 )}
+
+                 <button 
+                   onClick={handleSignOut}
+                   className="text-[10px] font-bold text-gray-300 hover:text-red-400 transition-all uppercase tracking-[0.1em] cursor-pointer border-none bg-transparent"
+                 >
+                   Logout
+                 </button>
                </div>
-
-               <div className="h-4 w-px bg-gray-100 hidden sm:block mx-1"></div>
-
-               <button 
-                 onClick={handleSignOut}
-                 className="text-[11px] font-extrabold text-gray-400 hover:text-red-500 transition-all uppercase tracking-widest cursor-pointer border-none bg-transparent py-1"
-               >
-                 Logout
-               </button>
-
-               {isPremium ? (
-                 <div className="flex items-center gap-1.5 bg-gradient-to-r from-amber-400 to-yellow-500 text-[#111827] px-3 py-1 rounded-full shadow-sm hover:brightness-105 transition-all cursor-default">
-                   <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-                   <span className="text-[10px] font-black uppercase tracking-widest">PRO</span>
-                 </div>
-               ) : (
-                 <button onClick={() => navigateTo('PRICING')} className="text-[10px] font-extrabold uppercase tracking-widest bg-gradient-to-r from-amber-400 to-yellow-400 text-[#111827] px-3 py-1 rounded-full cursor-pointer border-none hover:shadow-md hover:-translate-y-0.5 transition-all">Upgrade</button>
-               )}
             </div>
           )}
         </div>
