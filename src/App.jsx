@@ -861,51 +861,79 @@ You must return a valid JSON object matching this exact structure:
       <div className="w-full h-screen flex flex-col bg-[#F7F8FA] overflow-hidden font-sans">
 
         {/* ═══ TOP NAV BAR ═══ */}
-        <div className="h-[60px] bg-white border-b border-gray-100 flex items-center px-6 gap-4 flex-shrink-0 z-30 shadow-sm relative">
-          {/* Hamburger / Sidebar Toggle */}
-          <button 
-            onClick={() => setIsSidebarOpen(prev => !prev)}
-            className="w-10 h-10 rounded-lg flex items-center justify-center hover:bg-gray-50 cursor-pointer transition-colors border-none bg-transparent text-gray-700 flex-shrink-0 -ml-2"
-            title={isSidebarOpen ? "Hide sidebar" : "Show sidebar"}
-          >
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M3 12h18M3 6h18M3 18h18" />
-            </svg>
-          </button>
-
-          {/* Divider */}
-          <div className="w-px h-6 bg-gray-200 flex-shrink-0 hidden sm:block"></div>
-
-          {/* Back */}
+        <div className="h-[64px] bg-[#1C1D1F] border-b border-[#2D2F31] flex items-center px-4 sm:px-6 gap-3 sm:gap-4 flex-shrink-0 z-50 relative text-white shadow-md">
+          
+          {/* Back/Exit */}
           <button 
             onClick={() => setViewState('PLAN')}
-            className="flex items-center gap-2 text-gray-500 hover:text-gray-900 font-bold text-sm transition-colors border-none bg-transparent cursor-pointer flex-shrink-0"
+            className="flex items-center justify-center text-gray-300 hover:text-white transition-colors border-none bg-transparent cursor-pointer flex-shrink-0 h-10 w-10 sm:h-11 sm:w-11 rounded-full hover:bg-white/10 -ml-2"
+            title="Back to Dashboard"
           >
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
-            <span className="hidden sm:inline">Back</span>
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
           </button>
 
+          {/* Evalme Branding */}
+          <div className="hidden sm:flex items-center justify-center font-extrabold text-xl tracking-tighter text-white pr-5 border-r border-[#3E4143]">
+            Evalme<span className="text-[var(--pikachu-yellow)]">.</span>
+          </div>
+
           {/* Course Title */}
-          <h1 className="flex-1 text-sm font-bold text-gray-800 truncate mx-2">
+          <h1 className="flex-1 text-[15px] sm:text-[16px] font-bold text-gray-100 truncate ml-1 sm:ml-2 tracking-wide flex items-center gap-3">
             {jobData.role}
           </h1>
 
-          {/* Progress Pill */}
-          <div className="flex items-center gap-3 flex-shrink-0">
-            <div className="hidden sm:flex items-center gap-3">
-              <div className="w-32 h-[3px] bg-gray-100 rounded-full overflow-hidden">
-                <div 
-                  className="h-full bg-gray-900 rounded-full transition-all duration-500"
-                  style={{ width: `${totalLessons > 0 ? (completedTopics.size / totalLessons) * 100 : 0}%` }}
-                ></div>
+          {/* Progress & Sidebar Toggle */}
+          <div className="flex items-center gap-3 sm:gap-4 flex-shrink-0 ml-auto">
+            {/* Progress Pill Desktop */}
+            <div className="hidden md:flex items-center gap-3 bg-[#2D2F31] px-4 py-2 rounded-full border border-[#3E4143]">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="text-[var(--pikachu-yellow)]"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+              <div className="flex flex-col gap-1.5 mt-[2px]">
+                <div className="w-24 h-[4px] bg-[#1C1D1F] rounded-full overflow-hidden">
+                  <div 
+                    className="h-full bg-[var(--pikachu-yellow)] rounded-full transition-all duration-500 shadow-[0_0_10px_rgba(255,222,0,0.5)]"
+                    style={{ width: `${totalLessons > 0 ? (completedTopics.size / totalLessons) * 100 : 0}%` }}
+                  ></div>
+                </div>
               </div>
-              <span className="text-xs font-bold text-gray-400 tabular-nums whitespace-nowrap">
-                {completedTopics.size}/{totalLessons}
+              <span className="text-[12px] font-bold text-gray-300 tabular-nums whitespace-nowrap ml-1">
+                {completedTopics.size} / {totalLessons}
               </span>
             </div>
-            <span className="sm:hidden text-xs font-bold text-gray-400 tabular-nums">
-              {currentLessonGlobal}/{totalLessons}
+            
+            {/* Progress Pill Mobile */}
+            <span className="md:hidden text-xs font-bold text-gray-300 tabular-nums bg-[#2D2F31] px-3 py-1.5 rounded-full border border-[#3E4143]">
+              {currentLessonGlobal} / {totalLessons}
             </span>
+
+            {/* Sidebar Toggle */}
+            <button 
+              onClick={() => setIsSidebarOpen(prev => !prev)}
+              className="flex items-center justify-center sm:gap-2 text-gray-300 hover:text-white transition-colors border border-[#3E4143] bg-[#2D2F31] hover:bg-[#3E4143] cursor-pointer flex-shrink-0 h-10 w-10 sm:w-auto sm:px-4 rounded-full font-bold text-[13px]"
+              title={isSidebarOpen ? "Hide course content" : "Show course content"}
+            >
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="sm:hidden">
+                {isSidebarOpen ? (
+                  <path d="M18 6L6 18M6 6l12 12" />
+                ) : (
+                  <>
+                    <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                    <line x1="9" y1="3" x2="9" y2="21"></line>
+                  </>
+                )}
+              </svg>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="hidden sm:block">
+                {isSidebarOpen ? (
+                  <path d="M18 6L6 18M6 6l12 12" />
+                ) : (
+                  <>
+                    <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                    <line x1="9" y1="3" x2="9" y2="21"></line>
+                  </>
+                )}
+              </svg>
+              <span className="hidden sm:inline">{isSidebarOpen ? "Close menu" : "Course content"}</span>
+            </button>
+
           </div>
         </div>
 
