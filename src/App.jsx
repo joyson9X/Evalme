@@ -37,6 +37,21 @@ function App() {
     setShowQuizSummary(false);
   }, [activeModuleIndex, activeTopicIndex]);
 
+  // Persist state to sessionStorage to survive tab switches
+  useEffect(() => {
+    if (viewState !== 'AUTH_SPINNER' && viewState !== 'AUTH') {
+      sessionStorage.setItem('evalme_viewState', viewState)
+    }
+  }, [viewState])
+
+  useEffect(() => {
+    if (jobData) sessionStorage.setItem('evalme_jobData', JSON.stringify(jobData))
+  }, [jobData])
+
+  useEffect(() => {
+    if (planData) sessionStorage.setItem('evalme_planData', JSON.stringify(planData))
+  }, [planData])
+
   const checkSubscription = async (userId) => {
     try {
       const { data, error } = await supabase
@@ -63,10 +78,18 @@ function App() {
   }
 
   useEffect(() => {
+    // Restore persisted state
+    const savedView = sessionStorage.getItem('evalme_viewState')
+    const savedJobData = sessionStorage.getItem('evalme_jobData')
+    const savedPlanData = sessionStorage.getItem('evalme_planData')
+    if (savedJobData) try { setJobData(JSON.parse(savedJobData)) } catch(e) {}
+    if (savedPlanData) try { setPlanData(JSON.parse(savedPlanData)) } catch(e) {}
+
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session)
       if (session) {
-        setViewState('HOME')
+        // Restore previous view or default to HOME
+        setViewState(savedView || 'HOME')
         checkSubscription(session.user.id)
       } else {
         setViewState('AUTH')
@@ -75,15 +98,20 @@ function App() {
 
     const {
       data: { subscription },
-    } = supabase.auth.onAuthStateChange((_event, session) => {
+    } = supabase.auth.onAuthStateChange((event, session) => {
       setSession(session)
-      if (session) {
-        setViewState('HOME')
+      if (event === 'SIGNED_IN') {
+        const sv = sessionStorage.getItem('evalme_viewState')
+        setViewState(sv || 'HOME')
         checkSubscription(session.user.id)
-      } else {
+      } else if (event === 'SIGNED_OUT') {
         setViewState('AUTH')
         setIsPremium(false)
+        sessionStorage.removeItem('evalme_viewState')
+        sessionStorage.removeItem('evalme_jobData')
+        sessionStorage.removeItem('evalme_planData')
       }
+      // For TOKEN_REFRESHED and other events, just update session silently
     })
 
     return () => subscription.unsubscribe()
