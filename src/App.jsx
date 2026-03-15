@@ -861,11 +861,11 @@ You must return a valid JSON object matching this exact structure:
       <div className="w-full h-screen flex flex-col bg-[#F7F8FA] overflow-hidden font-sans">
 
         {/* ═══ TOP NAV BAR ═══ */}
-        <div className="h-14 bg-white border-b border-gray-200 flex items-center px-4 gap-3 flex-shrink-0 z-30 shadow-[0_1px_3px_rgba(0,0,0,0.04)]">
+        <div className="h-[60px] bg-white border-b border-gray-100 flex items-center px-6 gap-4 flex-shrink-0 z-30 shadow-sm relative">
           {/* Hamburger / Sidebar Toggle */}
           <button 
             onClick={() => setIsSidebarOpen(prev => !prev)}
-            className="w-9 h-9 rounded-lg flex items-center justify-center hover:bg-gray-100 cursor-pointer transition-colors border-none bg-transparent text-gray-600 flex-shrink-0"
+            className="w-10 h-10 rounded-lg flex items-center justify-center hover:bg-gray-50 cursor-pointer transition-colors border-none bg-transparent text-gray-700 flex-shrink-0 -ml-2"
             title={isSidebarOpen ? "Hide sidebar" : "Show sidebar"}
           >
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -879,9 +879,9 @@ You must return a valid JSON object matching this exact structure:
           {/* Back */}
           <button 
             onClick={() => setViewState('PLAN')}
-            className="flex items-center gap-1.5 text-gray-500 hover:text-gray-900 font-semibold text-sm transition-colors border-none bg-transparent cursor-pointer flex-shrink-0"
+            className="flex items-center gap-2 text-gray-500 hover:text-gray-900 font-bold text-sm transition-colors border-none bg-transparent cursor-pointer flex-shrink-0"
           >
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
             <span className="hidden sm:inline">Back</span>
           </button>
 
@@ -891,19 +891,19 @@ You must return a valid JSON object matching this exact structure:
           </h1>
 
           {/* Progress Pill */}
-          <div className="flex items-center gap-2 flex-shrink-0">
-            <div className="hidden sm:flex items-center gap-2 bg-gray-100 rounded-full px-3 py-1.5">
-              <div className="w-24 h-1.5 bg-gray-200 rounded-full overflow-hidden">
+          <div className="flex items-center gap-3 flex-shrink-0">
+            <div className="hidden sm:flex items-center gap-3">
+              <div className="w-32 h-[3px] bg-gray-100 rounded-full overflow-hidden">
                 <div 
-                  className="h-full bg-[var(--pikachu-yellow)] rounded-full transition-all duration-500"
+                  className="h-full bg-gray-900 rounded-full transition-all duration-500"
                   style={{ width: `${totalLessons > 0 ? (completedTopics.size / totalLessons) * 100 : 0}%` }}
                 ></div>
               </div>
-              <span className="text-xs font-bold text-gray-500 tabular-nums whitespace-nowrap">
+              <span className="text-xs font-bold text-gray-400 tabular-nums whitespace-nowrap">
                 {completedTopics.size}/{totalLessons}
               </span>
             </div>
-            <span className="sm:hidden text-xs font-bold text-gray-500 bg-gray-100 rounded-full px-2.5 py-1 tabular-nums">
+            <span className="sm:hidden text-xs font-bold text-gray-400 tabular-nums">
               {currentLessonGlobal}/{totalLessons}
             </span>
           </div>
@@ -919,18 +919,18 @@ You must return a valid JSON object matching this exact structure:
           ></div>
 
           {/* ─── SIDEBAR ─── */}
-          <aside className={`cp-sidebar ${!isSidebarOpen ? 'collapsed' : ''} w-80 bg-[#1C1D1F] flex flex-col flex-shrink-0 z-50 md:z-20 md:relative md:shadow-none shadow-[4px_0_24px_rgba(0,0,0,0.3)]`}>
+          <aside className={`cp-sidebar ${!isSidebarOpen ? 'collapsed' : ''} w-[340px] bg-white border-r border-gray-200 flex flex-col flex-shrink-0 z-50 md:z-20 md:relative shadow-[4px_0_24px_rgba(0,0,0,0.05)] md:shadow-none`}>
             
             {/* Sidebar Header */}
-            <div className="px-4 py-3.5 border-b border-white/10 flex items-center justify-between gap-2 flex-shrink-0">
-              <h2 className="font-bold text-white text-[13px] tracking-wide leading-tight m-0">
+            <div className="px-6 py-5 border-b border-gray-100 flex items-center justify-between gap-3 flex-shrink-0">
+              <h2 className="font-extrabold text-gray-900 text-[15px] tracking-tight leading-none m-0">
                 Course content
               </h2>
               <button 
                 onClick={() => setIsSidebarOpen(false)}
-                className="w-7 h-7 rounded flex items-center justify-center hover:bg-white/10 cursor-pointer transition-colors border-none bg-transparent text-gray-400"
+                className="w-8 h-8 rounded-md flex items-center justify-center hover:bg-gray-100 cursor-pointer transition-colors border-none bg-transparent text-gray-500"
               >
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                   <path d="M18 6L6 18M6 6l12 12" />
                 </svg>
               </button>
@@ -950,22 +950,22 @@ You must return a valid JSON object matching this exact structure:
                 return (
                   <div key={mIdx}>
                     {/* Section Header */}
-                    <div className={`px-4 py-2.5 border-b border-white/5 select-none ${isCurrentModule ? 'bg-white/[0.06]' : 'bg-[#1C1D1F]'}`}>
-                      <div className="flex items-center justify-between gap-2 mb-1">
-                        <span className="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Section {mod.day}</span>
-                        <span className="text-[10px] font-bold text-gray-500 tabular-nums">{completedInMod}/{totalInMod}</span>
+                    <div className={`px-6 py-4 border-b border-gray-100 select-none bg-white`}>
+                      <div className="flex items-center justify-between gap-2 mb-1.5">
+                        <span className="text-[11px] font-black text-gray-400 uppercase tracking-widest">Section {mod.day}</span>
+                        <span className="text-[11px] font-bold text-gray-400 tabular-nums">{completedInMod}/{totalInMod}</span>
                       </div>
-                      <div className="text-[13px] font-semibold text-gray-200 leading-snug truncate" title={mod.title}>{mod.title}</div>
-                      <div className="w-full h-[2px] bg-white/10 rounded-full mt-2 overflow-hidden">
+                      <div className="text-[14px] font-bold text-gray-800 leading-snug truncate" title={mod.title}>{mod.title}</div>
+                      <div className="w-full h-[2px] bg-gray-100 rounded-full mt-3 overflow-hidden">
                         <div 
-                          className="h-full bg-[var(--pikachu-yellow)] rounded-full transition-all duration-300"
+                          className="h-full bg-gray-900 rounded-full transition-all duration-300"
                           style={{ width: `${totalInMod > 0 ? (completedInMod / totalInMod) * 100 : 0}%` }}
                         ></div>
                       </div>
                     </div>
 
                     {/* Topic Items */}
-                    <div className="flex flex-col border-b border-white/5">
+                    <div className="flex flex-col border-b border-gray-100 pb-2 bg-[#FCFCFD]">
                       {mod.topics?.map((topic, tIdx) => {
                         const isActive = mIdx === activeModuleIndex && tIdx === activeTopicIndex;
                         const isCompleted = completedTopics.has(`${mIdx}-${tIdx}`);
@@ -977,32 +977,30 @@ You must return a valid JSON object matching this exact structure:
                               setActiveTopicIndex(tIdx);
                               if (window.innerWidth < 768) setIsSidebarOpen(false);
                             }}
-                            className={`text-left w-full border-none bg-transparent pl-3 pr-3 py-[7px] cursor-pointer transition-all flex items-center gap-2.5 overflow-hidden ${
-                              isActive 
-                                ? 'bg-white/[0.08] border-l-[3px] border-l-[var(--pikachu-yellow)]' 
-                                : 'border-l-[3px] border-l-transparent hover:bg-white/[0.04]'
-                            }`}
+                            className={`text-left w-full border-none bg-transparent pl-6 pr-6 py-3 cursor-pointer transition-all flex items-start gap-3.5 group relative hover:bg-white`}
                             title={`${tIdx + 1}. ${topic.name}`}
                           >
-                            {isCompleted ? (
-                              <div className="w-5 h-5 rounded-full bg-green-500 flex items-center justify-center flex-shrink-0">
-                                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round">
-                                  <polyline points="20 6 9 17 4 12"></polyline>
-                                </svg>
-                              </div>
-                            ) : (
-                              <div className={`w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0 text-[10px] font-bold ${
-                                isActive ? 'bg-[var(--pikachu-yellow)] text-gray-900' : 'bg-white/10 text-gray-500'
-                              }`}>
-                                {tIdx + 1}
-                              </div>
-                            )}
-                            <span className={`flex-1 block truncate text-[13px] leading-tight ${
+                            <div className="pt-0.5">
+                              {isCompleted ? (
+                                <div className="w-6 h-6 rounded-full bg-gray-900 flex items-center justify-center flex-shrink-0">
+                                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+                                    <polyline points="20 6 9 17 4 12"></polyline>
+                                  </svg>
+                                </div>
+                              ) : (
+                                <div className={`w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 text-[11px] font-bold border transition-colors ${
+                                  isActive ? 'border-[var(--pikachu-yellow)] bg-[var(--pikachu-yellow)] text-gray-900' : 'border-gray-300 text-gray-400 group-hover:border-gray-400'
+                                }`}>
+                                  {tIdx + 1}
+                                </div>
+                              )}
+                            </div>
+                            <span className={`block flex-1 text-[13.5px] leading-snug pt-[1px] ${
                               isCompleted 
-                                ? 'text-gray-500 line-through' 
+                                ? 'text-gray-400 line-through' 
                                 : isActive 
-                                  ? 'font-semibold text-white' 
-                                  : 'text-gray-400'
+                                  ? 'font-extrabold text-gray-900' 
+                                  : 'font-medium text-gray-600 group-hover:text-gray-900'
                             }`}>
                               {topic.name}
                             </span>
@@ -1023,34 +1021,30 @@ You must return a valid JSON object matching this exact structure:
                               setActiveTopicIndex(tIdx);
                               if (window.innerWidth < 768) setIsSidebarOpen(false);
                             }}
-                            className={`text-left w-full border-none bg-transparent pl-3 pr-3 py-[7px] cursor-pointer transition-all flex items-center gap-2.5 overflow-hidden ${
-                              isActive 
-                                ? 'bg-purple-500/20 border-l-[3px] border-l-purple-400' 
-                                : 'border-l-[3px] border-l-transparent hover:bg-white/[0.04]'
-                            }`}
+                            className={`text-left w-full border-none bg-transparent pl-6 pr-6 py-3 cursor-pointer transition-all flex items-start gap-3.5 group relative hover:bg-white`}
                             title={`Module ${mod.day} Quiz`}
                           >
-                            {isCompleted ? (
-                              <div className="w-5 h-5 rounded-full bg-purple-500 flex items-center justify-center flex-shrink-0">
-                                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round">
-                                  <polyline points="20 6 9 17 4 12"></polyline>
-                                </svg>
-                              </div>
-                            ) : (
-                              <div className={`w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0 ${
-                                isActive ? 'bg-purple-500 text-white' : 'bg-purple-500/20 text-purple-400'
-                              }`}>
-                                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
-                                  <path d="M9.09 9a3 3 0 015.83 1c0 2-3 3-3 3M12 17h.01" />
-                                </svg>
-                              </div>
-                            )}
-                            <span className={`block truncate flex-1 text-[13px] leading-tight ${
+                            <div className="pt-0.5">
+                              {isCompleted ? (
+                                <div className="w-6 h-6 rounded-full bg-purple-600 flex items-center justify-center flex-shrink-0">
+                                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+                                    <polyline points="20 6 9 17 4 12"></polyline>
+                                  </svg>
+                                </div>
+                              ) : (
+                                <div className={`w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 text-[11px] font-bold border transition-colors ${
+                                  isActive ? 'border-purple-600 bg-purple-600 text-white' : 'border-purple-200 text-purple-400 group-hover:border-purple-400 group-hover:text-purple-600'
+                                }`}>
+                                  <span className="font-bold -mt-px text-[14px]">?</span>
+                                </div>
+                              )}
+                            </div>
+                            <span className={`block flex-1 text-[13.5px] leading-snug pt-[1px] ${
                               isCompleted 
-                                ? 'text-gray-500 line-through' 
+                                ? 'text-gray-400 line-through' 
                                 : isActive 
-                                  ? 'font-semibold text-purple-300' 
-                                  : 'text-purple-400'
+                                  ? 'font-extrabold text-purple-900' 
+                                  : 'font-medium text-purple-600 group-hover:text-purple-800'
                             }`}>
                               Quiz
                             </span>
@@ -1072,18 +1066,18 @@ You must return a valid JSON object matching this exact structure:
                 {!isQuizScreen ? (
                   <>
                     {/* Breadcrumb */}
-                    <div className="mb-3 flex items-center gap-1.5 text-xs font-semibold text-gray-400 uppercase tracking-wider">
+                    <div className="mb-4 flex items-center gap-2 text-[11px] font-bold text-gray-400 uppercase tracking-widest">
                       <span>Section {currentModule.day}</span>
                       <span className="text-gray-300">·</span>
                       <span>Lesson {activeTopicIndex + 1} of {currentModule.topics.length}</span>
                     </div>
                     
-                    <h1 className="text-2xl sm:text-3xl lg:text-[2.1rem] font-extrabold text-gray-900 mb-6 leading-tight tracking-tight">
+                    <h1 className="text-3xl sm:text-4xl lg:text-[2.5rem] font-extrabold text-gray-900 mb-8 leading-[1.15] tracking-tight">
                       {currentTopic.name}
                     </h1>
 
                     {/* Divider */}
-                    <div className="w-12 h-[3px] bg-[var(--pikachu-yellow)] rounded-full mb-8"></div>
+                    <div className="w-16 h-[2px] bg-[var(--pikachu-yellow)] mb-10"></div>
 
                     {/* Content Blocks */}
                     <div className="mb-12 relative">
@@ -1102,26 +1096,26 @@ You must return a valid JSON object matching this exact structure:
                         const remainingSentences = sentences.slice(highlightSentence ? 7 : 6);
 
                         return (
-                          <div className="flex flex-col gap-8">
+                          <div className="flex flex-col gap-10">
                             {/* Intro */}
-                            <div className="text-[1.05rem] sm:text-lg leading-[1.85] text-gray-700">
+                            <div className="text-[1.1rem] sm:text-[1.15rem] leading-[1.8] text-gray-700">
                               {introSentences.join('. ')}
                               {introSentences.length > 0 && !introSentences[introSentences.length - 1].endsWith('.') ? '.' : ''}
                             </div>
 
                             {/* Key Takeaways */}
                             {cardSentences.length > 0 && (
-                              <div>
-                                <h4 className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-3 flex items-center gap-2">
-                                  <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
+                              <div className="mt-2 mb-2">
+                                <h4 className="text-[11px] font-extrabold text-gray-400 uppercase tracking-widest mb-4 flex items-center gap-2.5">
+                                  <svg className="w-4 h-4 text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
                                   Key Takeaways
                                 </h4>
-                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                   {cardSentences.map((cardText, i) => (
-                                    <div key={i} className="bg-[#FAFBFC] border border-gray-100 rounded-xl p-4 hover:border-gray-200 transition-colors">
-                                      <div className="flex items-start gap-3">
-                                        <span className="w-6 h-6 rounded-md bg-white border border-gray-200 flex items-center justify-center text-[10px] font-bold text-gray-400 flex-shrink-0 mt-0.5">{i + 1}</span>
-                                        <p className="text-gray-700 m-0 text-[0.9rem] leading-relaxed">{cardText}.</p>
+                                    <div key={i} className="bg-white border border-gray-100 rounded-2xl p-6 shadow-[0_2px_10px_rgba(0,0,0,0.02)] transition-shadow hover:shadow-[0_4px_20px_rgba(0,0,0,0.04)]">
+                                      <div className="flex items-start gap-4">
+                                        <span className="w-7 h-7 rounded-lg bg-gray-50 border border-gray-100 flex items-center justify-center text-[11px] font-bold text-gray-400 flex-shrink-0 mt-0.5">{i + 1}</span>
+                                        <p className="text-gray-700 m-0 text-[15px] leading-[1.6]">{cardText}.</p>
                                       </div>
                                     </div>
                                   ))}
@@ -1179,13 +1173,13 @@ You must return a valid JSON object matching this exact structure:
 
                             {/* Bullet Points */}
                             {remainingSentences.length > 0 && (
-                              <ul className="space-y-3 m-0 p-0">
+                              <ul className="space-y-4 m-0 p-0">
                                 {remainingSentences.map((liText, i) => (
-                                  <li key={i} className="flex gap-2.5 text-gray-600 items-start">
-                                    <svg className="w-4 h-4 text-[var(--pikachu-yellow)] flex-shrink-0 mt-1" fill="currentColor" viewBox="0 0 20 20">
+                                  <li key={i} className="flex gap-3 text-gray-700 items-start text-[1rem] leading-[1.7]">
+                                    <svg className="w-5 h-5 text-[var(--pikachu-yellow)] flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
                                       <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
                                     </svg>
-                                    <span className="leading-relaxed text-[0.9rem]">{liText}.</span>
+                                    <span>{liText}.</span>
                                   </li>
                                 ))}
                               </ul>
@@ -1335,17 +1329,17 @@ You must return a valid JSON object matching this exact structure:
 
             {/* ═══ STICKY BOTTOM BAR ═══ */}
             {(!isQuizScreen || (showQuizSummary && isQuizPassed())) && (
-              <div className="bg-white border-t border-gray-200 px-4 sm:px-8 py-3 z-20 flex-shrink-0">
-                <div className="max-w-3xl mx-auto cp-bottom-bar-inner flex items-center justify-between gap-3">
-                  <div className="font-medium text-gray-400 text-sm hidden sm:block">
+              <div className="bg-white border-t border-gray-100 px-6 sm:px-12 py-4 z-20 flex-shrink-0 shadow-[0_-4px_24px_rgba(0,0,0,0.02)] relative">
+                <div className="max-w-3xl mx-auto cp-bottom-bar-inner flex items-center justify-between gap-4">
+                  <div className="font-bold text-gray-400 text-[13px] hidden sm:block tracking-wide">
                     {isQuizScreen ? `Module ${currentModule.day} Quiz` : `Lesson ${activeTopicIndex + 1} of ${currentModule.topics.length}`}
                   </div>
                   <button 
                     onClick={handleNextLesson}
-                    className="cp-btn-complete bg-gray-900 text-white font-bold px-6 py-3 rounded-lg border-none cursor-pointer hover:bg-black transition-colors flex items-center gap-2 text-sm shadow-sm"
+                    className="cp-btn-complete bg-[#111827] text-white font-bold px-8 py-3.5 rounded-xl border-none cursor-pointer hover:bg-black transition-all hover:-translate-y-0.5 flex items-center justify-center gap-2.5 text-[15px] sm:w-auto w-full shadow-[0_4px_14px_rgba(0,0,0,0.15)]"
                   >
                     Mark Complete & Next
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                       <path d="M5 12h14M12 5l7 7-7 7" />
                     </svg>
                   </button>
