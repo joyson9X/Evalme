@@ -978,19 +978,19 @@ You must return a valid JSON object matching this exact structure:
       <div className="decoration dec-2"></div>
 
       <div className="w-full max-w-[500px] relative z-10 p-4">
-        <div className="bg-white/95 rounded-3xl p-10 shadow-[0_20px_40px_rgba(0,0,0,0.5)] border border-white/20 backdrop-blur-xl relative overflow-hidden before:content-[''] before:absolute before:top-0 before:left-0 before:right-0 before:h-1.5 before:bg-gradient-to-r before:from-[var(--pikachu-yellow)] before:via-[var(--volt-yellow)] before:to-[var(--pikachu-yellow)] before:bg-[length:200%_auto] before:animate-[shine_3s_linear_infinite]">
+        <div className="bg-white rounded-3xl p-8 sm:p-10 shadow-[0_8px_30px_rgb(0,0,0,0.06)] relative overflow-hidden">
           
           <div className="text-center mb-8">
-            <h1 className="text-4xl font-extrabold mb-2 tracking-tight text-gray-900" style={{ fontFamily: "'Evolve Sans', sans-serif" }}>Evalme</h1>
-            <p className="text-gray-500 text-base">Generate tailored descriptions instantly</p>
+            <h1 className="text-[2.5rem] font-extrabold mb-1 tracking-tight text-[#111827]" style={{ fontFamily: "'Evolve Sans', sans-serif" }}>Evalme</h1>
+            <p className="text-gray-500 text-[15px]">Generate tailored descriptions instantly</p>
           </div>
           
           <form className="flex flex-col gap-6" onSubmit={e => e.preventDefault()}>
             <div>
-              <label className="block font-semibold mb-2 text-sm text-gray-900">Job Role</label>
+              <label className="block font-bold mb-2 text-[14px] text-[#111827]">Job Role</label>
               <input 
                 type="text" 
-                className="w-full bg-[#F5F5F5] border-2 border-transparent rounded-xl px-5 py-4 text-base text-gray-900 transition-all outline-none placeholder:text-[#A0A0A0] hover:bg-[#EFEFEF] focus:bg-white focus:border-[var(--pikachu-yellow)] focus:shadow-[0_0_0_4px_rgba(255,222,0,0.15)]"
+                className="w-full bg-white border-2 border-gray-200 rounded-xl px-4 py-3.5 text-[15px] text-gray-900 transition-all outline-none placeholder:text-gray-400 focus:shadow-[0_0_0_4px_rgba(255,222,0,0.15)] focus:border-[var(--pikachu-yellow)]"
                 placeholder="e.g. Frontend Developer" 
                 value={role}
                 onChange={e => setRole(e.target.value)}
@@ -999,20 +999,20 @@ You must return a valid JSON object matching this exact structure:
             </div>
 
             <div>
-              <label className="block font-semibold mb-2 text-sm text-gray-900">Job Requirement</label>
+              <label className="block font-bold mb-2 text-[14px] text-[#111827]">Job Requirement</label>
               
-              <label className={`cursor-pointer mb-3 w-full bg-[#FAFAFA] border-2 border-dashed border-gray-300 hover:border-[var(--pikachu-yellow)] hover:bg-[#FFFDF5] rounded-xl flex flex-col items-center justify-center p-6 transition-all group ${isParsing ? 'opacity-70 pointer-events-none' : ''}`}>
+              <label className={`cursor-pointer mb-4 w-full bg-white border border-dashed border-gray-300 hover:border-gray-400 rounded-xl flex flex-col items-center justify-center py-6 px-4 transition-all group ${isParsing ? 'opacity-70 pointer-events-none' : ''}`}>
                 {isParsing ? (
                   <div className="w-8 h-8 border-4 border-gray-200 border-t-[var(--pikachu-yellow)] rounded-full animate-spin mb-3"></div>
                 ) : (
                   <div className="w-10 h-10 bg-white shadow-sm border border-gray-100 rounded-full flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
-                    <svg className="w-5 h-5 text-gray-400 group-hover:text-amber-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path></svg>
+                    <svg className="w-5 h-5 text-gray-400 group-hover:text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="1.5"><path strokeLinecap="round" strokeLinejoin="round" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path></svg>
                   </div>
                 )}
-                <span className="font-bold text-gray-700 text-base mb-1">
+                <span className="font-bold text-[#111827] text-[15px] mb-1">
                   {isParsing ? "Scanning Document..." : "Upload Job Description"}
                 </span>
-                <span className="text-gray-400 text-xs font-medium">Supports PDF and Word Documents (.docx)</span>
+                <span className="text-gray-400 text-xs font-normal">Supports PDF and Word Documents (.docx)</span>
                 <input type="file" className="hidden" accept=".pdf,.docx,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document" onChange={handleFileUpload} disabled={isParsing} />
               </label>
 
@@ -1020,7 +1020,7 @@ You must return a valid JSON object matching this exact structure:
               
               <div className="relative">
                 <textarea 
-                  className={`w-full bg-[#F5F5F5] border-2 border-transparent rounded-xl px-5 py-4 text-base text-gray-900 transition-all outline-none placeholder:text-[#A0A0A0] hover:bg-[#EFEFEF] focus:bg-white focus:border-[var(--pikachu-yellow)] focus:shadow-[0_0_0_4px_rgba(255,222,0,0.15)] resize-y min-h-[120px] ${isParsing ? 'opacity-50 blur-[1px] pointer-events-none' : ''}`}
+                  className={`w-full bg-[#FAFAFA] border border-gray-100 rounded-xl px-5 py-4 text-[14px] text-gray-900 transition-all outline-none placeholder:text-gray-400 hover:bg-[#F5F5F5] focus:bg-white focus:border-[var(--pikachu-yellow)] focus:shadow-[0_0_0_4px_rgba(255,222,0,0.15)] resize-none min-h-[100px] ${isParsing ? 'opacity-50 blur-[1px] pointer-events-none' : ''}`}
                   placeholder="Or paste the text manually..." 
                   value={requirement}
                   onChange={e => setRequirement(e.target.value)}
@@ -1029,19 +1029,21 @@ You must return a valid JSON object matching this exact structure:
             </div>
 
             <div>
-              <label className="block font-semibold mb-2 text-sm text-gray-900">Planner Duration</label>
-              <div className="flex gap-6 mt-2">
+              <label className="block font-bold mb-3 text-[14px] text-[#111827]">Planner Duration</label>
+              <div className="flex gap-6">
                 {['3 Days', '7 Days', '10 Days'].map(duration => (
-                  <label key={duration} className="flex items-center cursor-pointer text-base text-gray-900 font-medium group relative">
+                  <label key={duration} className="flex items-center cursor-pointer text-[15px] text-[#111827] font-medium group relative">
+                    <div className={`w-5 h-5 rounded-full border-2 mr-2.5 flex items-center justify-center transition-colors ${planner === duration ? 'border-gray-900' : 'border-gray-200 bg-[#FAFAFA]'}`}>
+                      {planner === duration && <div className="w-2 h-2 bg-gray-900 rounded-full flex-shrink-0"></div>}
+                    </div>
                     <input 
                       type="radio" 
                       name="planner" 
                       value={duration}
                       checked={planner === duration}
                       onChange={e => setPlanner(e.target.value)}
-                      className="absolute opacity-0 cursor-pointer h-0 w-0 z-10"
+                      className="hidden"
                     />
-                    <span className="radio-custom mr-2.5"></span>
                     {duration}
                   </label>
                 ))}
@@ -1052,14 +1054,14 @@ You must return a valid JSON object matching this exact structure:
               type="button" 
               onClick={handleGenerate}
               disabled={isGenerating}
-              className={`btn-generate w-full bg-gradient-to-br from-[var(--pikachu-yellow)] to-[var(--volt-yellow)] text-black border-none rounded-xl py-4 text-lg font-bold cursor-pointer transition-all mt-4 shadow-[0_8px_20px_rgba(255,222,0,0.3)] flex items-center justify-center gap-2.5 hover:-translate-y-0.5 hover:shadow-[0_12px_25px_rgba(255,222,0,0.4)] active:translate-y-px disabled:opacity-80 disabled:pointer-events-none ${hasError ? 'animate-shake' : ''}`}
+              className={`w-full bg-[#fce01a] text-[#111827] border-none rounded-xl py-4 flex items-center justify-center gap-2 cursor-pointer transition-all mt-2 shadow-[0_2px_10px_rgba(252,224,26,0.3)] hover:brightness-105 active:scale-[0.98] disabled:opacity-80 disabled:pointer-events-none ${hasError ? 'animate-shake' : ''}`}
             >
               {!isGenerating && (
                 <svg className="w-5 h-5 fill-none stroke-current stroke-2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24">
-                  <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+                  <path d="M13 10V3L4 14h7v7l9-11h-7z"></path>
                 </svg>
               )}
-              {isGenerating ? 'Generating...' : 'Generate'}
+              <span className="font-extrabold text-[16px] tracking-wide">{isGenerating ? 'Generating...' : 'Generate'}</span>
             </button>
           </form>
         </div>
