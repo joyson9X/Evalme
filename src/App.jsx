@@ -1733,7 +1733,130 @@ You must return a valid JSON object matching this exact structure:
               </div>
             </button>
           </div>
+
+          {/* Mini Footer Option */}
+          <div className="mt-16 pt-8 border-t border-gray-100 flex flex-col items-center gap-4">
+            <button 
+              onClick={() => navigateTo('BLOGS')}
+              className="text-gray-400 hover:text-gray-900 font-bold transition-all border-none bg-transparent cursor-pointer text-[13px] uppercase tracking-widest flex items-center gap-2 group"
+            >
+              Blogs
+              <svg className="w-4 h-4 transition-transform group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+              </svg>
+            </button>
+            <p className="text-gray-300 text-[11px] font-medium">&copy; 2026 Evalme. Built for the future of work.</p>
+          </div>
         </div>
+      </div>
+    )
+  }
+
+  // BLOGS VIEW
+  if (viewState === 'BLOGS') {
+    return (
+      <div className="w-full min-h-screen bg-white text-gray-900 font-sans selection:bg-amber-100">
+        {/* Blog Header */}
+        <div className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-gray-100 px-6 py-4 flex items-center justify-between">
+          <button 
+            onClick={() => navigateTo('HOME')}
+            className="flex items-center gap-2 text-gray-500 hover:text-gray-900 font-bold transition-all border-none bg-transparent cursor-pointer text-sm"
+          >
+            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="3">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
+            </svg>
+            Back to Home
+          </button>
+          <img src="/logo.svg" alt="Evalme" className="h-[28px] object-contain" />
+          <div className="w-20"></div> {/* Spacer for symmetry */}
+        </div>
+
+        <article className="max-w-3xl mx-auto px-6 py-20">
+          <header className="mb-16">
+            <div className="inline-flex items-center gap-2 bg-amber-50 text-amber-600 font-bold px-3 py-1 rounded-full text-[11px] uppercase tracking-widest mb-6 border border-amber-100">
+              AI & Careers
+            </div>
+            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black text-gray-900 leading-[1.1] tracking-tight mb-8">
+              How Evalme is Revolutionizing AI Interview Preparation
+            </h1>
+            <div className="flex items-center gap-4 text-gray-400 text-sm font-medium">
+              <span>March 16, 2026</span>
+              <span className="w-1 h-1 bg-gray-200 rounded-full"></span>
+              <span>8 min read</span>
+            </div>
+          </header>
+
+          <div className="prose prose-lg max-w-none text-gray-600 leading-relaxed text-[1.1rem]">
+            <p className="mb-8 text-xl text-gray-900 font-medium leading-relaxed">
+              In an era where the job market is more competitive than ever, <strong>Evalme</strong> is emerging as a game-changer for candidates who want to stand out. By leveraging cutting-edge AI, we've built the world's most personalized interview preparation tool.
+            </p>
+
+            <h2 className="text-3xl font-bold text-gray-900 mt-16 mb-6 tracking-tight">The Problem with Traditional Prep</h2>
+            <p className="mb-8">
+              Generic interview guides are outdated the moment they are published. Most candidates spend hours scouring the web for "common interview questions," only to find that their actual interview covers highly specific technical requirements mentioned deep in the job description.
+            </p>
+
+            <div className="bg-gray-50 rounded-3xl p-8 mb-12 border border-gray-100">
+              <h3 className="text-xl font-bold text-gray-900 mb-4">Why SEO matters for your career?</h3>
+              <p className="text-sm m-0">
+                Just as companies use SEO to reach customers, you need to align your skills with what recruiters are searching for. Evalme helps you identify those keyword gaps in your resume vs the JD instantly.
+              </p>
+            </div>
+
+            <h2 className="text-3xl font-bold text-gray-900 mt-16 mb-6 tracking-tight">How Evalme Works</h2>
+            <p className="mb-6">
+              Our <strong>AI Interview Prep Planner</strong> doesn't just give you a list of questions. It analyzes your target Job Description (JD) and generates a structured, day-by-day curriculum tailored to your exact needs.
+            </p>
+            <ul className="space-y-4 mb-12 list-none p-0">
+              {[
+                "Instant JD scan & keyword analysis",
+                "Day-by-day structured study plans (3, 7, or 10 days)",
+                "Interactive coding challenges with live feedback",
+                "Personalized technical and behavioral question sets"
+              ].map((item, i) => (
+                <li key={i} className="flex gap-4 items-start">
+                  <div className="w-6 h-6 rounded-full bg-amber-400 flex items-center justify-center shrink-0 mt-0.5">
+                    <svg className="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="4">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                    </svg>
+                  </div>
+                  <span className="text-gray-800 font-semibold">{item}</span>
+                </li>
+              ))}
+            </ul>
+
+            <h2 className="text-3xl font-bold text-gray-900 mt-16 mb-6 tracking-tight">The Future of Interactive Learning</h2>
+            <p className="mb-8">
+              We believe coding should be taught where it's written. Our <strong>Coding Academy</strong> provides interactive environments where you can solve problems that are relevant to your target role. Whether it's SQL, Python, or Frontend Development, Evalme's AI coaches you through every line of code.
+            </p>
+
+            <div className="bg-gray-900 rounded-3xl p-10 mt-20 text-center relative overflow-hidden">
+               <div className="absolute top-0 right-0 w-64 h-64 bg-amber-400/10 rounded-full blur-3xl -translate-y-32 translate-x-32"></div>
+               <h3 className="text-white text-3xl font-bold mb-6">Ready to ace your next role?</h3>
+               <p className="text-gray-400 mb-8 max-w-md mx-auto">Join thousands of professionals using Evalme to automate their interview preparation.</p>
+               <button 
+                onClick={() => navigateTo('GENERATOR')}
+                className="bg-amber-400 text-gray-900 font-black px-10 py-4 rounded-2xl hover:bg-amber-300 transition-all cursor-pointer border-none text-lg shadow-lg shadow-amber-400/20"
+               >
+                 Build Your Plan Now
+               </button>
+            </div>
+          </div>
+        </article>
+
+        {/* Blog Footer */}
+        <footer className="bg-gray-50 border-t border-gray-100 py-12 px-6">
+          <div className="max-w-3xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-6">
+            <div className="flex items-center gap-3">
+              <img src="/logo.svg" alt="Evalme" className="h-6" />
+              <span className="text-gray-400 text-sm font-medium">&copy; 2026 Evalme. All rights reserved.</span>
+            </div>
+            <div className="flex gap-8">
+              <button onClick={() => navigateTo('HOME')} className="text-gray-400 hover:text-gray-900 font-bold text-sm bg-transparent border-none cursor-pointer">Home</button>
+              <button onClick={() => navigateTo('PRICING')} className="text-gray-400 hover:text-gray-900 font-bold text-sm bg-transparent border-none cursor-pointer">Pricing</button>
+            </div>
+          </div>
+        </footer>
       </div>
     )
   }
