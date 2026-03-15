@@ -1,0 +1,1171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>SQL Basics</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet"/>
+<style>
+/* ═══════════════════════════════════════
+   TOKENS
+═══════════════════════════════════════ */
+:root {
+  --y:       #FFD700;   /* pikachu yellow */
+  --y-soft:  #FFF3B0;   /* pale yellow bg */
+  --y-dark:  #E6B800;   /* pressed yellow */
+  --y-glow:  rgba(255,215,0,0.25);
+  --black:   #1A1A1A;
+  --ink:     #2C2C2C;
+  --muted:   #7A7A7A;
+  --white:   #FFFFFF;
+  --off:     #F9F7F0;   /* warm off-white card bg */
+  --border:  #E8E3D5;
+  --danger:  #FF4D4D;
+  --success: #22A355;
+  --code-bg: #1E1E2E;
+  --kw:      #BD93F9;
+  --col:     #8BE9FD;
+  --tbl:     #FFB86C;
+  --val:     #F1FA8C;
+  --op:      #50FA7B;
+  --cm:      #6272A4;
+
+  --radius:  14px;
+  --radius-sm: 8px;
+  --shadow:  0 4px 24px rgba(0,0,0,0.08);
+  --shadow-y: 0 4px 20px rgba(255,215,0,0.35);
+}
+
+/* ═══════════════════════════════════════
+   RESET & BASE
+═══════════════════════════════════════ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background: var(--y-soft);
+  color: var(--ink);
+  font-family: 'Nunito', sans-serif;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* electric dot pattern background */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: radial-gradient(circle, rgba(255,215,0,0.18) 1px, transparent 1px);
+  background-size: 28px 28px;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ═══════════════════════════════════════
+   LAYOUT SHELL
+═══════════════════════════════════════ */
+.shell {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 640px;
+  padding: 0 16px 80px;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+}
+
+/* ═══════════════════════════════════════
+   HEADER
+═══════════════════════════════════════ */
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 0 16px;
+  margin-bottom: 4px;
+}
+
+.logo {
+  font-family: 'Nunito', sans-serif;
+  font-weight: 900;
+  font-size: 1.25rem;
+  color: var(--black);
+  letter-spacing: -0.5px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.logo-bolt {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px; height: 30px;
+  background: var(--y);
+  border-radius: 8px;
+  font-size: 1rem;
+  box-shadow: var(--shadow-y);
+}
+
+.lesson-badge {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: var(--muted);
+  background: var(--white);
+  border: 1.5px solid var(--border);
+  border-radius: 99px;
+  padding: 4px 12px;
+}
+
+/* ═══════════════════════════════════════
+   PROGRESS BAR
+═══════════════════════════════════════ */
+.progress-track {
+  height: 6px;
+  background: var(--border);
+  border-radius: 99px;
+  overflow: hidden;
+  margin-bottom: 16px;
+}
+.progress-fill {
+  height: 100%;
+  background: var(--y);
+  border-radius: 99px;
+  transition: width 0.5s cubic-bezier(.4,0,.2,1);
+  box-shadow: 0 0 8px var(--y);
+}
+
+/* ═══════════════════════════════════════
+   STAGE PILLS
+═══════════════════════════════════════ */
+.stage-row {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 20px;
+  align-items: center;
+}
+.stage-pill {
+  flex: 1;
+  height: 5px;
+  border-radius: 99px;
+  background: var(--border);
+  transition: background 0.3s, box-shadow 0.3s;
+}
+.stage-pill.done   { background: var(--black); }
+.stage-pill.active { background: var(--y); box-shadow: 0 0 6px var(--y); }
+
+/* ═══════════════════════════════════════
+   CARD
+═══════════════════════════════════════ */
+.card {
+  background: var(--white);
+  border: 2px solid var(--border);
+  border-radius: var(--radius);
+  padding: 28px 28px 24px;
+  box-shadow: var(--shadow);
+  animation: slideUp 0.3s cubic-bezier(.4,0,.2,1);
+}
+@keyframes slideUp {
+  from { opacity:0; transform:translateY(16px); }
+  to   { opacity:1; transform:translateY(0); }
+}
+
+/* ═══════════════════════════════════════
+   STAGE LABEL CHIP
+═══════════════════════════════════════ */
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.65rem;
+  font-family: 'Space Mono', monospace;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  background: var(--y);
+  color: var(--black);
+  border-radius: 6px;
+  padding: 4px 10px;
+  margin-bottom: 14px;
+}
+
+/* ═══════════════════════════════════════
+   TYPOGRAPHY
+═══════════════════════════════════════ */
+.card-title {
+  font-size: 1.4rem;
+  font-weight: 900;
+  line-height: 1.2;
+  color: var(--black);
+  margin-bottom: 14px;
+  letter-spacing: -0.3px;
+}
+.card-body {
+  font-size: 0.97rem;
+  line-height: 1.78;
+  color: #444;
+  font-weight: 600;
+}
+.card-body strong {
+  color: var(--black);
+  font-weight: 900;
+  background: linear-gradient(to bottom, transparent 55%, rgba(255,215,0,0.45) 55%);
+}
+
+/* ═══════════════════════════════════════
+   DIVIDER
+═══════════════════════════════════════ */
+.divider {
+  height: 1px;
+  background: var(--border);
+  margin: 20px 0;
+}
+
+/* ═══════════════════════════════════════
+   SAMPLE TABLE
+═══════════════════════════════════════ */
+.tbl-section { margin-top: 18px; }
+.tbl-label {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.65rem;
+  color: var(--muted);
+  margin-bottom: 6px;
+  font-weight: 700;
+}
+.tbl-scroll { overflow-x: auto; border-radius: var(--radius-sm); border: 1.5px solid var(--border); }
+.data-table {
+  border-collapse: collapse;
+  font-family: 'Space Mono', monospace;
+  font-size: 0.75rem;
+  width: 100%;
+  min-width: 360px;
+}
+.data-table th {
+  background: var(--y);
+  color: var(--black);
+  font-weight: 700;
+  padding: 8px 14px;
+  text-align: left;
+  border-bottom: 2px solid var(--y-dark);
+}
+.data-table td {
+  padding: 7px 14px;
+  border-bottom: 1px solid var(--border);
+  color: var(--ink);
+}
+.data-table tbody tr:last-child td { border-bottom: none; }
+.data-table tbody tr:nth-child(even) td { background: var(--off); }
+
+/* ═══════════════════════════════════════
+   CODE BLOCK (annotated)
+═══════════════════════════════════════ */
+.code-section { margin-top: 18px; }
+.anno-line {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 12px;
+  align-items: center;
+  margin-bottom: 8px;
+}
+.code-pill {
+  background: var(--code-bg);
+  border-radius: var(--radius-sm);
+  padding: 10px 16px;
+  font-family: 'Space Mono', monospace;
+  font-size: 0.82rem;
+  color: #F8F8F2;
+  line-height: 1.5;
+  white-space: nowrap;
+  overflow-x: auto;
+}
+.anno-note {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--muted);
+  text-align: right;
+  white-space: nowrap;
+  min-width: 100px;
+  max-width: 130px;
+}
+.anno-note strong { color: var(--black); }
+
+/* syntax colors */
+.kw  { color: var(--kw);  font-weight: 700; }
+.col { color: var(--col); }
+.tbl { color: var(--tbl); }
+.val { color: var(--val); }
+.op  { color: var(--op);  }
+
+/* ═══════════════════════════════════════
+   RESULT TABLE
+═══════════════════════════════════════ */
+.result-section {
+  margin-top: 16px;
+  animation: slideUp 0.25s cubic-bezier(.4,0,.2,1);
+}
+.result-label {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.65rem;
+  font-weight: 700;
+  color: var(--success);
+  margin-bottom: 6px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.result-label::before {
+  content: '';
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  background: var(--success);
+  display: inline-block;
+  animation: pulse 1.5s infinite;
+}
+@keyframes pulse {
+  0%,100% { opacity:1; } 50% { opacity:0.4; }
+}
+.result-scroll { overflow-x: auto; border-radius: var(--radius-sm); border: 1.5px solid #C3EAD3; }
+.result-table {
+  border-collapse: collapse;
+  font-family: 'Space Mono', monospace;
+  font-size: 0.75rem;
+  width: 100%;
+  min-width: 280px;
+}
+.result-table th {
+  background: #E8F8EE;
+  color: var(--success);
+  font-weight: 700;
+  padding: 7px 13px;
+  text-align: left;
+  border-bottom: 1.5px solid #C3EAD3;
+}
+.result-table td {
+  padding: 6px 13px;
+  border-bottom: 1px solid #E8F8EE;
+  color: var(--ink);
+}
+.result-table tbody tr:last-child td { border-bottom: none; }
+.result-table tbody tr:nth-child(even) td { background: #F4FBF7; }
+.row-count {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.63rem;
+  color: var(--muted);
+  margin-top: 6px;
+}
+
+/* ═══════════════════════════════════════
+   FILL IN BLANK
+═══════════════════════════════════════ */
+.blank-code {
+  background: var(--code-bg);
+  border-radius: var(--radius-sm);
+  padding: 18px 20px;
+  font-family: 'Space Mono', monospace;
+  font-size: 0.88rem;
+  color: #F8F8F2;
+  line-height: 2;
+  margin-bottom: 18px;
+  overflow-x: auto;
+  white-space: nowrap;
+}
+.blank {
+  display: inline-block;
+  min-width: 80px;
+  border-bottom: 2.5px solid var(--y);
+  color: var(--y);
+  font-weight: 700;
+  text-align: center;
+  padding: 0 4px;
+  vertical-align: bottom;
+  transition: all 0.2s;
+  cursor: default;
+}
+.blank.filled    { color: var(--op);  border-bottom-color: var(--op); }
+.blank.wrong-clr { color: var(--danger); border-bottom-color: var(--danger); }
+
+.options-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 4px;
+}
+.opt-chip {
+  padding: 10px 22px;
+  border: 2px solid var(--border);
+  border-radius: var(--radius-sm);
+  font-family: 'Space Mono', monospace;
+  font-size: 0.82rem;
+  font-weight: 700;
+  background: var(--white);
+  color: var(--ink);
+  cursor: pointer;
+  transition: all 0.15s;
+  user-select: none;
+}
+.opt-chip:hover:not(.locked) {
+  border-color: var(--y);
+  background: var(--y-soft);
+  transform: translateY(-1px);
+}
+.opt-chip.selected { border-color: var(--y); background: var(--y); color: var(--black); }
+.opt-chip.correct  { border-color: var(--success); background: #E8F8EE; color: var(--success); }
+.opt-chip.wrong-c  { border-color: var(--danger);  background: #FFECEC; color: var(--danger); }
+.opt-chip.locked   { opacity: 0.4; cursor: not-allowed; pointer-events: none; }
+
+/* ═══════════════════════════════════════
+   MCQ OPTIONS
+═══════════════════════════════════════ */
+.mcq-question {
+  font-size: 1rem;
+  font-weight: 800;
+  line-height: 1.5;
+  color: var(--black);
+  margin-bottom: 16px;
+}
+.mcq-options { display: flex; flex-direction: column; gap: 10px; }
+.mcq-opt {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 13px 16px;
+  border: 2px solid var(--border);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  font-family: 'Nunito', sans-serif;
+  font-size: 0.9rem;
+  font-weight: 700;
+  background: var(--white);
+  color: var(--ink);
+  transition: all 0.15s;
+  user-select: none;
+}
+.mcq-opt:hover:not(.locked) {
+  border-color: var(--y);
+  background: var(--y-soft);
+}
+.mcq-opt.selected { border-color: var(--y); background: var(--y-soft); }
+.mcq-opt.correct  { border-color: var(--success); background: #E8F8EE; color: var(--success); }
+.mcq-opt.wrong    { border-color: var(--danger);  background: #FFECEC; color: var(--danger); }
+.mcq-letter {
+  width: 28px; height: 28px;
+  border-radius: 6px;
+  background: var(--off);
+  border: 1.5px solid var(--border);
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Space Mono', monospace;
+  font-size: 0.68rem;
+  font-weight: 700;
+  flex-shrink: 0;
+  transition: all 0.15s;
+}
+.mcq-opt.selected .mcq-letter { background: var(--y);     border-color: var(--y-dark);   color: var(--black); }
+.mcq-opt.correct  .mcq-letter { background: var(--success); border-color: var(--success); color: #fff; }
+.mcq-opt.wrong    .mcq-letter { background: var(--danger);  border-color: var(--danger);  color: #fff; }
+
+/* ═══════════════════════════════════════
+   FEEDBACK BANNER
+═══════════════════════════════════════ */
+.feedback {
+  display: none;
+  margin-top: 14px;
+  padding: 12px 14px;
+  border-radius: var(--radius-sm);
+  font-family: 'Nunito', sans-serif;
+  font-size: 0.85rem;
+  font-weight: 700;
+  line-height: 1.5;
+}
+.feedback.show { display: block; }
+.feedback.good {
+  background: #E8F8EE;
+  color: var(--success);
+  border: 1.5px solid #C3EAD3;
+}
+.feedback.bad  {
+  background: #FFECEC;
+  color: var(--danger);
+  border: 1.5px solid #FFCECE;
+}
+
+/* ═══════════════════════════════════════
+   WRITE QUERY
+═══════════════════════════════════════ */
+.task-label {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.65rem;
+  font-weight: 700;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  margin-bottom: 8px;
+}
+.task-text {
+  font-size: 0.92rem;
+  font-weight: 700;
+  color: var(--ink);
+  line-height: 1.6;
+  margin-bottom: 14px;
+  padding: 12px 14px;
+  background: var(--off);
+  border-radius: var(--radius-sm);
+  border-left: 4px solid var(--y);
+}
+.task-text strong { color: var(--black); font-weight: 900; }
+
+textarea {
+  width: 100%;
+  background: var(--code-bg);
+  border: 2px solid #2A2A3E;
+  border-radius: var(--radius-sm);
+  padding: 14px 16px;
+  font-family: 'Space Mono', monospace;
+  font-size: 0.85rem;
+  color: #F8F8F2;
+  resize: vertical;
+  min-height: 80px;
+  outline: none;
+  transition: border-color 0.2s;
+  line-height: 1.6;
+}
+textarea:focus   { border-color: var(--y); }
+textarea.ok      { border-color: var(--success); }
+textarea.fail    { border-color: var(--danger); }
+
+.hint-text {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.72rem;
+  color: var(--muted);
+  margin-top: 8px;
+}
+.hint-text span { color: var(--black); font-weight: 700; }
+
+/* ═══════════════════════════════════════
+   BOTTOM BAR
+═══════════════════════════════════════ */
+.bot {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+/* Primary CTA */
+.btn-primary {
+  background: var(--y);
+  color: var(--black);
+  border: none;
+  border-radius: var(--radius-sm);
+  padding: 13px 32px;
+  font-family: 'Nunito', sans-serif;
+  font-weight: 900;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: all 0.18s;
+  box-shadow: 0 3px 0 var(--y-dark);
+  display: flex; align-items: center; gap: 6px;
+}
+.btn-primary:hover:not(:disabled) {
+  background: var(--y-dark);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 0 #C49A00;
+}
+.btn-primary:active:not(:disabled) {
+  transform: translateY(2px);
+  box-shadow: 0 1px 0 var(--y-dark);
+}
+.btn-primary:disabled { opacity: 0.25; cursor: not-allowed; }
+
+/* Retry */
+.btn-retry {
+  background: #FFECEC;
+  color: var(--danger);
+  border: 2px solid #FFCECE;
+  border-radius: var(--radius-sm);
+  padding: 11px 24px;
+  font-family: 'Nunito', sans-serif;
+  font-weight: 900;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.15s;
+  display: flex; align-items: center; gap: 6px;
+}
+.btn-retry:hover { background: #FFD5D5; }
+
+/* Ghost / Hint */
+.btn-ghost {
+  background: transparent;
+  color: var(--muted);
+  border: 2px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 11px 20px;
+  font-family: 'Nunito', sans-serif;
+  font-weight: 800;
+  font-size: 0.88rem;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.btn-ghost:hover { border-color: var(--ink); color: var(--ink); }
+
+/* ═══════════════════════════════════════
+   COMPLETE SCREEN
+═══════════════════════════════════════ */
+.complete {
+  text-align: center;
+  padding: 12px 8px 8px;
+}
+.complete-icon { font-size: 3.5rem; display: block; margin-bottom: 14px; }
+.complete h2 {
+  font-size: 1.8rem; font-weight: 900;
+  color: var(--black); margin-bottom: 10px; letter-spacing: -0.5px;
+}
+.complete p {
+  font-size: 0.97rem; font-weight: 600;
+  color: var(--muted); line-height: 1.65;
+  max-width: 340px; margin: 0 auto 24px;
+}
+.complete-badges {
+  display: flex; gap: 10px; justify-content: center;
+  flex-wrap: wrap; margin-bottom: 28px;
+}
+.badge {
+  background: var(--y-soft);
+  border: 2px solid var(--y);
+  border-radius: 99px;
+  padding: 6px 16px;
+  font-family: 'Space Mono', monospace;
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--black);
+}
+
+/* ═══════════════════════════════════════
+   RESPONSIVE
+═══════════════════════════════════════ */
+@media (max-width: 480px) {
+  .card { padding: 20px 18px 18px; }
+  .card-title { font-size: 1.2rem; }
+  .btn-primary { padding: 12px 22px; font-size: 0.88rem; }
+  .anno-line { grid-template-columns: 1fr; }
+  .anno-note { text-align: left; max-width: 100%; }
+  .code-pill { white-space: normal; }
+}
+</style>
+</head>
+<body>
+<div class="shell">
+
+  <!-- HEADER -->
+  <div class="header">
+    <div class="logo">
+      <span class="logo-bolt">⚡</span>
+      SQLbasics
+    </div>
+    <div class="lesson-badge" id="lessonBadge">Lesson 1 · Meaning</div>
+  </div>
+
+  <!-- PROGRESS -->
+  <div class="progress-track">
+    <div class="progress-fill" id="progressFill" style="width:0%"></div>
+  </div>
+
+  <!-- STAGE PILLS -->
+  <div class="stage-row" id="stagePills"></div>
+
+  <!-- CARD -->
+  <div class="card" id="card"></div>
+
+  <!-- BOTTOM BAR -->
+  <div class="bot" id="bot"></div>
+
+</div>
+
+<script>
+/* ═══════════════════════════════════════
+   MINI SQL ENGINE
+═══════════════════════════════════════ */
+const DB = [
+  {id:1,name:"Alice", department:"Engineering",salary:72000},
+  {id:2,name:"Bob",   department:"HR",         salary:48000},
+  {id:3,name:"Carol", department:"Engineering",salary:68000},
+  {id:4,name:"David", department:"Finance",    salary:55000},
+  {id:5,name:"Eva",   department:"HR",         salary:51000},
+];
+const ALL_COLS = ["id","name","department","salary"];
+
+function evalCond(cond, row) {
+  let m;
+  if((m=cond.match(/^(\w+)\s*=\s*'([^']+)'$/i)))  return String(row[m[1].toLowerCase()])=== m[2];
+  if((m=cond.match(/^(\w+)\s*=\s*(\d+)$/i)))       return row[m[1].toLowerCase()] == +m[2];
+  if((m=cond.match(/^(\w+)\s*>\s*(\d+)$/i)))       return row[m[1].toLowerCase()] >  +m[2];
+  if((m=cond.match(/^(\w+)\s*<\s*(\d+)$/i)))       return row[m[1].toLowerCase()] <  +m[2];
+  return true;
+}
+
+function runQuery(q) {
+  let rows = DB.map(r=>({...r}));
+  const up = q.toUpperCase().replace(/\s+/g,' ').trim();
+
+  // SELECT cols
+  let cols = ALL_COLS;
+  const sm = up.match(/^SELECT\s+(.+?)\s+FROM/);
+  if(sm && sm[1].trim() !== '*')
+    cols = sm[1].split(',').map(c=>c.trim().toLowerCase()).filter(c=>ALL_COLS.includes(c));
+
+  // WHERE
+  const wm = up.match(/WHERE\s+(.+?)(?:\s+ORDER|$)/);
+  if(wm) {
+    const cond = wm[1];
+    if(/\sOR\s/i.test(cond)) {
+      const parts = cond.split(/\sOR\s/i);
+      rows = rows.filter(r=>parts.some(p=>evalCond(p.trim(),r)));
+    } else if(/\sAND\s/i.test(cond)) {
+      const parts = cond.split(/\sAND\s/i);
+      rows = rows.filter(r=>parts.every(p=>evalCond(p.trim(),r)));
+    } else {
+      rows = rows.filter(r=>evalCond(cond.trim(),r));
+    }
+  }
+
+  // ORDER BY
+  const om = up.match(/ORDER\s+BY\s+(\w+)(?:\s+(ASC|DESC))?/);
+  if(om) {
+    const col = om[1].toLowerCase();
+    const dir = om[2]==='DESC' ? -1 : 1;
+    rows.sort((a,b)=> a[col]<b[col] ? -dir : a[col]>b[col] ? dir : 0);
+  }
+
+  rows = rows.map(r=>{ const o={}; cols.forEach(c=>{ if(c in r) o[c]=r[c]; }); return o; });
+  return {cols, rows};
+}
+
+function makeResultTable(queryStr) {
+  const {cols, rows} = runQuery(queryStr);
+  if(!rows.length) return `<div class="result-section"><div class="result-label">Query Result</div><p style="font-family:'Space Mono',monospace;font-size:0.75rem;color:var(--muted);padding:8px 0">0 rows returned.</p></div>`;
+  let h = `<div class="result-section">
+    <div class="result-label">Query Result</div>
+    <div class="result-scroll"><table class="result-table"><thead><tr>`;
+  cols.forEach(c=>h+=`<th>${c}</th>`);
+  h+=`</tr></thead><tbody>`;
+  rows.forEach(r=>{ h+=`<tr>`; cols.forEach(c=>h+=`<td>${r[c]??''}</td>`); h+=`</tr>`; });
+  h+=`</tbody></table></div>`;
+  h+=`<div class="row-count">${rows.length} row${rows.length!==1?'s':''} returned</div></div>`;
+  return h;
+}
+
+/* ═══════════════════════════════════════
+   SAMPLE TABLE HTML
+═══════════════════════════════════════ */
+function sampleTableHTML() {
+  let h=`<div class="tbl-section"><div class="tbl-label">TABLE: employees</div><div class="tbl-scroll"><table class="data-table"><thead><tr>`;
+  ALL_COLS.forEach(c=>h+=`<th>${c}</th>`);
+  h+=`</tr></thead><tbody>`;
+  DB.forEach(r=>{ h+=`<tr>`; ALL_COLS.forEach(c=>h+=`<td>${r[c]}</td>`); h+=`</tr>`; });
+  return h+`</tbody></table></div></div>`;
+}
+
+/* ═══════════════════════════════════════
+   LESSONS
+═══════════════════════════════════════ */
+const LESSONS = [
+  {
+    title:"What is SQL?",
+    meaning:`<strong>SQL</strong> stands for <strong>Structured Query Language</strong>. It's the language you use to talk to a database — to ask for data, add new rows, or update records.<br><br>Think of a database as a giant spreadsheet and SQL as the commands you use to work with it.`,
+    showTable:false,
+    example:{
+      annotated:[
+        {code:`<span class="kw">SELECT</span> <span class="op">*</span>`,       note:`<strong>SELECT *</strong> — fetch all columns`},
+        {code:`<span class="kw">FROM</span> <span class="tbl">employees</span><span class="op">;</span>`, note:`<strong>FROM</strong> — which table`}
+      ],
+      query:`SELECT * FROM employees;`
+    },
+    blank:{template:`___ * FROM employees;`, answer:"SELECT", options:["SELECT","WHERE","FROM","ORDER"], hint:`The first keyword in every SQL query`},
+    mcq:{question:`What does SQL stand for?`, options:["Structured Query Language","Simple Question Logic","System Queue Language","Structured Queue List"], answer:0, explanation:`✓ SQL = Structured Query Language.`, query:`SELECT * FROM employees;`},
+    writeQuery:false
+  },
+  {
+    title:"SELECT — Fetch All Columns",
+    meaning:`The <strong>SELECT</strong> statement fetches data from a table. Using <strong>*</strong> (asterisk) means "give me every column".<br><br>You always pair SELECT with <strong>FROM</strong> to tell SQL which table to look in.`,
+    showTable:true,
+    example:{
+      annotated:[
+        {code:`<span class="kw">SELECT</span> <span class="op">*</span>`,       note:`<strong>*</strong> = all columns`},
+        {code:`<span class="kw">FROM</span> <span class="tbl">employees</span><span class="op">;</span>`, note:`look inside <strong>employees</strong>`}
+      ],
+      query:`SELECT * FROM employees;`
+    },
+    blank:{template:`SELECT ___ FROM employees;`, answer:"*", options:["*","ALL","EVERY","#"], hint:`One character meaning "everything"`},
+    mcq:{question:`Which symbol selects ALL columns in SQL?`, options:["@","*","#","ALL"], answer:1, explanation:`✓ The asterisk (*) selects every column.`, query:`SELECT * FROM employees;`},
+    writeQuery:false
+  },
+  {
+    title:"SELECT Specific Columns",
+    meaning:`Instead of grabbing everything with *, pick only the columns you need. List them separated by <strong>commas</strong> after SELECT.<br><br>This keeps your results clean and is faster for large databases.`,
+    showTable:true,
+    example:{
+      annotated:[
+        {code:`<span class="kw">SELECT</span> <span class="col">name</span><span class="op">,</span> <span class="col">department</span>`, note:`two <strong>specific columns</strong>`},
+        {code:`<span class="kw">FROM</span> <span class="tbl">employees</span><span class="op">;</span>`, note:`from <strong>employees</strong>`}
+      ],
+      query:`SELECT name, department FROM employees;`
+    },
+    blank:{template:`SELECT name, ___ FROM employees;`, answer:"department", options:["department","salary","*","id"], hint:`We want name and which team they belong to`},
+    mcq:{question:`How do you select multiple specific columns?`, options:["Separate with semicolons","Put them in brackets","Separate with commas","Use AND between them"], answer:2, explanation:`✓ Commas separate column names in SELECT.`, query:`SELECT name, department FROM employees;`},
+    writeQuery:{prompt:`Select only <strong>name</strong> and <strong>salary</strong> from the employees table.`, answer:`SELECT name, salary FROM employees;`, hint:`SELECT name, salary FROM employees;`}
+  },
+  {
+    title:"WHERE — Filter Rows",
+    meaning:`The <strong>WHERE</strong> clause filters which rows are returned. Only rows that <strong>match your condition</strong> come back.<br><br>Use <strong>=</strong> to match a value exactly. Text values always go inside <strong>single quotes</strong>.`,
+    showTable:true,
+    example:{
+      annotated:[
+        {code:`<span class="kw">SELECT</span> <span class="op">*</span>`,  note:`all columns`},
+        {code:`<span class="kw">FROM</span> <span class="tbl">employees</span>`, note:`from employees`},
+        {code:`<span class="kw">WHERE</span> <span class="col">department</span> <span class="op">=</span> <span class="val">'Engineering'</span><span class="op">;</span>`, note:`only <strong>Engineering</strong> rows`}
+      ],
+      query:`SELECT * FROM employees WHERE department = 'Engineering';`
+    },
+    blank:{template:`SELECT * FROM employees ___ department = 'HR';`, answer:"WHERE", options:["WHERE","FILTER","HAVING","LIMIT"], hint:`The keyword that adds a condition`},
+    mcq:{question:`What does the WHERE clause do?`, options:["Sorts results","Filters rows by a condition","Picks which columns to show","Joins two tables"], answer:1, explanation:`✓ WHERE filters rows — only matching rows are returned.`, query:`SELECT * FROM employees WHERE department = 'HR';`},
+    writeQuery:{prompt:`Fetch all columns from employees where <strong>department</strong> is <strong>'HR'</strong>.`, answer:`SELECT * FROM employees WHERE department = 'HR';`, hint:`SELECT * FROM employees WHERE department = 'HR';`}
+  },
+  {
+    title:"WHERE with AND / OR",
+    meaning:`Combine conditions with <strong>AND</strong> (both must be true) or <strong>OR</strong> (at least one must be true).<br><br>This lets you build powerful, precise filters in a single query.`,
+    showTable:true,
+    example:{
+      annotated:[
+        {code:`<span class="kw">SELECT</span> <span class="op">*</span> <span class="kw">FROM</span> <span class="tbl">employees</span>`, note:`all employees`},
+        {code:`<span class="kw">WHERE</span> <span class="col">department</span> <span class="op">=</span> <span class="val">'Engineering'</span>`,    note:`condition 1`},
+        {code:`<span class="kw">AND</span> <span class="col">salary</span> <span class="op">></span> <span class="val">60000</span><span class="op">;</span>`, note:`<strong>both</strong> must be true`}
+      ],
+      query:`SELECT * FROM employees WHERE department = 'Engineering' AND salary > 60000;`
+    },
+    blank:{template:`SELECT * FROM employees WHERE department = 'HR' ___ department = 'Finance';`, answer:"OR", options:["OR","AND","NOT","PLUS"], hint:`HR employees OR Finance employees`},
+    mcq:{question:`Which keyword means BOTH conditions must be true?`, options:["OR","NOT","AND","BOTH"], answer:2, explanation:`✓ AND means all conditions must be true.`, query:`SELECT * FROM employees WHERE department = 'Engineering' AND salary > 60000;`},
+    writeQuery:{prompt:`Get all columns where <strong>department</strong> is <strong>'HR'</strong> OR <strong>'Finance'</strong>.`, answer:`SELECT * FROM employees WHERE department = 'HR' OR department = 'Finance';`, hint:`SELECT * FROM employees WHERE department = 'HR' OR department = 'Finance';`}
+  },
+  {
+    title:"ORDER BY — Sort Results",
+    meaning:`The <strong>ORDER BY</strong> clause sorts your results. By default it sorts <strong>ascending</strong> — A→Z or lowest→highest.<br><br>Always write ORDER BY at the <strong>end</strong> of your query.`,
+    showTable:true,
+    example:{
+      annotated:[
+        {code:`<span class="kw">SELECT</span> <span class="op">*</span> <span class="kw">FROM</span> <span class="tbl">employees</span>`, note:`all employees`},
+        {code:`<span class="kw">ORDER BY</span> <span class="col">name</span><span class="op">;</span>`, note:`sort A → Z by name`}
+      ],
+      query:`SELECT * FROM employees ORDER BY name;`
+    },
+    blank:{template:`SELECT * FROM employees ___ BY salary;`, answer:"ORDER", options:["ORDER","SORT","GROUP","ARRANGE"], hint:`The SQL keyword for sorting`},
+    mcq:{question:`Where does ORDER BY go in a SQL query?`, options:["Before FROM","After SELECT","At the very end","Before WHERE"], answer:2, explanation:`✓ ORDER BY always comes at the very end.`, query:`SELECT * FROM employees ORDER BY name;`},
+    writeQuery:{prompt:`Fetch all columns from employees, sorted by <strong>salary</strong>.`, answer:`SELECT * FROM employees ORDER BY salary;`, hint:`SELECT * FROM employees ORDER BY salary;`}
+  },
+  {
+    title:"ASC and DESC",
+    meaning:`Control sort direction with <strong>ASC</strong> (ascending — lowest first, the default) or <strong>DESC</strong> (descending — highest first, Z→A).<br><br>Add it right after the column name in ORDER BY.`,
+    showTable:true,
+    example:{
+      annotated:[
+        {code:`<span class="kw">SELECT</span> <span class="op">*</span> <span class="kw">FROM</span> <span class="tbl">employees</span>`, note:`all employees`},
+        {code:`<span class="kw">ORDER BY</span> <span class="col">salary</span> <span class="kw">DESC</span><span class="op">;</span>`, note:`highest salary first`}
+      ],
+      query:`SELECT * FROM employees ORDER BY salary DESC;`
+    },
+    blank:{template:`SELECT * FROM employees ORDER BY salary ___;`, answer:"DESC", options:["DESC","ASC","DOWN","REVERSE"], hint:`Highest salary first = descending`},
+    mcq:{question:`Which keyword sorts from highest to lowest?`, options:["ASC","TOP","DESC","MAX"], answer:2, explanation:`✓ DESC = Descending — largest value first.`, query:`SELECT * FROM employees ORDER BY salary DESC;`},
+    writeQuery:{prompt:`Get all columns sorted by <strong>name</strong> in descending (Z → A) order.`, answer:`SELECT * FROM employees ORDER BY name DESC;`, hint:`SELECT * FROM employees ORDER BY name DESC;`}
+  },
+  {
+    title:"Putting It All Together",
+    meaning:`Chain <strong>SELECT</strong>, <strong>WHERE</strong>, and <strong>ORDER BY</strong> in one query. The clause order is always:<br><br><strong>SELECT → FROM → WHERE → ORDER BY</strong><br><br>This is the foundation of almost every SQL query you'll write.`,
+    showTable:true,
+    example:{
+      annotated:[
+        {code:`<span class="kw">SELECT</span> <span class="col">name</span><span class="op">,</span> <span class="col">salary</span>`, note:`two columns`},
+        {code:`<span class="kw">FROM</span> <span class="tbl">employees</span>`, note:`from employees`},
+        {code:`<span class="kw">WHERE</span> <span class="col">department</span> <span class="op">=</span> <span class="val">'Engineering'</span>`, note:`filter`},
+        {code:`<span class="kw">ORDER BY</span> <span class="col">salary</span> <span class="kw">DESC</span><span class="op">;</span>`, note:`highest first`}
+      ],
+      query:`SELECT name, salary FROM employees WHERE department = 'Engineering' ORDER BY salary DESC;`
+    },
+    blank:{template:`SELECT name, salary FROM employees WHERE department = 'Engineering' ___ BY salary DESC;`, answer:"ORDER", options:["ORDER","SORT","GROUP","FILTER"], hint:`The keyword that sorts results`},
+    mcq:{question:`What is the correct order of SQL clauses?`, options:["FROM → SELECT → WHERE → ORDER BY","SELECT → FROM → WHERE → ORDER BY","SELECT → WHERE → FROM → ORDER BY","WHERE → SELECT → FROM → ORDER BY"], answer:1, explanation:`✓ SELECT → FROM → WHERE → ORDER BY.`, query:`SELECT name, salary FROM employees WHERE department = 'Engineering' ORDER BY salary DESC;`},
+    writeQuery:{prompt:`Get <strong>name</strong> and <strong>department</strong> where <strong>salary > 50000</strong>, sorted by <strong>name ASC</strong>.`, answer:`SELECT name, department FROM employees WHERE salary > 50000 ORDER BY name ASC;`, hint:`SELECT name, department FROM employees WHERE salary > 50000 ORDER BY name ASC;`}
+  }
+];
+
+/* ═══════════════════════════════════════
+   STATE
+═══════════════════════════════════════ */
+function getStages(l){ return l.writeQuery ? ["meaning","example","blank","mcq","write"] : ["meaning","example","blank","mcq"]; }
+
+let li=0, si=0, selOpt=null, mcqLocked=false, blankChoice=null, blankChecked=false;
+const L=()=>LESSONS[li];
+const stages=()=>getStages(L());
+const stage=()=>stages()[si];
+const totalScreens=()=>LESSONS.reduce((a,l)=>a+(l.writeQuery?5:4),0);
+const screensNow=()=>{ let n=0; for(let i=0;i<li;i++) n+=LESSONS[i].writeQuery?5:4; return n+si; };
+
+/* ═══════════════════════════════════════
+   RENDER
+═══════════════════════════════════════ */
+const CHIPS={
+  meaning:"📖 Meaning",
+  example:"💡 Example",
+  blank:"✏️ Fill in the Blank",
+  mcq:"🧠 Quiz",
+  write:"⌨️ Write the Query"
+};
+
+function render(){
+  selOpt=null; mcqLocked=false; blankChoice=null; blankChecked=false;
+
+  // Progress
+  document.getElementById('progressFill').style.width=
+    Math.round(screensNow()/totalScreens()*100)+'%';
+
+  // Lesson badge
+  document.getElementById('lessonBadge').textContent=
+    `Lesson ${li+1} · ${CHIPS[stage()].replace(/^\S+\s/,'')}`;
+
+  // Stage pills
+  const stgs=stages();
+  document.getElementById('stagePills').innerHTML=stgs.map((s,i)=>{
+    const c=i<si?'done':i===si?'active':'';
+    return `<div class="stage-pill ${c}"></div>`;
+  }).join('');
+
+  // Animate card
+  const card=document.getElementById('card');
+  card.style.animation='none'; void card.offsetWidth;
+  card.style.animation='slideUp 0.3s cubic-bezier(.4,0,.2,1)';
+
+  const l=L(), s=stage();
+  let html='', botHTML='';
+
+  /* ── MEANING ── */
+  if(s==='meaning'){
+    html=`
+      <div class="chip">${CHIPS.meaning}</div>
+      <div class="card-title">${l.title}</div>
+      <div class="card-body">${l.meaning}</div>
+      ${l.showTable ? `<div class="divider"></div>${sampleTableHTML()}` : ''}
+    `;
+    botHTML=`<button class="btn-primary" onclick="advance()">Continue <span>→</span></button>`;
+  }
+
+  /* ── EXAMPLE ── */
+  else if(s==='example'){
+    html=`<div class="chip">${CHIPS.example}</div>`;
+    html+=`<div class="card-title">Read the Query</div>`;
+    if(l.showTable){ html+=sampleTableHTML(); html+=`<div class="divider"></div>`; }
+    html+=`<div class="code-section">`;
+    l.example.annotated.forEach(row=>{
+      html+=`<div class="anno-line">
+        <div class="code-pill">${row.code}</div>
+        <div class="anno-note">${row.note}</div>
+      </div>`;
+    });
+    html+=`</div>`;
+    html+=makeResultTable(l.example.query);
+    botHTML=`<button class="btn-primary" onclick="advance()">Got it <span>→</span></button>`;
+  }
+
+  /* ── BLANK ── */
+  else if(s==='blank'){
+    html=`<div class="chip">${CHIPS.blank}</div>`;
+    html+=`<div class="card-title">Complete the Query</div>`;
+    html+=`<div class="card-body" style="margin-bottom:16px">Tap the correct word to fill the blank.</div>`;
+    html+=`<div class="blank-code">${l.blank.template.replace('___',`<span class="blank" id="blankSlot">___</span>`)}</div>`;
+    html+=`<div class="options-grid">`;
+    l.blank.options.forEach((opt,i)=>{
+      html+=`<div class="opt-chip" id="bopt${i}" onclick="pickBlank('${opt}',${i})">${opt}</div>`;
+    });
+    html+=`</div>`;
+    html+=`<div class="feedback" id="fb"></div>`;
+    botHTML=`<button class="btn-primary" id="cb" onclick="checkBlank()" disabled>Check <span>→</span></button>`;
+  }
+
+  /* ── MCQ ── */
+  else if(s==='mcq'){
+    html=`<div class="chip">${CHIPS.mcq}</div>`;
+    html+=`<div class="mcq-question">${l.mcq.question}</div>`;
+    html+=`<div class="mcq-options">`;
+    ['A','B','C','D'].forEach((lt,i)=>{
+      if(!l.mcq.options[i]) return;
+      html+=`<div class="mcq-opt" id="o${i}" onclick="pickMCQ(${i})">
+        <div class="mcq-letter">${lt}</div>
+        <span>${l.mcq.options[i]}</span>
+      </div>`;
+    });
+    html+=`</div>`;
+    html+=`<div class="feedback" id="fb"></div>`;
+    html+=`<div id="mcqResult"></div>`;
+    botHTML=`<button class="btn-primary" id="cb" onclick="checkMCQ()" disabled>Check Answer</button>`;
+  }
+
+  /* ── WRITE ── */
+  else if(s==='write'){
+    html=`<div class="chip">${CHIPS.write}</div>`;
+    html+=`<div class="card-title">Now Write It Yourself</div>`;
+    html+=`<div class="task-label">Your task</div>`;
+    html+=`<div class="task-text">${l.writeQuery.prompt}</div>`;
+    html+=`<textarea id="ta" placeholder="Type your SQL query here..." spellcheck="false" oninput="onType()"></textarea>`;
+    html+=`<div class="feedback" id="fb"></div>`;
+    html+=`<div id="writeResult"></div>`;
+    html+=`<div class="hint-text" id="ht"></div>`;
+    botHTML=`
+      <button class="btn-ghost" onclick="showHint()">💡 Hint</button>
+      <button class="btn-primary" id="cb" onclick="checkWrite()" disabled>Submit</button>`;
+  }
+
+  card.innerHTML=html;
+  document.getElementById('bot').innerHTML=botHTML;
+}
+
+/* ═══════════════════════════════════════
+   ACTIONS
+═══════════════════════════════════════ */
+function advance(){
+  const stgs=stages();
+  if(si<stgs.length-1){ si++; }
+  else { li++; si=0; if(li>=LESSONS.length){ showDone(); return; } }
+  render();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+/* blank */
+function pickBlank(val,idx){
+  if(blankChecked) return;
+  blankChoice=val;
+  document.querySelectorAll('.opt-chip').forEach(el=>el.classList.remove('selected'));
+  document.getElementById(`bopt${idx}`).classList.add('selected');
+  const slot=document.getElementById('blankSlot');
+  slot.textContent=val; slot.className='blank filled';
+  document.getElementById('cb').disabled=false;
+}
+function checkBlank(){
+  blankChecked=true;
+  const l=L(), ok=blankChoice===l.blank.answer;
+  const fb=document.getElementById('fb');
+  fb.className=`feedback show ${ok?'good':'bad'}`;
+  document.querySelectorAll('.opt-chip').forEach(el=>{
+    el.classList.add('locked');
+    if(el.textContent===l.blank.answer) el.classList.add('correct');
+    else if(el.textContent===blankChoice&&!ok) el.classList.add('wrong-c');
+  });
+  const slot=document.getElementById('blankSlot');
+  if(ok){
+    slot.className='blank filled';
+    fb.textContent=`✓ Correct! "${blankChoice}" is the right keyword.`;
+    const cb=document.getElementById('cb');
+    cb.textContent='Continue →'; cb.disabled=false; cb.onclick=advance;
+  } else {
+    slot.className='blank wrong-clr';
+    fb.textContent=`✗ "${blankChoice}" is wrong. Give it another try!`;
+    document.getElementById('bot').innerHTML=
+      `<button class="btn-retry" onclick="render()">↺ Try Again</button>`;
+  }
+}
+
+/* mcq */
+function pickMCQ(i){
+  if(mcqLocked) return;
+  selOpt=i;
+  document.querySelectorAll('.mcq-opt').forEach((el,idx)=>el.classList.toggle('selected',idx===i));
+  document.getElementById('cb').disabled=false;
+}
+function checkMCQ(){
+  if(mcqLocked) return;
+  mcqLocked=true;
+  const l=L(), ok=selOpt===l.mcq.answer;
+  document.querySelectorAll('.mcq-opt').forEach((el,idx)=>{
+    el.classList.add('locked'); el.classList.remove('selected');
+    if(idx===l.mcq.answer) el.classList.add('correct');
+    else if(idx===selOpt&&!ok) el.classList.add('wrong');
+  });
+  const fb=document.getElementById('fb');
+  fb.className=`feedback show ${ok?'good':'bad'}`;
+  if(ok){
+    fb.textContent=l.mcq.explanation;
+    document.getElementById('mcqResult').innerHTML=makeResultTable(l.mcq.query);
+    const cb=document.getElementById('cb');
+    cb.textContent='Continue →'; cb.disabled=false; cb.onclick=advance;
+  } else {
+    fb.textContent=`✗ Not quite — try again!`;
+    document.getElementById('bot').innerHTML=
+      `<button class="btn-retry" onclick="render()">↺ Try Again</button>`;
+  }
+}
+
+/* write */
+function onType(){
+  document.getElementById('cb').disabled=
+    document.getElementById('ta').value.trim().length===0;
+}
+function norm(s){ return s.trim().replace(/\s+/g,' ').toLowerCase().replace(/;$/,''); }
+function checkWrite(){
+  const l=L(), inp=document.getElementById('ta').value;
+  const ok=norm(inp)===norm(l.writeQuery.answer);
+  const ta=document.getElementById('ta');
+  ta.classList.remove('ok','fail'); ta.classList.add(ok?'ok':'fail');
+  const fb=document.getElementById('fb');
+  fb.className=`feedback show ${ok?'good':'bad'}`;
+  if(ok){
+    fb.textContent='✓ Perfect! Your query is correct.';
+    document.getElementById('writeResult').innerHTML=makeResultTable(inp);
+    const isLast=li===LESSONS.length-1&&si===stages().length-1;
+    document.getElementById('bot').innerHTML=
+      `<button class="btn-primary" onclick="advance()">${isLast?'🎉 Finish Course':'Next Lesson →'}</button>`;
+  } else {
+    fb.textContent='✗ Not quite — check your spacing, quotes, and semicolons.';
+    document.getElementById('bot').innerHTML=`
+      <button class="btn-ghost" onclick="showHint()">💡 Hint</button>
+      <button class="btn-retry" onclick="retryWrite()">↺ Try Again</button>`;
+  }
+}
+function retryWrite(){
+  const ta=document.getElementById('ta');
+  ta.classList.remove('ok','fail'); ta.value='';
+  document.getElementById('fb').className='feedback';
+  document.getElementById('writeResult').innerHTML='';
+  document.getElementById('ht').innerHTML='';
+  document.getElementById('bot').innerHTML=`
+    <button class="btn-ghost" onclick="showHint()">💡 Hint</button>
+    <button class="btn-primary" id="cb" onclick="checkWrite()" disabled>Submit</button>`;
+}
+function showHint(){
+  document.getElementById('ht').innerHTML=`💡 <span>${L().writeQuery.hint}</span>`;
+}
+
+/* done */
+function showDone(){
+  document.getElementById('progressFill').style.width='100%';
+  document.getElementById('stagePills').innerHTML='';
+  document.getElementById('lessonBadge').textContent='Complete!';
+  document.getElementById('bot').innerHTML='';
+  const card=document.getElementById('card');
+  card.style.animation='none'; void card.offsetWidth;
+  card.style.animation='slideUp 0.3s cubic-bezier(.4,0,.2,1)';
+  card.innerHTML=`
+    <div class="complete">
+      <span class="complete-icon">⚡</span>
+      <h2>Course Complete!</h2>
+      <p>You've mastered SQL Basics — SELECT, WHERE, and ORDER BY. You can now query, filter, and sort data like a pro.</p>
+      <div class="complete-badges">
+        <div class="badge">⚡ SELECT</div>
+        <div class="badge">⚡ WHERE</div>
+        <div class="badge">⚡ ORDER BY</div>
+      </div>
+      <button class="btn-primary" style="margin:0 auto" onclick="restart()">↺ Restart Course</button>
+    </div>`;
+}
+function restart(){ li=0; si=0; render(); window.scrollTo({top:0,behavior:'smooth'}); }
+
+render();
+</script>
+</body>
+</html>

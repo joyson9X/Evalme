@@ -1012,27 +1012,91 @@ You must return a valid JSON object matching this exact structure:
 
             {/* Tile 2: Learn Coding */}
             <button 
-              className="group text-left bg-white rounded-3xl p-8 shadow-[0_8px_30px_rgb(0,0,0,0.06)] border border-gray-100 transition-all cursor-not-allowed relative overflow-hidden flex flex-col items-start"
+              onClick={() => setViewState('CODING_COURSES')}
+              className="group text-left bg-white rounded-3xl p-8 shadow-[0_8px_30px_rgb(0,0,0,0.06)] border border-gray-100 hover:border-[#8BE9FD] transition-all cursor-pointer hover:-translate-y-1 hover:shadow-xl relative overflow-hidden flex flex-col items-start"
             >
-              <div className="absolute top-5 right-6 pointer-events-none z-20">
-                <span className="bg-gray-100/80 backdrop-blur-sm text-gray-500 text-[11px] font-bold px-3 py-1.5 rounded-full uppercase tracking-wider border border-gray-200">Coming Soon</span>
-              </div>
+              <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-[#8BE9FD] to-transparent opacity-10 rounded-bl-full transform translate-x-8 -translate-y-8 group-hover:scale-110 transition-transform duration-500"></div>
 
-              <div className="w-14 h-14 bg-gray-50 border border-gray-200 rounded-2xl flex items-center justify-center mb-6 text-gray-400 shadow-sm relative z-10">
+              <div className="w-14 h-14 bg-[#F2FDFE] border border-[#8BE9FD] rounded-2xl flex items-center justify-center mb-6 text-[#17a2b8] shadow-sm relative z-10">
                 <svg className="w-7 h-7" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path>
                 </svg>
               </div>
               
-              <h2 className="text-2xl font-bold text-gray-400 mb-2 tracking-tight relative z-10">Learn Coding</h2>
-              <p className="text-gray-400 text-[15px] leading-relaxed mb-6 relative z-10">
+              <h2 className="text-2xl font-bold text-[#111827] mb-2 tracking-tight relative z-10">Learn Coding</h2>
+              <p className="text-gray-500 text-[15px] leading-relaxed mb-6 relative z-10">
                 Interactive AI-powered coding editor with live personalized challenges.
               </p>
               
+              <div className="mt-auto text-[#17a2b8] font-bold flex items-center gap-2 group-hover:gap-3 transition-all text-[15px] drop-shadow-sm brightness-95 relative z-10">
+                Browse Courses
+                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="3"><path strokeLinecap="round" strokeLinejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+              </div>
             </button>
 
           </div>
         </div>
+      </div>
+    )
+  }
+
+  // CODING COURSES HUB
+  if (viewState === 'CODING_COURSES') {
+    return (
+      <div className="w-full min-h-screen flex items-center justify-center relative bg-[#FAFAFA] overflow-hidden p-4">
+        <div className="decoration dec-1"></div>
+        <div className="decoration dec-2"></div>
+
+        <div className="w-full max-w-[800px] relative z-10 flex flex-col items-center">
+          <div className="w-full mb-8 flex items-center justify-start max-w-[600px] mx-auto">
+            <button 
+              onClick={() => setViewState('HOME')}
+              className="flex items-center gap-2 text-gray-500 hover:text-gray-900 font-semibold transition-colors bg-white/50 px-4 py-2 rounded-xl text-sm w-max backdrop-blur-sm border border-gray-200/50 cursor-pointer shadow-sm hover:shadow"
+            >
+              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+              Back
+            </button>
+          </div>
+
+          <div className="text-center mb-10">
+            <h1 className="text-[2.5rem] font-extrabold mb-2 tracking-tight text-[#111827]">Coding Academy</h1>
+            <p className="text-gray-500 text-[16px]">Master essential engineering skills interactively</p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full max-w-[600px]">
+            {/* SQL Course Tile */}
+            <button 
+              onClick={() => setViewState('SQL_COURSE')}
+              className="group text-left bg-white rounded-3xl p-6 shadow-sm border border-gray-100 hover:border-blue-400 transition-all cursor-pointer hover:-translate-y-1 hover:shadow-md relative overflow-hidden flex items-start gap-5"
+            >
+              <div className="w-14 h-14 shrink-0 bg-[#F0FBFF] border border-blue-200 rounded-2xl flex items-center justify-center text-blue-500 shadow-sm">
+                <svg className="w-7 h-7" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4"></path></svg>
+              </div>
+              <div className="flex flex-col h-full justify-center">
+                <h2 className="text-xl font-bold text-[#111827] mb-1">SQL Basics</h2>
+                <p className="text-gray-500 text-[14px] leading-relaxed">
+                  Interactive lessons & live database challenges.
+                </p>
+              </div>
+            </button>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
+  // SQL COURSE RENDER
+  if (viewState === 'SQL_COURSE') {
+    return (
+      <div className="w-full h-screen relative bg-white">
+        <button 
+          onClick={() => setViewState('CODING_COURSES')}
+          className="absolute top-4 left-4 z-50 flex items-center gap-2 text-gray-500 hover:text-gray-900 font-bold transition-colors bg-white px-4 py-2 rounded-xl text-sm w-max border border-gray-200 shadow hover:shadow-md cursor-pointer"
+        >
+          <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+          Leave Course
+        </button>
+        <iframe src="/sql_course.html" className="w-full h-full border-none m-0 p-0 block" title="SQL Interactive Course"></iframe>
       </div>
     )
   }
