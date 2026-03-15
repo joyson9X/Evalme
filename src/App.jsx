@@ -1851,24 +1851,21 @@ You must return a valid JSON object matching this exact structure:
             </div>
 
             <div>
-              <label className="block font-bold mb-3 text-[14px] text-[#111827]">Planner Duration</label>
-              <div className="flex gap-6">
-                {['3 Days', '7 Days', '10 Days'].map(duration => (
-                  <label key={duration} className="flex items-center cursor-pointer text-[15px] text-[#111827] font-medium group relative">
-                    <div className={`w-6 h-6 rounded-full mr-3 border flex items-center justify-center transition-all duration-200 ${planner === duration ? 'border-2 border-gray-900 bg-white' : 'border-gray-200 bg-[#F5F5F5] group-hover:bg-[#EAEAEA]'}`}>
-                      {planner === duration && <div className="w-[10px] h-[10px] bg-gray-900 rounded-full"></div>}
-                    </div>
-                    <input 
-                      type="radio" 
-                      name="planner" 
-                      value={duration}
-                      checked={planner === duration}
-                      onChange={e => setPlanner(e.target.value)}
-                      className="hidden"
-                    />
-                    {duration}
-                  </label>
-                ))}
+              <label className="block font-bold mb-4 text-[13px] uppercase tracking-widest text-gray-400">Planner Duration</label>
+              <div className="bg-[#F3F4F6] p-1.5 rounded-2xl flex gap-1 shadow-inner border border-gray-100/50">
+                {['3 Days', '7 Days', '10 Days'].map(duration => {
+                  const isActive = planner === duration;
+                  return (
+                    <button 
+                      key={duration} 
+                      type="button"
+                      onClick={() => setPlanner(duration)}
+                      className={`flex-1 py-3 px-4 rounded-[14px] text-[14px] font-bold transition-all duration-300 cursor-pointer border-none flex items-center justify-center ${isActive ? 'bg-white text-gray-900 shadow-[0_4px_12px_rgba(0,0,0,0.08)]' : 'bg-transparent text-gray-400 hover:text-gray-600'}`}
+                    >
+                      {duration}
+                    </button>
+                  );
+                })}
               </div>
             </div>
 
