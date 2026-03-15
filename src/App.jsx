@@ -8,7 +8,7 @@ function App() {
   const [requirement, setRequirement] = useState('')
   const [planner, setPlanner] = useState('')
   
-  const [viewState, setViewState] = useState('GENERATOR') // 'GENERATOR', 'OVERVIEW', 'PLAN', 'COURSE_PLAYER'
+  const [viewState, setViewState] = useState('HOME') // 'HOME', 'GENERATOR', 'OVERVIEW', 'PLAN', 'COURSE_PLAYER'
   const [isGenerating, setIsGenerating] = useState(false)
   const [isGeneratingPlan, setIsGeneratingPlan] = useState(false)
   
@@ -971,6 +971,72 @@ You must return a valid JSON object matching this exact structure:
     )
   }
 
+  // HOME VIEW
+  if (viewState === 'HOME') {
+    return (
+      <div className="w-full min-h-screen flex items-center justify-center relative bg-[#FAFAFA] overflow-hidden p-4">
+        <div className="decoration dec-1"></div>
+        <div className="decoration dec-2"></div>
+
+        <div className="w-full max-w-[800px] relative z-10 flex flex-col items-center">
+          <div className="text-center mb-12">
+            <h1 className="text-[3.5rem] font-extrabold mb-2 tracking-tight text-[#111827]" style={{ fontFamily: "'Evolve Sans', sans-serif" }}>Evalme</h1>
+            <p className="text-gray-500 text-[18px]">Select a powerful AI learning tool to begin</p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full">
+            
+            {/* Tile 1: Job Plan Maker */}
+            <button 
+              onClick={() => setViewState('GENERATOR')}
+              className="group text-left bg-white rounded-3xl p-8 shadow-[0_8px_30px_rgb(0,0,0,0.06)] border border-gray-100 hover:border-[var(--pikachu-yellow)] transition-all cursor-pointer hover:-translate-y-1 hover:shadow-xl relative overflow-hidden flex flex-col items-start"
+            >
+              <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-[var(--pikachu-yellow)] to-transparent opacity-10 rounded-bl-full transform translate-x-8 -translate-y-8 group-hover:scale-110 transition-transform duration-500"></div>
+              
+              <div className="w-14 h-14 bg-[#FFFDF5] border border-[var(--pikachu-yellow)] rounded-2xl flex items-center justify-center mb-6 text-amber-500 shadow-sm relative z-10">
+                <svg className="w-7 h-7" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+                </svg>
+              </div>
+              
+              <h2 className="text-2xl font-bold text-[#111827] mb-2 tracking-tight relative z-10">Job Plan Maker</h2>
+              <p className="text-gray-500 text-[15px] leading-relaxed mb-8 relative z-10">
+                Generate highly tailored day-by-day learning curriculums for any job role.
+              </p>
+              
+              <div className="mt-auto text-amber-500 font-bold flex items-center gap-2 group-hover:gap-3 transition-all text-[15px] drop-shadow-sm brightness-95 relative z-10">
+                Start Building 
+                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="3"><path strokeLinecap="round" strokeLinejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+              </div>
+            </button>
+
+            {/* Tile 2: Learn Coding */}
+            <button 
+              className="group text-left bg-white rounded-3xl p-8 shadow-[0_8px_30px_rgb(0,0,0,0.06)] border border-gray-100 transition-all cursor-not-allowed relative overflow-hidden flex flex-col items-start"
+            >
+              <div className="absolute top-5 right-6 pointer-events-none z-20">
+                <span className="bg-gray-100/80 backdrop-blur-sm text-gray-500 text-[11px] font-bold px-3 py-1.5 rounded-full uppercase tracking-wider border border-gray-200">Coming Soon</span>
+              </div>
+
+              <div className="w-14 h-14 bg-gray-50 border border-gray-200 rounded-2xl flex items-center justify-center mb-6 text-gray-400 shadow-sm relative z-10">
+                <svg className="w-7 h-7" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path>
+                </svg>
+              </div>
+              
+              <h2 className="text-2xl font-bold text-gray-400 mb-2 tracking-tight relative z-10">Learn Coding</h2>
+              <p className="text-gray-400 text-[15px] leading-relaxed mb-6 relative z-10">
+                Interactive AI-powered coding editor with live personalized challenges.
+              </p>
+              
+            </button>
+
+          </div>
+        </div>
+      </div>
+    )
+  }
+
   // GENERATOR VIEW
   return (
     <div className="w-full min-h-screen flex items-center justify-center relative bg-[#FAFAFA] overflow-hidden">
@@ -978,6 +1044,15 @@ You must return a valid JSON object matching this exact structure:
       <div className="decoration dec-2"></div>
 
       <div className="w-full max-w-[500px] relative z-10 p-4">
+        
+        <button 
+          onClick={() => setViewState('HOME')}
+          className="mb-6 flex items-center gap-2 text-gray-500 hover:text-gray-900 font-semibold transition-colors bg-white/50 px-4 py-2 rounded-xl text-sm w-max backdrop-blur-sm border border-gray-200/50 cursor-pointer shadow-sm hover:shadow"
+        >
+          <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+          Back to Home
+        </button>
+
         <div className="bg-white rounded-3xl p-8 sm:p-10 shadow-[0_8px_30px_rgb(0,0,0,0.06)] relative overflow-hidden">
           
           <div className="text-center mb-8">
