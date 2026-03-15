@@ -841,414 +841,514 @@ You must return a valid JSON object matching this exact structure:
       return (correctCount / quizData.length) >= 0.4;
     };
 
-    return (
-      <div className="w-full h-screen flex bg-gray-50 overflow-hidden font-sans">
-        
-        {/* LEFT SIDEBAR NAVIGATION */}
-        {isSidebarOpen && (
-        <div className="w-80 border-r border-gray-200 bg-white flex flex-col shadow-[2px_0_10px_rgba(0,0,0,0.02)] z-20 flex-shrink-0">
-          <div className="p-4 border-b border-gray-100 flex items-center gap-3">
-             <button 
-                onClick={() => setIsSidebarOpen(false)}
-                className="w-10 h-10 rounded-full flex items-center justify-center bg-gray-100 hover:bg-gray-200 cursor-pointer transition-colors border-none shrink-0 text-gray-400 hover:text-gray-900"
-                title="Hide Sidebar"
-              >
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <circle cx="12" cy="12" r="1.5"></circle>
-                  <circle cx="19" cy="12" r="1.5"></circle>
-                  <circle cx="5" cy="12" r="1.5"></circle>
-                </svg>
-              </button>
-            <h2 className="font-bold text-gray-900 tracking-tight leading-tight m-0 text-sm truncate">
-              {jobData.role} Syllabus
-            </h2>
-          </div>
+    // Compute overall progress for top bar
+    let totalLessons = 0;
+    planData.forEach((mod) => {
+      totalLessons += mod.topics?.length || 0;
+      if (Array.isArray(mod.quiz) && mod.quiz.length > 0) totalLessons += 1;
+    });
+    const currentLessonGlobal = (() => {
+      let count = 0;
+      for (let m = 0; m < activeModuleIndex; m++) {
+        count += planData[m].topics?.length || 0;
+        if (Array.isArray(planData[m].quiz) && planData[m].quiz.length > 0) count += 1;
+      }
+      count += activeTopicIndex + 1;
+      return count;
+    })();
 
-          <div className="flex-1 overflow-y-auto">
-            {planData.map((mod, mIdx) => (
-              <div key={mIdx} className="border-b border-gray-100">
-                <div className="bg-[#FAFAFA] px-5 py-3.5 border-l-4 border-transparent text-gray-900 w-full overflow-hidden">
-                  <span className="text-xs font-bold text-gray-500 uppercase block mb-0.5">Section {mod.day}</span>
-                  <div className="text-[0.95rem] font-bold leading-tight block truncate" title={mod.title}>{mod.title}</div>
-                </div>
-                
-                <div className="flex flex-col">
-                  {mod.topics?.map((topic, tIdx) => {
-                    const isActive = mIdx === activeModuleIndex && tIdx === activeTopicIndex;
-                    const isCompleted = completedTopics.has(`${mIdx}-${tIdx}`);
-                    return (
-                      <button 
-                        key={tIdx}
-                        onClick={() => {
-                          setActiveModuleIndex(mIdx);
-                          setActiveTopicIndex(tIdx);
-                        }}
-                        className={`text-left w-full border-none bg-transparent px-5 py-3 cursor-pointer transition-all flex items-center gap-3 border-l-4 overflow-hidden ${isActive ? 'bg-[#FEFEFA] border-[var(--volt-yellow)] shadow-[inset_4px_0_0_var(--volt-yellow)]' : 'border-transparent hover:bg-gray-50'}`}
-                        title={`${tIdx + 1}. ${topic.name}`}
-                      >
-                         <div className={`w-5 h-5 rounded flex items-center justify-center flex-shrink-0 ${isCompleted ? 'bg-green-500' : 'bg-white border border-gray-300'}`}>
-                           {isCompleted && (
-                             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
-                               <polyline points="20 6 9 17 4 12"></polyline>
-                             </svg>
-                           )}
-                         </div>
-                         <span className={`flex-1 block truncate text-[0.9rem] leading-snug ${isCompleted ? 'text-gray-400 line-through' : isActive ? 'font-bold text-gray-900' : 'text-gray-600 font-medium'}`}>
-                           {tIdx + 1}. {topic.name}
-                         </span>
-                      </button>
-                    )
-                  })}
-                  {Array.isArray(mod.quiz) && mod.quiz.length > 0 && (() => {
-                    const tIdx = mod.topics ? mod.topics.length : 0;
-                    const isActive = mIdx === activeModuleIndex && tIdx === activeTopicIndex;
-                    const isCompleted = completedTopics.has(`${mIdx}-${tIdx}`);
-                    return (
-                      <button 
-                        key="quiz"
-                        onClick={() => {
-                          setActiveModuleIndex(mIdx);
-                          setActiveTopicIndex(tIdx);
-                        }}
-                        className={`text-left w-full border-none bg-transparent px-5 py-3 cursor-pointer transition-all flex items-center gap-3 border-l-4 overflow-hidden ${isActive ? 'bg-[#FEFEFA] border-[var(--volt-yellow)] shadow-[inset_4px_0_0_var(--volt-yellow)]' : 'border-transparent hover:bg-gray-50'}`}
-                        title={`Module ${mod.day} Quiz`}
-                      >
-                         <div className={`w-5 h-5 rounded flex items-center justify-center flex-shrink-0 ${isCompleted ? 'bg-purple-500 border-purple-500' : 'bg-purple-50 border-purple-200 border'}`}>
-                           {isCompleted ? (
-                             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
-                               <polyline points="20 6 9 17 4 12"></polyline>
-                             </svg>
-                           ) : (
-                             <span className="text-purple-600 font-bold text-[10px]">?</span>
-                           )}
-                         </div>
-                         <span className={`block truncate flex-1 text-[0.9rem] leading-snug ${isCompleted ? 'text-gray-400 line-through' : isActive ? 'font-bold text-purple-700' : 'text-purple-600 font-semibold'}`}>
-                           Module {mod.day} Quiz
-                         </span>
-                      </button>
-                    )
-                  })()}
-                </div>
+    return (
+      <div className="w-full h-screen flex flex-col bg-[#F7F8FA] overflow-hidden font-sans">
+
+        {/* ═══ TOP NAV BAR ═══ */}
+        <div className="h-14 bg-white border-b border-gray-200 flex items-center px-4 gap-3 flex-shrink-0 z-30 shadow-[0_1px_3px_rgba(0,0,0,0.04)]">
+          {/* Hamburger / Sidebar Toggle */}
+          <button 
+            onClick={() => setIsSidebarOpen(prev => !prev)}
+            className="w-9 h-9 rounded-lg flex items-center justify-center hover:bg-gray-100 cursor-pointer transition-colors border-none bg-transparent text-gray-600 flex-shrink-0"
+            title={isSidebarOpen ? "Hide sidebar" : "Show sidebar"}
+          >
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M3 12h18M3 6h18M3 18h18" />
+            </svg>
+          </button>
+
+          {/* Divider */}
+          <div className="w-px h-6 bg-gray-200 flex-shrink-0 hidden sm:block"></div>
+
+          {/* Back */}
+          <button 
+            onClick={() => setViewState('PLAN')}
+            className="flex items-center gap-1.5 text-gray-500 hover:text-gray-900 font-semibold text-sm transition-colors border-none bg-transparent cursor-pointer flex-shrink-0"
+          >
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+            <span className="hidden sm:inline">Back</span>
+          </button>
+
+          {/* Course Title */}
+          <h1 className="flex-1 text-sm font-bold text-gray-800 truncate mx-2">
+            {jobData.role}
+          </h1>
+
+          {/* Progress Pill */}
+          <div className="flex items-center gap-2 flex-shrink-0">
+            <div className="hidden sm:flex items-center gap-2 bg-gray-100 rounded-full px-3 py-1.5">
+              <div className="w-24 h-1.5 bg-gray-200 rounded-full overflow-hidden">
+                <div 
+                  className="h-full bg-[var(--pikachu-yellow)] rounded-full transition-all duration-500"
+                  style={{ width: `${totalLessons > 0 ? (completedTopics.size / totalLessons) * 100 : 0}%` }}
+                ></div>
               </div>
-            ))}
+              <span className="text-xs font-bold text-gray-500 tabular-nums whitespace-nowrap">
+                {completedTopics.size}/{totalLessons}
+              </span>
+            </div>
+            <span className="sm:hidden text-xs font-bold text-gray-500 bg-gray-100 rounded-full px-2.5 py-1 tabular-nums">
+              {currentLessonGlobal}/{totalLessons}
+            </span>
           </div>
         </div>
-        )}
 
-        {/* RIGHT MAIN CONTENT AREA */}
-        <div className="flex-1 flex flex-col bg-white overflow-hidden relative">
-           {/* Electrifying decoration leaking subtly into the player */}
-          <div className="absolute -top-40 -left-40 w-80 h-80 bg-[var(--pikachu-yellow)] rounded-full blur-[100px] opacity-20 pointer-events-none z-0"></div>
-          
-          <div className="flex-1 overflow-y-auto w-full relative z-10">
-            <div className="max-w-[850px] mx-auto p-8 lg:p-12 pb-32">
-              
-              <div className="flex items-center gap-3 mb-6">
-                 {!isSidebarOpen && (
-                   <button 
-                     onClick={() => setIsSidebarOpen(true)}
-                     className="w-10 h-10 rounded-full flex items-center justify-center bg-white border border-gray-200 text-gray-400 hover:text-gray-900 hover:bg-gray-50 cursor-pointer shadow-sm transition-all shadow-[0_2px_8px_rgba(0,0,0,0.04)]"
-                     title="Show Sidebar"
-                   >
-                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                       <path d="M3 12h18M3 6h18M3 18h18" />
-                     </svg>
-                   </button>
-                 )}
-                 <button 
-                   onClick={() => setViewState('PLAN')}
-                   className="px-4 py-2 bg-white border border-gray-200 text-gray-500 hover:text-gray-900 font-bold text-sm rounded-lg hover:bg-gray-50 cursor-pointer transition-colors shadow-sm shadow-[0_2px_8px_rgba(0,0,0,0.04)] flex items-center gap-2"
-                 >
-                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
-                   Back to Plan
-                 </button>
-              </div>
+        {/* ═══ BODY: SIDEBAR + CONTENT ═══ */}
+        <div className="flex-1 flex overflow-hidden relative">
 
-              {!isQuizScreen ? (
-                <>
-                  <div className="mb-4 flex items-center gap-2 text-sm font-bold text-gray-500 uppercase tracking-widest">
-                    <span>Day {currentModule.day}</span>
-                    <span>•</span>
-                    <span>Lesson {activeTopicIndex + 1}</span>
-                  </div>
-                  
-                  <h1 className="text-3xl lg:text-4xl font-extrabold text-gray-900 mb-8 leading-tight">
-                    {currentTopic.name}
-                  </h1>
+          {/* Mobile backdrop */}
+          <div 
+            className={`cp-backdrop ${isSidebarOpen ? 'visible' : ''} md:hidden`}
+            onClick={() => setIsSidebarOpen(false)}
+          ></div>
 
-                  {/* DYNAMIC, INTERACTIVE LEARNING MATERIAL */}
-                  <div className="mb-16 relative">
-                    {/* Background glow */}
-                    <div className="absolute top-0 right-0 w-32 h-32 bg-[var(--volt-yellow)] rounded-full blur-[80px] opacity-10 pointer-events-none"></div>
-
-                    {(() => {
-                      // 1. Parse text: The API sometimes gives one massive string. Let's break it down into sentences.
-                      const rawText = currentTopic.readingMaterial || "";
-                      const cleanText = rawText.replace(/\n/g, ' ').replace(/\s+/g, ' ');
-                      // Split by period to get sentences, filter empty
-                      const sentences = cleanText.split('. ').map(s => s.trim()).filter(s => s.length > 5);
-                      
-                      if (sentences.length === 0) {
-                         return <p className="text-gray-600">No content available.</p>;
-                      }
-
-                      // Slice sentences into groups for different UI representations
-                      const introSentences = sentences.slice(0, 2); // First 2 sentences: Intro
-                      const cardSentences = sentences.slice(2, 6); // Up to 4 sentences: Flash Cards
-                      const highlightSentence = sentences.length > 6 ? sentences[6] : null; // Insight Quote
-                      const remainingSentences = sentences.slice(highlightSentence ? 7 : 6); // The rest: Bullets
-
-                      return (
-                        <div className="flex flex-col gap-10">
-
-
-                           {/* B. Minimal Intro Paragraph */}
-                           <div className="text-xl leading-relaxed text-gray-700 font-medium">
-                              {introSentences.join('. ')}
-                              {introSentences.length > 0 && !introSentences[introSentences.length - 1].endsWith('.') ? '.' : ''}
-                           </div>
-
-                           {/* C. Interactive Flash Cards */}
-                           {cardSentences.length > 0 && (
-                             <div>
-                                <h4 className="text-sm font-bold text-gray-400 uppercase tracking-widest mb-4">Key Takeaways</h4>
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                  {cardSentences.map((cardText, i) => (
-                                     <div key={i} className="bg-white border border-gray-200 rounded-2xl p-6 shadow-sm hover:-translate-y-1 hover:shadow-md transition-all duration-300 relative overflow-hidden group/card cursor-pointer">
-                                        <div className="absolute top-0 right-0 w-16 h-16 bg-[var(--volt-yellow)] opacity-0 group-hover/card:opacity-10 rounded-bl-full transition-opacity"></div>
-                                        <div className="w-8 h-8 rounded-full bg-gray-50 border border-gray-100 flex items-center justify-center mb-4">
-                                           <span className="text-xs font-bold text-gray-500">{i + 1}</span>
-                                        </div>
-                                        <p className="text-gray-800 m-0 font-medium leading-relaxed">{cardText}.</p>
-                                     </div>
-                                  ))}
-                                </div>
-                             </div>
-                           )}
-
-                           {/* D. Highlight Quote Box */}
-                           {highlightSentence && (
-                             <blockquote className="border-l-[6px] border-[var(--pikachu-yellow)] bg-gray-50 pl-6 py-6 pr-6 rounded-r-2xl my-2 relative overflow-hidden group/quote">
-                               <svg className="absolute top-4 right-4 w-12 h-12 text-gray-200 opacity-50 transform -rotate-12" fill="currentColor" viewBox="0 0 24 24"><path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-9.983zm-14.017 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h3.983v10h-9.983z" /></svg>
-                               <div className="absolute inset-0 bg-gradient-to-r from-[var(--volt-yellow)]/10 to-transparent -translate-x-full group-hover/quote:translate-x-0 transition-transform duration-700 ease-out z-0"></div>
-                               <p className="relative z-10 italic text-xl font-bold text-gray-900 m-0 leading-relaxed">
-                                 "{highlightSentence}."
-                               </p>
-                             </blockquote>
-                           )}
-
-                           {/* G. Mermaid Diagram */}
-                           {currentTopic.mermaidDiagram && (
-                             <div className="overflow-hidden rounded-2xl border border-gray-200 shadow-[0_4px_20px_rgba(0,0,0,0.03)] my-6 bg-white w-full p-6 flex items-center justify-center">
-                               <div className="w-full overflow-x-auto flex justify-center text-sm md:text-base">
-                                 <Mermaid chart={sanitizeMermaid(currentTopic.mermaidDiagram)} />
-                               </div>
-                             </div>
-                           )}
-
-                           {/* E. Embedded Content Table */}
-                           {currentTopic.keyTable && currentTopic.keyTable.headers && currentTopic.keyTable.rows && (
-                             <div className="overflow-hidden rounded-2xl border border-gray-200 shadow-[0_4px_20px_rgba(0,0,0,0.03)] my-6 bg-white w-full">
-                               <div className="bg-gray-50 px-6 py-4 border-b border-gray-200 flex items-center gap-3">
-                                 <svg className="w-5 h-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M3 10h18M3 14h18m-9-4v8m-7 0h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" /></svg>
-                                 <h4 className="font-extrabold text-sm text-gray-600 tracking-widest uppercase m-0">Quick Reference</h4>
-                               </div>
-                               <div className="overflow-x-auto">
-                                 <table className="w-full text-left border-collapse min-w-[600px] m-0">
-                                   <thead>
-                                     <tr className="bg-white border-b border-gray-100">
-                                       {currentTopic.keyTable.headers.map((h, hi) => (
-                                         <th key={hi} className="py-4 px-6 text-xs font-bold text-gray-400 uppercase tracking-wider">{h}</th>
-                                       ))}
-                                     </tr>
-                                   </thead>
-                                   <tbody className="divide-y divide-gray-100">
-                                     {currentTopic.keyTable.rows.map((row, ri) => (
-                                       <tr key={ri} className="hover:bg-gray-50 transition-colors group/row">
-                                         {row.map((cell, ci) => (
-                                           <td key={ci} className={`py-4 px-6 text-sm ${ci === 0 ? 'font-bold text-gray-900 shadow-[inset_3px_0_0_transparent] group-hover/row:shadow-[inset_3px_0_0_var(--volt-yellow)] transition-shadow' : 'text-gray-600 font-medium'}`}>{cell}</td>
-                                         ))}
-                                       </tr>
-                                     ))}
-                                   </tbody>
-                                 </table>
-                               </div>
-                             </div>
-                           )}
-
-                           {/* F. Minimal Bullet Points for remaining text */}
-                           {remainingSentences.length > 0 && (
-                             <ul className="space-y-4 m-0 p-0 pl-1">
-                               {remainingSentences.map((liText, i) => (
-                                 <li key={i} className="flex gap-3 text-gray-600 font-medium items-start">
-                                    <svg className="w-5 h-5 text-[var(--pikachu-yellow)] flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="3">
-                                      <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                    </svg>
-                                    <span className="leading-relaxed">{liText}.</span>
-                                 </li>
-                               ))}
-                             </ul>
-                           )}
-                        </div>
-                      )
-                    })()}
-                  </div>
-                </>
-              ) : (
-                <div className="w-full">
-                  <div className="mb-4 flex items-center gap-2 text-sm font-bold text-purple-500 uppercase tracking-widest">
-                    <span>Day {currentModule.day}</span>
-                    <span>•</span>
-                    <span>Knowledge Check</span>
-                  </div>
-                  <h1 className="text-3xl lg:text-4xl font-extrabold text-gray-900 mb-8 leading-tight">
-                    Module {currentModule.day} Quiz
-                  </h1>
-                  <div className="flex flex-col gap-8">
-                    {showQuizSummary ? (
-                      <div className="bg-white border border-gray-200 rounded-xl p-8 shadow-sm text-center">
-                        <h2 className="text-2xl font-bold mb-4">Quiz Complete!</h2>
-                        {(() => {
-                          let correctCount = 0;
-                          quizData?.forEach((q, qIdx) => {
-                            if (quizAnswers[`${activeModuleIndex}-${activeTopicIndex}-${qIdx}`] === q.correctIndex) correctCount++;
-                          });
-                          const totalQuestions = quizData?.length || 1;
-                          const scorePercentage = (correctCount / totalQuestions) * 100;
-                          const isPassing = isQuizPassed();
-
-                          return (
-                            <>
-                              <div className={`text-5xl font-extrabold mb-4 ${isPassing ? 'text-green-500' : 'text-red-500'}`}>
-                                {scorePercentage.toFixed(0)}%
-                              </div>
-                              <p className="text-gray-600 text-lg mb-6">
-                                You got {correctCount} out of {totalQuestions} questions correct.
-                              </p>
-                              {isPassing ? (
-                                <div className="bg-green-100 text-green-700 px-4 py-3 rounded-lg font-bold mb-6">
-                                  Passed! Great job.
-                                </div>
-                              ) : (
-                                <div className="bg-red-100 text-red-700 px-4 py-3 rounded-lg font-bold mb-6">
-                                  Minimum 40% to pass. Please review the material and try again.
-                                </div>
-                              )}
-                              {!isPassing && (
-                                <button 
-                                  onClick={() => {
-                                    const newAnswers = { ...quizAnswers };
-                                    quizData?.forEach((_, qIdx) => {
-                                      delete newAnswers[`${activeModuleIndex}-${activeTopicIndex}-${qIdx}`];
-                                    });
-                                    setQuizAnswers(newAnswers);
-                                    setCurrentQuizQuestionIndex(0);
-                                    setShowQuizSummary(false);
-                                  }}
-                                  className="bg-gray-100 hover:bg-gray-200 text-gray-800 font-bold px-6 py-2.5 rounded-lg transition-colors border-none cursor-pointer"
-                                >
-                                  Retake Quiz
-                                </button>
-                              )}
-                            </>
-                          );
-                        })()}
-                      </div>
-                    ) : (() => {
-                      const q = quizData?.[currentQuizQuestionIndex];
-                      if (!q) return null;
-                      const qIdx = currentQuizQuestionIndex;
-                      const answerKey = `${activeModuleIndex}-${activeTopicIndex}-${qIdx}`;
-                      const selectedAnswer = quizAnswers[answerKey];
-                      const hasAnswered = selectedAnswer !== undefined;
-
-                      return (
-                        <div className="bg-white border border-gray-200 rounded-xl p-6 shadow-sm">
-                          <div className="text-sm font-bold text-gray-400 mb-2 uppercase tracking-wide">
-                            Question {qIdx + 1} of {quizData.length}
-                          </div>
-                          <h3 className="font-bold text-xl text-gray-900 mb-6">{q.question}</h3>
-                          <div className="flex flex-col gap-3 mb-6">
-                            {q.options.map((opt, oIdx) => {
-                               const isSelected = selectedAnswer === oIdx;
-                               let btnClass = "text-left px-5 py-4 rounded-lg border-2 font-medium transition-all ";
-                               
-                               if (hasAnswered) {
-                                  if (oIdx === q.correctIndex) {
-                                     btnClass += "border-green-500 bg-green-50 text-green-700 shadow-sm";
-                                  } else if (isSelected) {
-                                     btnClass += "border-red-500 bg-red-50 text-red-700 shadow-sm";
-                                  } else {
-                                     btnClass += "border-gray-200 bg-white text-gray-400 opacity-50";
-                                  }
-                               } else {
-                                  btnClass += "border-gray-200 bg-white flex hover:border-[var(--volt-yellow)] hover:bg-yellow-50 text-gray-700 cursor-pointer";
-                               }
-                               
-                               return (
-                                 <button 
-                                   key={oIdx}
-                                   disabled={hasAnswered}
-                                   onClick={() => {
-                                       setQuizAnswers(prev => ({ ...prev, [answerKey]: oIdx }))
-                                   }}
-                                   className={btnClass}
-                                 >
-                                   <div className="flex items-center gap-3">
-                                     <span className="w-6 h-6 rounded-full bg-white border border-current flex items-center justify-center text-xs shrink-0 font-bold">
-                                       {String.fromCharCode(65 + oIdx)}
-                                     </span>
-                                     <span>{opt}</span>
-                                   </div>
-                                 </button>
-                               )
-                            })}
-                          </div>
-                          
-                          {hasAnswered && (
-                            <div className="flex justify-end pt-4 border-t border-gray-100 mt-2">
-                              <button
-                                onClick={() => {
-                                  if (currentQuizQuestionIndex < quizData.length - 1) {
-                                    setCurrentQuizQuestionIndex(prev => prev + 1);
-                                  } else {
-                                    setShowQuizSummary(true);
-                                  }
-                                }}
-                                className="bg-[var(--volt-yellow)] hover:bg-yellow-400 text-gray-900 font-bold px-6 py-2.5 rounded-lg transition-colors border-none cursor-pointer flex items-center gap-2"
-                              >
-                                {currentQuizQuestionIndex < quizData.length - 1 ? "Next Question" : "See Results"}
-                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
-                                  <path d="M5 12h14M12 5l7 7-7 7" />
-                                </svg>
-                              </button>
-                            </div>
-                          )}
-                        </div>
-                      )
-                    })()}
-                  </div>
-                </div>
-              )}
-
-            </div>
-          </div>
-
-          {/* Sticky Player Footer */}
-          <div className="h-20 bg-white border-t border-gray-200 shadow-[0_-4px_10px_rgba(0,0,0,0.02)] flex items-center justify-between px-8 z-20 flex-shrink-0">
-            <div className="font-semibold text-gray-500 text-sm">
-              {isQuizScreen ? `Module ${currentModule.day} Quiz` : `Lesson ${activeTopicIndex + 1} of ${currentModule.topics.length}`}
-            </div>
-            {(!isQuizScreen || (showQuizSummary && isQuizPassed())) && (
+          {/* ─── SIDEBAR ─── */}
+          <aside className={`cp-sidebar ${!isSidebarOpen ? 'collapsed' : ''} w-80 bg-white border-r border-gray-200 flex flex-col flex-shrink-0 z-50 md:z-20 md:relative md:shadow-none shadow-[4px_0_24px_rgba(0,0,0,0.1)]`}>
+            
+            {/* Sidebar Header */}
+            <div className="px-4 py-3 border-b border-gray-100 flex items-center justify-between gap-2 flex-shrink-0">
+              <h2 className="font-bold text-gray-900 text-sm truncate leading-tight m-0">
+                Course content
+              </h2>
+              {/* Close button — visible on mobile */}
               <button 
-                onClick={handleNextLesson}
-                className="bg-gray-900 text-white font-bold px-8 py-3.5 rounded-lg border-none cursor-pointer hover:bg-black transition-colors shadow-md flex items-center gap-3"
+                onClick={() => setIsSidebarOpen(false)}
+                className="md:hidden w-8 h-8 rounded-lg flex items-center justify-center hover:bg-gray-100 cursor-pointer transition-colors border-none bg-transparent text-gray-400"
               >
-                Complete and Continue 
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M5 12h14M12 5l7 7-7 7" />
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M18 6L6 18M6 6l12 12" />
                 </svg>
               </button>
+            </div>
+
+            {/* Sidebar Sections */}
+            <div className="flex-1 overflow-y-auto">
+              {planData.map((mod, mIdx) => {
+                const hasQuiz = Array.isArray(mod.quiz) && mod.quiz.length > 0;
+                const totalInMod = (mod.topics?.length || 0) + (hasQuiz ? 1 : 0);
+                let completedInMod = 0;
+                for (let t = 0; t < totalInMod; t++) {
+                  if (completedTopics.has(`${mIdx}-${t}`)) completedInMod++;
+                }
+                const isCurrentModule = mIdx === activeModuleIndex;
+
+                return (
+                  <div key={mIdx} className="border-b border-gray-100">
+                    {/* Section Header — accordion style */}
+                    <div className={`px-4 py-3 cursor-default select-none ${isCurrentModule ? 'bg-gray-50' : 'bg-white'}`}>
+                      <div className="flex items-center justify-between gap-2">
+                        <div className="flex-1 min-w-0">
+                          <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest block">Section {mod.day}</span>
+                          <div className="text-[0.85rem] font-bold text-gray-800 leading-snug truncate" title={mod.title}>{mod.title}</div>
+                        </div>
+                        <span className="text-[11px] font-bold text-gray-400 tabular-nums whitespace-nowrap flex-shrink-0">
+                          {completedInMod}/{totalInMod}
+                        </span>
+                      </div>
+                      {/* Mini progress bar for section */}
+                      <div className="w-full h-[3px] bg-gray-100 rounded-full mt-2 overflow-hidden">
+                        <div 
+                          className="h-full bg-[var(--pikachu-yellow)] rounded-full transition-all duration-300"
+                          style={{ width: `${totalInMod > 0 ? (completedInMod / totalInMod) * 100 : 0}%` }}
+                        ></div>
+                      </div>
+                    </div>
+
+                    {/* Topic Items */}
+                    <div className="flex flex-col">
+                      {mod.topics?.map((topic, tIdx) => {
+                        const isActive = mIdx === activeModuleIndex && tIdx === activeTopicIndex;
+                        const isCompleted = completedTopics.has(`${mIdx}-${tIdx}`);
+                        return (
+                          <button 
+                            key={tIdx}
+                            onClick={() => {
+                              setActiveModuleIndex(mIdx);
+                              setActiveTopicIndex(tIdx);
+                              if (window.innerWidth < 768) setIsSidebarOpen(false);
+                            }}
+                            className={`text-left w-full border-none bg-transparent pl-4 pr-3 py-2.5 cursor-pointer transition-all flex items-center gap-2.5 overflow-hidden min-h-[40px] ${
+                              isActive 
+                                ? 'bg-[#FFFDF5] border-l-[3px] border-l-[var(--pikachu-yellow)] shadow-[inset_0_0_0_1px_rgba(255,222,0,0.15)]' 
+                                : 'border-l-[3px] border-l-transparent hover:bg-gray-50'
+                            }`}
+                            title={`${tIdx + 1}. ${topic.name}`}
+                          >
+                            <div className={`w-[18px] h-[18px] rounded flex items-center justify-center flex-shrink-0 transition-colors ${
+                              isCompleted ? 'bg-green-500' : 'border border-gray-300 bg-white'
+                            }`}>
+                              {isCompleted && (
+                                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round">
+                                  <polyline points="20 6 9 17 4 12"></polyline>
+                                </svg>
+                              )}
+                            </div>
+                            <span className={`flex-1 block truncate text-[13px] leading-snug ${
+                              isCompleted 
+                                ? 'text-gray-400 line-through' 
+                                : isActive 
+                                  ? 'font-semibold text-gray-900' 
+                                  : 'text-gray-600'
+                            }`}>
+                              {tIdx + 1}. {topic.name}
+                            </span>
+                          </button>
+                        );
+                      })}
+                      
+                      {/* Quiz Item */}
+                      {hasQuiz && (() => {
+                        const tIdx = mod.topics?.length || 0;
+                        const isActive = mIdx === activeModuleIndex && tIdx === activeTopicIndex;
+                        const isCompleted = completedTopics.has(`${mIdx}-${tIdx}`);
+                        return (
+                          <button 
+                            key="quiz"
+                            onClick={() => {
+                              setActiveModuleIndex(mIdx);
+                              setActiveTopicIndex(tIdx);
+                              if (window.innerWidth < 768) setIsSidebarOpen(false);
+                            }}
+                            className={`text-left w-full border-none bg-transparent pl-4 pr-3 py-2.5 cursor-pointer transition-all flex items-center gap-2.5 overflow-hidden min-h-[40px] ${
+                              isActive 
+                                ? 'bg-purple-50 border-l-[3px] border-l-purple-400' 
+                                : 'border-l-[3px] border-l-transparent hover:bg-gray-50'
+                            }`}
+                            title={`Module ${mod.day} Quiz`}
+                          >
+                            <div className={`w-[18px] h-[18px] rounded flex items-center justify-center flex-shrink-0 transition-colors ${
+                              isCompleted ? 'bg-purple-500' : 'border border-purple-300 bg-purple-50'
+                            }`}>
+                              {isCompleted ? (
+                                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round">
+                                  <polyline points="20 6 9 17 4 12"></polyline>
+                                </svg>
+                              ) : (
+                                <span className="text-purple-500 font-bold text-[9px]">?</span>
+                              )}
+                            </div>
+                            <span className={`block truncate flex-1 text-[13px] leading-snug ${
+                              isCompleted 
+                                ? 'text-gray-400 line-through' 
+                                : isActive 
+                                  ? 'font-semibold text-purple-700' 
+                                  : 'text-purple-600'
+                            }`}>
+                              Quiz
+                            </span>
+                          </button>
+                        );
+                      })()}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </aside>
+
+          {/* ─── MAIN CONTENT AREA ─── */}
+          <div className="flex-1 flex flex-col overflow-hidden bg-white">
+            <div className="flex-1 overflow-y-auto">
+              <div className="max-w-3xl mx-auto px-4 sm:px-8 lg:px-12 py-8 pb-32">
+                
+                {!isQuizScreen ? (
+                  <>
+                    {/* Breadcrumb */}
+                    <div className="mb-3 flex items-center gap-1.5 text-xs font-semibold text-gray-400 uppercase tracking-wider">
+                      <span>Section {currentModule.day}</span>
+                      <span className="text-gray-300">·</span>
+                      <span>Lesson {activeTopicIndex + 1} of {currentModule.topics.length}</span>
+                    </div>
+                    
+                    <h1 className="text-2xl sm:text-3xl lg:text-[2.1rem] font-extrabold text-gray-900 mb-6 leading-tight tracking-tight">
+                      {currentTopic.name}
+                    </h1>
+
+                    {/* Divider */}
+                    <div className="w-12 h-[3px] bg-[var(--pikachu-yellow)] rounded-full mb-8"></div>
+
+                    {/* Content Blocks */}
+                    <div className="mb-12 relative">
+                      {(() => {
+                        const rawText = currentTopic.readingMaterial || "";
+                        const cleanText = rawText.replace(/\n/g, ' ').replace(/\s+/g, ' ');
+                        const sentences = cleanText.split('. ').map(s => s.trim()).filter(s => s.length > 5);
+                        
+                        if (sentences.length === 0) {
+                          return <p className="text-gray-500 italic">No content available for this lesson.</p>;
+                        }
+
+                        const introSentences = sentences.slice(0, 2);
+                        const cardSentences = sentences.slice(2, 6);
+                        const highlightSentence = sentences.length > 6 ? sentences[6] : null;
+                        const remainingSentences = sentences.slice(highlightSentence ? 7 : 6);
+
+                        return (
+                          <div className="flex flex-col gap-8">
+                            {/* Intro */}
+                            <div className="text-[1.05rem] sm:text-lg leading-[1.85] text-gray-700">
+                              {introSentences.join('. ')}
+                              {introSentences.length > 0 && !introSentences[introSentences.length - 1].endsWith('.') ? '.' : ''}
+                            </div>
+
+                            {/* Key Takeaways */}
+                            {cardSentences.length > 0 && (
+                              <div>
+                                <h4 className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-3 flex items-center gap-2">
+                                  <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
+                                  Key Takeaways
+                                </h4>
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                                  {cardSentences.map((cardText, i) => (
+                                    <div key={i} className="bg-[#FAFBFC] border border-gray-100 rounded-xl p-4 hover:border-gray-200 transition-colors">
+                                      <div className="flex items-start gap-3">
+                                        <span className="w-6 h-6 rounded-md bg-white border border-gray-200 flex items-center justify-center text-[10px] font-bold text-gray-400 flex-shrink-0 mt-0.5">{i + 1}</span>
+                                        <p className="text-gray-700 m-0 text-[0.9rem] leading-relaxed">{cardText}.</p>
+                                      </div>
+                                    </div>
+                                  ))}
+                                </div>
+                              </div>
+                            )}
+
+                            {/* Highlight Quote */}
+                            {highlightSentence && (
+                              <blockquote className="border-l-4 border-[var(--pikachu-yellow)] bg-[#FFFEF8] pl-5 py-4 pr-4 rounded-r-lg my-1">
+                                <p className="text-gray-800 m-0 leading-relaxed font-medium italic">
+                                  "{highlightSentence}."
+                                </p>
+                              </blockquote>
+                            )}
+
+                            {/* Mermaid Diagram */}
+                            {currentTopic.mermaidDiagram && (
+                              <div className="overflow-hidden rounded-xl border border-gray-200 bg-white w-full p-5 flex items-center justify-center">
+                                <div className="w-full overflow-x-auto flex justify-center text-sm">
+                                  <Mermaid chart={sanitizeMermaid(currentTopic.mermaidDiagram)} />
+                                </div>
+                              </div>
+                            )}
+
+                            {/* Data Table */}
+                            {currentTopic.keyTable && currentTopic.keyTable.headers && currentTopic.keyTable.rows && (
+                              <div className="overflow-hidden rounded-xl border border-gray-200 bg-white w-full">
+                                <div className="bg-[#FAFBFC] px-5 py-3 border-b border-gray-100 flex items-center gap-2">
+                                  <svg className="w-4 h-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M3 10h18M3 14h18m-9-4v8m-7 0h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" /></svg>
+                                  <h4 className="font-bold text-xs text-gray-500 tracking-wider uppercase m-0">Reference</h4>
+                                </div>
+                                <div className="overflow-x-auto">
+                                  <table className="w-full text-left border-collapse min-w-[400px] m-0">
+                                    <thead>
+                                      <tr className="bg-white border-b border-gray-100">
+                                        {currentTopic.keyTable.headers.map((h, hi) => (
+                                          <th key={hi} className="py-3 px-5 text-[11px] font-bold text-gray-400 uppercase tracking-wider">{h}</th>
+                                        ))}
+                                      </tr>
+                                    </thead>
+                                    <tbody className="divide-y divide-gray-50">
+                                      {currentTopic.keyTable.rows.map((row, ri) => (
+                                        <tr key={ri} className="hover:bg-gray-50 transition-colors">
+                                          {row.map((cell, ci) => (
+                                            <td key={ci} className={`py-3 px-5 text-sm ${ci === 0 ? 'font-semibold text-gray-800' : 'text-gray-600'}`}>{cell}</td>
+                                          ))}
+                                        </tr>
+                                      ))}
+                                    </tbody>
+                                  </table>
+                                </div>
+                              </div>
+                            )}
+
+                            {/* Bullet Points */}
+                            {remainingSentences.length > 0 && (
+                              <ul className="space-y-3 m-0 p-0">
+                                {remainingSentences.map((liText, i) => (
+                                  <li key={i} className="flex gap-2.5 text-gray-600 items-start">
+                                    <svg className="w-4 h-4 text-[var(--pikachu-yellow)] flex-shrink-0 mt-1" fill="currentColor" viewBox="0 0 20 20">
+                                      <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                                    </svg>
+                                    <span className="leading-relaxed text-[0.9rem]">{liText}.</span>
+                                  </li>
+                                ))}
+                              </ul>
+                            )}
+                          </div>
+                        );
+                      })()}
+                    </div>
+                  </>
+                ) : (
+                  /* ═══ QUIZ SCREEN ═══ */
+                  <div className="w-full">
+                    <div className="mb-3 flex items-center gap-1.5 text-xs font-semibold text-purple-400 uppercase tracking-wider">
+                      <span>Section {currentModule.day}</span>
+                      <span className="text-purple-300">·</span>
+                      <span>Knowledge Check</span>
+                    </div>
+                    <h1 className="text-2xl sm:text-3xl font-extrabold text-gray-900 mb-6 leading-tight">
+                      Module {currentModule.day} Quiz
+                    </h1>
+                    <div className="w-12 h-[3px] bg-purple-400 rounded-full mb-8"></div>
+
+                    <div className="flex flex-col gap-6">
+                      {showQuizSummary ? (
+                        <div className="bg-white border border-gray-200 rounded-xl p-6 sm:p-8 text-center">
+                          <h2 className="text-2xl font-bold mb-3">Quiz Complete!</h2>
+                          {(() => {
+                            let correctCount = 0;
+                            quizData?.forEach((q, qIdx) => {
+                              if (quizAnswers[`${activeModuleIndex}-${activeTopicIndex}-${qIdx}`] === q.correctIndex) correctCount++;
+                            });
+                            const totalQuestions = quizData?.length || 1;
+                            const scorePercentage = (correctCount / totalQuestions) * 100;
+                            const isPassing = isQuizPassed();
+                            return (
+                              <>
+                                <div className={`text-5xl font-extrabold mb-3 ${isPassing ? 'text-green-500' : 'text-red-500'}`}>
+                                  {scorePercentage.toFixed(0)}%
+                                </div>
+                                <p className="text-gray-500 text-base mb-5">
+                                  {correctCount} of {totalQuestions} correct
+                                </p>
+                                {isPassing ? (
+                                  <div className="bg-green-50 text-green-700 px-4 py-2.5 rounded-lg font-bold mb-5 inline-block">
+                                    ✓ Passed!
+                                  </div>
+                                ) : (
+                                  <div className="bg-red-50 text-red-600 px-4 py-2.5 rounded-lg font-bold mb-5 inline-block">
+                                    Need 40% to pass. Review and retry.
+                                  </div>
+                                )}
+                                {!isPassing && (
+                                  <div>
+                                    <button 
+                                      onClick={() => {
+                                        const newAnswers = { ...quizAnswers };
+                                        quizData?.forEach((_, qIdx) => {
+                                          delete newAnswers[`${activeModuleIndex}-${activeTopicIndex}-${qIdx}`];
+                                        });
+                                        setQuizAnswers(newAnswers);
+                                        setCurrentQuizQuestionIndex(0);
+                                        setShowQuizSummary(false);
+                                      }}
+                                      className="bg-gray-100 hover:bg-gray-200 text-gray-800 font-bold px-6 py-2.5 rounded-lg transition-colors border-none cursor-pointer"
+                                    >
+                                      Retake Quiz
+                                    </button>
+                                  </div>
+                                )}
+                              </>
+                            );
+                          })()}
+                        </div>
+                      ) : (() => {
+                        const q = quizData?.[currentQuizQuestionIndex];
+                        if (!q) return null;
+                        const qIdx = currentQuizQuestionIndex;
+                        const answerKey = `${activeModuleIndex}-${activeTopicIndex}-${qIdx}`;
+                        const selectedAnswer = quizAnswers[answerKey];
+                        const hasAnswered = selectedAnswer !== undefined;
+                        return (
+                          <div className="bg-white border border-gray-200 rounded-xl p-5 sm:p-6">
+                            <div className="text-xs font-bold text-gray-400 mb-1.5 uppercase tracking-wider">
+                              Question {qIdx + 1} of {quizData.length}
+                            </div>
+                            <h3 className="font-bold text-lg text-gray-900 mb-5">{q.question}</h3>
+                            <div className="flex flex-col gap-2.5 mb-5">
+                              {q.options.map((opt, oIdx) => {
+                                const isSelected = selectedAnswer === oIdx;
+                                let btnClass = "text-left px-4 py-3.5 rounded-lg border-2 font-medium transition-all text-sm ";
+                                if (hasAnswered) {
+                                  if (oIdx === q.correctIndex) {
+                                    btnClass += "border-green-500 bg-green-50 text-green-700";
+                                  } else if (isSelected) {
+                                    btnClass += "border-red-400 bg-red-50 text-red-600";
+                                  } else {
+                                    btnClass += "border-gray-100 bg-white text-gray-300";
+                                  }
+                                } else {
+                                  btnClass += "border-gray-200 bg-white hover:border-[var(--pikachu-yellow)] hover:bg-[#FFFEF8] text-gray-700 cursor-pointer";
+                                }
+                                return (
+                                  <button 
+                                    key={oIdx}
+                                    disabled={hasAnswered}
+                                    onClick={() => setQuizAnswers(prev => ({ ...prev, [answerKey]: oIdx }))}
+                                    className={btnClass}
+                                  >
+                                    <div className="flex items-center gap-3">
+                                      <span className="w-6 h-6 rounded-full bg-white border border-current flex items-center justify-center text-[11px] shrink-0 font-bold">
+                                        {String.fromCharCode(65 + oIdx)}
+                                      </span>
+                                      <span>{opt}</span>
+                                    </div>
+                                  </button>
+                                );
+                              })}
+                            </div>
+                            {hasAnswered && (
+                              <div className="flex justify-end pt-3 border-t border-gray-100">
+                                <button
+                                  onClick={() => {
+                                    if (currentQuizQuestionIndex < quizData.length - 1) {
+                                      setCurrentQuizQuestionIndex(prev => prev + 1);
+                                    } else {
+                                      setShowQuizSummary(true);
+                                    }
+                                  }}
+                                  className="bg-gray-900 hover:bg-black text-white font-bold px-5 py-2.5 rounded-lg transition-colors border-none cursor-pointer flex items-center gap-2 text-sm"
+                                >
+                                  {currentQuizQuestionIndex < quizData.length - 1 ? "Next" : "See Results"}
+                                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+                                    <path d="M5 12h14M12 5l7 7-7 7" />
+                                  </svg>
+                                </button>
+                              </div>
+                            )}
+                          </div>
+                        );
+                      })()}
+                    </div>
+                  </div>
+                )}
+
+              </div>
+            </div>
+
+            {/* ═══ STICKY BOTTOM BAR ═══ */}
+            {(!isQuizScreen || (showQuizSummary && isQuizPassed())) && (
+              <div className="bg-white border-t border-gray-200 px-4 sm:px-8 py-3 z-20 flex-shrink-0">
+                <div className="max-w-3xl mx-auto cp-bottom-bar-inner flex items-center justify-between gap-3">
+                  <div className="font-medium text-gray-400 text-sm hidden sm:block">
+                    {isQuizScreen ? `Module ${currentModule.day} Quiz` : `Lesson ${activeTopicIndex + 1} of ${currentModule.topics.length}`}
+                  </div>
+                  <button 
+                    onClick={handleNextLesson}
+                    className="cp-btn-complete bg-gray-900 text-white font-bold px-6 py-3 rounded-lg border-none cursor-pointer hover:bg-black transition-colors flex items-center gap-2 text-sm shadow-sm"
+                  >
+                    Mark Complete & Next
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M5 12h14M12 5l7 7-7 7" />
+                    </svg>
+                  </button>
+                </div>
+              </div>
             )}
           </div>
         </div>

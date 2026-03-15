@@ -142,3 +142,56 @@ input[type="radio"]:checked ~ .radio-custom:after {
   0% { transform: translateX(-150%) skewX(-20deg); }
   100% { transform: translateX(150%) skewX(-20deg); }
 }
+
+/* ─── Course Player: Sidebar Transition ─── */
+.cp-sidebar {
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  will-change: transform;
+}
+.cp-sidebar.collapsed {
+  transform: translateX(-100%);
+}
+
+/* Mobile overlay backdrop */
+.cp-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  z-index: 40;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+.cp-backdrop.visible {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* Sidebar accordion chevron rotation */
+.cp-chevron {
+  transition: transform 0.2s ease;
+}
+.cp-chevron.open {
+  transform: rotate(90deg);
+}
+
+/* Mobile adjustments for course player */
+@media (max-width: 767px) {
+  .cp-sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    z-index: 50;
+    width: 85vw;
+    max-width: 360px;
+  }
+  .cp-bottom-bar-inner {
+    flex-direction: column;
+    gap: 8px;
+  }
+  .cp-bottom-bar-inner .cp-btn-complete {
+    width: 100%;
+    justify-content: center;
+  }
+}
