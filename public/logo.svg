@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 120" width="400" height="120">
+  <defs>
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Manrope:wght@800&amp;display=swap');
+      .text {
+        font-family: 'Manrope', system-ui, -apple-system, sans-serif;
+        font-weight: 800;
+        font-size: 84px;
+        fill: #111827;
+        letter-spacing: -3px;
+      }
+      .dot {
+        fill: #FFDE00; /* Pikachu Yellow */
+      }
+    </style>
+  </defs>
+  <text x="50" y="90" class="text">
+    Evalme<tspan class="dot">.</tspan>
+  </text>
+</svg>
