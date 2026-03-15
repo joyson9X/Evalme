@@ -91,6 +91,16 @@ function App() {
     return () => window.removeEventListener('popstate', handlePopState);
   }, []);
 
+  // Google Analytics Page View Tracking
+  useEffect(() => {
+    if (typeof window.gtag === 'function') {
+      window.gtag('config', 'G-7JCQNHEWCZ', {
+        page_title: viewState,
+        page_path: `/${viewState.toLowerCase().replace(/_/g, '-')}`
+      });
+    }
+  }, [viewState]);
+
   useEffect(() => {
     if (contentRef.current) {
       contentRef.current.scrollTop = 0;
