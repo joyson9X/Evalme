@@ -891,19 +891,6 @@ You must return a valid JSON object matching this exact structure:
             </svg>
           </button>
 
-          {/* Divider */}
-          <div className="w-px h-6 bg-gray-200 hidden sm:block"></div>
-
-          {/* Back/Exit */}
-          <button 
-            onClick={() => setViewState('PLAN')}
-            className="flex items-center justify-center text-gray-500 hover:text-gray-900 font-bold text-sm transition-colors border-none bg-transparent cursor-pointer flex-shrink-0 gap-2 pr-2"
-            title="Back to Dashboard"
-          >
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
-            <span className="hidden sm:inline">Back</span>
-          </button>
-
           {/* Evalme Branding */}
           <div className="hidden sm:flex items-center justify-center pr-5 border-r border-gray-100">
             <img src="/logo.svg" alt="Evalme" className="h-[28px] object-contain" />
