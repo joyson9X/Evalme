@@ -42,6 +42,7 @@ function App() {
   const [quizAnswers, setQuizAnswers] = useState({})
   const [currentQuizQuestionIndex, setCurrentQuizQuestionIndex] = useState(0)
   const [showQuizSummary, setShowQuizSummary] = useState(false)
+  const [isSidebarOpen, setIsSidebarOpen] = useState(true)
 
   useEffect(() => {
     setCurrentQuizQuestionIndex(0);
@@ -844,17 +845,21 @@ You must return a valid JSON object matching this exact structure:
       <div className="w-full h-screen flex bg-gray-50 overflow-hidden font-sans">
         
         {/* LEFT SIDEBAR NAVIGATION */}
-        <div className="w-80 border-r border-gray-200 bg-white flex flex-col shadow-[2px_0_10px_rgba(0,0,0,0.02)] z-20">
+        {isSidebarOpen && (
+        <div className="w-80 border-r border-gray-200 bg-white flex flex-col shadow-[2px_0_10px_rgba(0,0,0,0.02)] z-20 flex-shrink-0">
           <div className="p-4 border-b border-gray-100 flex items-center gap-3">
              <button 
-                onClick={() => setViewState('PLAN')}
-                className="w-10 h-10 rounded-full flex items-center justify-center bg-gray-100 hover:bg-gray-200 cursor-pointer transition-colors border-none"
+                onClick={() => setIsSidebarOpen(false)}
+                className="w-10 h-10 rounded-full flex items-center justify-center bg-gray-100 hover:bg-gray-200 cursor-pointer transition-colors border-none shrink-0 text-gray-400 hover:text-gray-900"
+                title="Hide Sidebar"
               >
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M19 12H5M12 19l-7-7 7-7" />
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <circle cx="12" cy="12" r="1.5"></circle>
+                  <circle cx="19" cy="12" r="1.5"></circle>
+                  <circle cx="5" cy="12" r="1.5"></circle>
                 </svg>
               </button>
-            <h2 className="font-bold text-gray-900 tracking-tight leading-tight m-0 text-sm">
+            <h2 className="font-bold text-gray-900 tracking-tight leading-tight m-0 text-sm truncate">
               {jobData.role} Syllabus
             </h2>
           </div>
@@ -928,6 +933,7 @@ You must return a valid JSON object matching this exact structure:
             ))}
           </div>
         </div>
+        )}
 
         {/* RIGHT MAIN CONTENT AREA */}
         <div className="flex-1 flex flex-col bg-white overflow-hidden relative">
@@ -937,6 +943,27 @@ You must return a valid JSON object matching this exact structure:
           <div className="flex-1 overflow-y-auto w-full relative z-10">
             <div className="max-w-[850px] mx-auto p-8 lg:p-12 pb-32">
               
+              <div className="flex items-center gap-3 mb-6">
+                 {!isSidebarOpen && (
+                   <button 
+                     onClick={() => setIsSidebarOpen(true)}
+                     className="w-10 h-10 rounded-full flex items-center justify-center bg-white border border-gray-200 text-gray-400 hover:text-gray-900 hover:bg-gray-50 cursor-pointer shadow-sm transition-all shadow-[0_2px_8px_rgba(0,0,0,0.04)]"
+                     title="Show Sidebar"
+                   >
+                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                       <path d="M3 12h18M3 6h18M3 18h18" />
+                     </svg>
+                   </button>
+                 )}
+                 <button 
+                   onClick={() => setViewState('PLAN')}
+                   className="px-4 py-2 bg-white border border-gray-200 text-gray-500 hover:text-gray-900 font-bold text-sm rounded-lg hover:bg-gray-50 cursor-pointer transition-colors shadow-sm shadow-[0_2px_8px_rgba(0,0,0,0.04)] flex items-center gap-2"
+                 >
+                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+                   Back to Plan
+                 </button>
+              </div>
+
               {!isQuizScreen ? (
                 <>
                   <div className="mb-4 flex items-center gap-2 text-sm font-bold text-gray-500 uppercase tracking-widest">
