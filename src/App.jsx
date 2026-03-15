@@ -62,6 +62,33 @@ function App() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true)
   const contentRef = useRef(null)
 
+  // Navigation helper that syncs with browser history
+  const navigateTo = (newState, replace = false) => {
+    setViewState(newState);
+    if (replace) {
+      window.history.replaceState({ view: newState }, '', '');
+    } else {
+      window.history.pushState({ view: newState }, '', '');
+    }
+  };
+
+  // Listen for browser back/forward buttons
+  useEffect(() => {
+    const handlePopState = (event) => {
+      if (event.state && event.state.view) {
+        setViewState(event.state.view);
+      }
+    };
+    window.addEventListener('popstate', handlePopState);
+    
+    // Initialize history state on first meaningful view
+    if (viewState !== 'AUTH_SPINNER' && viewState !== 'AUTH') {
+      window.history.replaceState({ view: viewState }, '', '');
+    }
+    
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, []);
+
   useEffect(() => {
     if (contentRef.current) {
       contentRef.current.scrollTop = 0;
@@ -125,10 +152,12 @@ function App() {
       setSession(session)
       if (session) {
         // Restore previous view or default to HOME
-        setViewState(savedView || 'HOME')
-        checkSubscription(session.user.id)
+        const initialView = savedView || 'HOME';
+        setViewState(initialView);
+        window.history.replaceState({ view: initialView }, '', '');
+        checkSubscription(session.user.id);
       } else {
-        setViewState('AUTH')
+        setViewState('AUTH');
       }
     })
 
@@ -138,7 +167,7 @@ function App() {
       setSession(session)
       if (event === 'SIGNED_IN') {
         const sv = sessionStorage.getItem('evalme_viewState')
-        setViewState(sv || 'HOME')
+        navigateTo(sv || 'HOME', true)
         checkSubscription(session.user.id)
       } else if (event === 'SIGNED_OUT') {
         setViewState('AUTH')
@@ -219,7 +248,7 @@ function App() {
 
           setIsPremium(true)
           setPremiumExpiry(expiresAt)
-          setViewState('HOME')
+          navigateTo('HOME')
           alert('🎉 Payment successful! Welcome to Evalme Premium!')
         } catch (err) {
           console.error('Subscription save error:', err)
@@ -251,7 +280,7 @@ function App() {
         setIsPremium(true)
         setPremiumExpiry(null)
         setCouponCode('')
-        setViewState('HOME')
+        navigateTo('HOME')
         alert('\u{1F389} Coupon applied! You now have lifetime premium access!')
       } catch (err) {
         console.error('Coupon save error:', err)
@@ -470,7 +499,7 @@ You must return a valid JSON object matching this exact structure:
       setPlanData(parsedPlan);
       setActiveModuleIndex(0);
       setActiveTopicIndex(0);
-      setViewState('PLAN');
+      navigateTo('PLAN');
       
     } catch (error) {
       console.error("Generation error:", error);
@@ -586,7 +615,7 @@ You must return a valid JSON object matching this exact structure:
       // Reset player state whenever a new plan is generated
       setActiveModuleIndex(0);
       setActiveTopicIndex(0);
-      setViewState('PLAN');
+      navigateTo('PLAN');
       
     } catch (error) {
       console.error("Plan generation error:", error);
@@ -634,7 +663,7 @@ You must return a valid JSON object matching this exact structure:
           <div className="max-w-[900px] mx-auto flex flex-col items-start pt-6">
             <button 
               onClick={() => {
-                setViewState('GENERATOR');
+                navigateTo('GENERATOR');
                 setPlanData(null);
               }}
               className="mb-8 flex items-center gap-2 text-gray-500 font-bold uppercase tracking-wider text-xs hover:text-gray-900 transition-colors border-none bg-transparent cursor-pointer"
@@ -660,7 +689,7 @@ You must return a valid JSON object matching this exact structure:
                   onClick={() => {
                     setActiveModuleIndex(nextModIdx);
                     setActiveTopicIndex(nextTopIdx);
-                    setViewState('COURSE_PLAYER');
+                    navigateTo('COURSE_PLAYER');
                   }}
                   className="w-full md:w-auto bg-gray-900 hover:bg-black text-white font-bold text-lg px-10 py-4 rounded-xl shadow-xl hover:shadow-[0_10px_30px_rgba(0,0,0,0.2)] hover:-translate-y-1 transition-all border-none cursor-pointer flex justify-center items-center gap-3 relative overflow-hidden group"
                 >
@@ -751,7 +780,7 @@ You must return a valid JSON object matching this exact structure:
                                onClick={() => {
                                  setActiveModuleIndex(index);
                                  setActiveTopicIndex(tIdx);
-                                 setViewState('COURSE_PLAYER');
+                                 navigateTo('COURSE_PLAYER');
                                }}
                             >
                                <div className={`mt-0.5 sm:mt-0 flex-shrink-0 w-7 h-7 rounded-lg flex items-center justify-center transition-all duration-300 ${isCompleted ? 'bg-green-500 text-white shadow-md shadow-green-500/20' : 'bg-gray-100 text-gray-400 group-hover/item:text-[var(--pikachu-yellow)] group-hover/item:border-[var(--pikachu-yellow)] border border-gray-200'}`}>
@@ -783,7 +812,7 @@ You must return a valid JSON object matching this exact structure:
                                onClick={() => {
                                  setActiveModuleIndex(index);
                                  setActiveTopicIndex(qIdx);
-                                 setViewState('COURSE_PLAYER');
+                                 navigateTo('COURSE_PLAYER');
                                }}
                             >
                                {/* Subtle decorative purple line for quiz */}
@@ -859,7 +888,7 @@ You must return a valid JSON object matching this exact structure:
     // If it's the very last topic of the entire course
     else {
       alert("Congratulations! You have completed the intensive preparation module!");
-      setViewState('PLAN');
+      navigateTo('PLAN');
     }
   };
 
@@ -1408,7 +1437,7 @@ You must return a valid JSON object matching this exact structure:
         <div className="w-full max-w-[800px] flex flex-col items-center gap-8 relative z-10">
           <button 
             onClick={() => {
-              setViewState('GENERATOR');
+              navigateTo('GENERATOR');
               setJobData(null);
             }}
             className="self-start bg-white/10 backdrop-blur-md border border-white/20 px-4 py-2 rounded-lg cursor-pointer font-medium hover:bg-white/20 transition-colors text-white"
@@ -1476,7 +1505,7 @@ You must return a valid JSON object matching this exact structure:
 
         <div className="w-full max-w-[900px] relative z-10 flex flex-col items-center">
           <button 
-            onClick={() => setViewState('HOME')}
+            onClick={() => navigateTo('HOME')}
             className="self-start mb-6 flex items-center gap-2 text-gray-500 hover:text-gray-900 font-semibold transition-colors bg-white/50 px-4 py-2 rounded-xl text-sm w-max backdrop-blur-sm border border-gray-200/50 cursor-pointer shadow-sm hover:shadow"
           >
             <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
@@ -1617,7 +1646,7 @@ You must return a valid JSON object matching this exact structure:
                {isPremium ? (
                  <span className="text-[10px] font-extrabold uppercase tracking-widest bg-gradient-to-r from-amber-400 to-yellow-400 text-[#111827] px-2.5 py-0.5 rounded-full ml-1">PRO</span>
                ) : (
-                 <button onClick={() => setViewState('PRICING')} className="text-[10px] font-extrabold uppercase tracking-widest bg-gradient-to-r from-amber-400 to-yellow-400 text-[#111827] px-2.5 py-1 rounded-full cursor-pointer border-none hover:brightness-110 transition-all ml-1">Upgrade</button>
+                 <button onClick={() => navigateTo('PRICING')} className="text-[10px] font-extrabold uppercase tracking-widest bg-gradient-to-r from-amber-400 to-yellow-400 text-[#111827] px-2.5 py-1 rounded-full cursor-pointer border-none hover:brightness-110 transition-all ml-1">Upgrade</button>
                )}
             </div>
           )}
@@ -1634,7 +1663,7 @@ You must return a valid JSON object matching this exact structure:
             
             {/* Tile 1: Job Plan Maker */}
             <button 
-              onClick={() => setViewState('GENERATOR')}
+              onClick={() => navigateTo('GENERATOR')}
               className="group text-left bg-white rounded-3xl p-8 shadow-[0_8px_30px_rgb(0,0,0,0.06)] border border-gray-100 hover:border-[var(--pikachu-yellow)] transition-all cursor-pointer hover:-translate-y-1 hover:shadow-xl relative overflow-hidden flex flex-col items-start"
             >
               <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-[var(--pikachu-yellow)] to-transparent opacity-10 rounded-bl-full transform translate-x-8 -translate-y-8 group-hover:scale-110 transition-transform duration-500"></div>
@@ -1658,7 +1687,7 @@ You must return a valid JSON object matching this exact structure:
 
             {/* Tile 2: Learn Coding */}
             <button 
-              onClick={() => isPremium ? setViewState('CODING_COURSES') : setViewState('PRICING')}
+              onClick={() => isPremium ? navigateTo('CODING_COURSES') : navigateTo('PRICING')}
               className="group text-left bg-white rounded-3xl p-8 shadow-[0_8px_30px_rgb(0,0,0,0.06)] border border-gray-100 hover:border-[#8BE9FD] transition-all cursor-pointer hover:-translate-y-1 hover:shadow-xl relative overflow-hidden flex flex-col items-start"
             >
               <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-[#8BE9FD] to-transparent opacity-10 rounded-bl-full transform translate-x-8 -translate-y-8 group-hover:scale-110 transition-transform duration-500"></div>
@@ -1704,7 +1733,7 @@ You must return a valid JSON object matching this exact structure:
         <div className="w-full max-w-[800px] relative z-10 flex flex-col items-center">
           <div className="w-full mb-8 flex items-center justify-start max-w-[600px] mx-auto">
             <button 
-              onClick={() => setViewState('HOME')}
+              onClick={() => navigateTo('HOME')}
               className="flex items-center gap-2 text-gray-500 hover:text-gray-900 font-semibold transition-colors bg-white/50 px-4 py-2 rounded-xl text-sm w-max backdrop-blur-sm border border-gray-200/50 cursor-pointer shadow-sm hover:shadow"
             >
               <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
@@ -1720,7 +1749,7 @@ You must return a valid JSON object matching this exact structure:
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full max-w-[600px]">
             {/* SQL Course Tile */}
             <button 
-              onClick={() => setViewState('SQL_COURSE')}
+              onClick={() => navigateTo('SQL_COURSE')}
               className="group text-left bg-white rounded-3xl p-6 shadow-sm border border-gray-100 hover:border-blue-400 transition-all cursor-pointer hover:-translate-y-1 hover:shadow-md relative overflow-hidden flex items-start gap-5"
             >
               <div className="w-14 h-14 shrink-0 bg-[#F0FBFF] border border-blue-200 rounded-2xl flex items-center justify-center text-blue-500 shadow-sm">
@@ -1744,7 +1773,7 @@ You must return a valid JSON object matching this exact structure:
     return (
       <div className="w-full h-screen relative bg-white">
         <button 
-          onClick={() => setViewState('CODING_COURSES')}
+          onClick={() => navigateTo('CODING_COURSES')}
           className="absolute top-4 left-4 z-50 flex items-center gap-2 text-gray-500 hover:text-gray-900 font-bold transition-colors bg-white px-4 py-2 rounded-xl text-sm w-max border border-gray-200 shadow hover:shadow-md cursor-pointer"
         >
           <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
