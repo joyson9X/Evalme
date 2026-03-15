@@ -5,6 +5,23 @@ import Mermaid from 'react-mermaid2';
 
 const getAPIKey = () => ["gsk", "_exROG", "0ANTHuei", "4kWRNRiWGd", "yb3FY2kw", "XlfNxiT1", "Tmclth", "AIO3J7o"].join("");
 
+const fetchWithRetry = async (url, options, retries = 3, delay = 2000) => {
+  for (let i = 0; i < retries; i++) {
+    const response = await fetch(url, options);
+    if (response.ok) return response;
+    
+    if (response.status === 429 || response.status >= 500) {
+      console.warn(`API rate limited or server error (${response.status}). Retrying in ${delay}ms... (Attempt ${i + 1}/${retries})`);
+      await new Promise((resolve) => setTimeout(resolve, delay));
+      delay *= 2; // Exponential backoff (2s -> 4s -> 8s)
+    } else {
+      return response; // Return immediately for other status codes (e.g. 400 Bad Request)
+    }
+  }
+  // Try one last time which will throw normally if it fails
+  return fetch(url, options);
+};
+
 const sanitizeMermaid = (chart) => {
   if (!chart) return '';
   let str = chart.replace(/\\n/g, '\n');
@@ -312,7 +329,7 @@ Do not include extra conversational text or preambles, just output the requested
 
     try {
       // Step 1: Generate the overview
-      const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+      const response = await fetchWithRetry('https://api.groq.com/openai/v1/chat/completions', {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${getAPIKey()}`,
@@ -399,7 +416,7 @@ You must return a valid JSON object matching this exact structure:
 }
 `;
 
-      const planResponse = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+      const planResponse = await fetchWithRetry('https://api.groq.com/openai/v1/chat/completions', {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${getAPIKey()}`,
@@ -508,7 +525,7 @@ You must return a valid JSON object matching this exact structure:
 `;
 
     try {
-      const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+      const response = await fetchWithRetry('https://api.groq.com/openai/v1/chat/completions', {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${getAPIKey()}`,
