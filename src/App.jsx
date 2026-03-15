@@ -1,14 +1,16 @@
 import { useState, useEffect } from 'react'
 import mammoth from 'mammoth';
+import { supabase } from './supabaseClient';
 
 const getAPIKey = () => ["gsk", "_exROG", "0ANTHuei", "4kWRNRiWGd", "yb3FY2kw", "XlfNxiT1", "Tmclth", "AIO3J7o"].join("");
 
 function App() {
+  const [session, setSession] = useState(null)
   const [role, setRole] = useState('')
   const [requirement, setRequirement] = useState('')
   const [planner, setPlanner] = useState('')
   
-  const [viewState, setViewState] = useState('HOME') // 'HOME', 'GENERATOR', 'OVERVIEW', 'PLAN', 'COURSE_PLAYER'
+  const [viewState, setViewState] = useState('AUTH_SPINNER') // 'AUTH_SPINNER', 'AUTH', 'HOME', 'GENERATOR', 'PLAN', 'COURSE_PLAYER', etc
   const [isGenerating, setIsGenerating] = useState(false)
   const [isGeneratingPlan, setIsGeneratingPlan] = useState(false)
   
@@ -31,7 +33,56 @@ function App() {
     setShowQuizSummary(false);
   }, [activeModuleIndex, activeTopicIndex]);
 
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setSession(session)
+      if (session) {
+        setViewState('HOME')
+      } else {
+        setViewState('AUTH')
+      }
+    })
 
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
+      setSession(session)
+      if (session) {
+        setViewState('HOME')
+      } else {
+        setViewState('AUTH')
+      }
+    })
+
+    return () => subscription.unsubscribe()
+  }, [])
+
+  const handleGoogleSignIn = async () => {
+    try {
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider: 'google',
+        options: {
+          queryParams: {
+            access_type: 'offline',
+            prompt: 'consent',
+          },
+        },
+      })
+      if (error) throw error
+    } catch (error) {
+      console.error('Error logging in:', error.message)
+      alert('Error logging in: ' + error.message)
+    }
+  }
+
+  const handleSignOut = async () => {
+    try {
+      const { error } = await supabase.auth.signOut()
+      if (error) throw error
+    } catch (error) {
+      console.error('Error logging out:', error.message)
+    }
+  }
 
   const handleFileUpload = async (e) => {
     const file = e.target.files[0];
@@ -1072,18 +1123,87 @@ You must return a valid JSON object matching this exact structure:
     )
   }
 
-  // HOME VIEW
-  if (viewState === 'HOME') {
+  // AUTH SPINNER
+  if (viewState === 'AUTH_SPINNER') {
+    return (
+      <div className="w-full min-h-screen flex items-center justify-center relative bg-[#FAFAFA] overflow-hidden p-4">
+        <div className="w-12 h-12 border-4 border-gray-200 border-t-[var(--volt-yellow)] rounded-full animate-spin"></div>
+      </div>
+    )
+  }
+
+  // AUTH VIEW
+  if (viewState === 'AUTH') {
     return (
       <div className="w-full min-h-screen flex items-center justify-center relative bg-[#FAFAFA] overflow-hidden p-4">
         <div className="decoration dec-1"></div>
         <div className="decoration dec-2"></div>
 
-        <div className="w-full max-w-[800px] relative z-10 flex flex-col items-center">
-          <div className="text-center mb-12">
+        <div className="w-full max-w-[440px] relative z-10 flex flex-col items-center">
+          <div className="text-center mb-10 w-full">
             <h1 className="text-[3.5rem] font-extrabold mb-2 tracking-tight text-[#111827]" style={{ fontFamily: "'Evolve Sans', sans-serif" }}>Evalme</h1>
-            <p className="text-gray-500 text-[18px]">Select a powerful AI learning tool to begin</p>
+            <p className="text-gray-500 text-[18px]">Sign in to access AI interview prep & coding paths</p>
           </div>
+
+          <div className="bg-white rounded-3xl p-8 shadow-[0_8px_30px_rgb(0,0,0,0.06)] border border-gray-100 w-full relative overflow-hidden flex flex-col gap-6">
+            <button 
+              onClick={handleGoogleSignIn}
+              className="w-full flex items-center justify-center gap-4 bg-white border border-gray-200 text-gray-800 font-bold px-6 py-4 rounded-xl hover:bg-gray-50 hover:border-gray-300 transition-all cursor-pointer shadow-sm active:scale-[0.98]"
+            >
+              <svg viewBox="0 0 24 24" width="24" height="24" xmlns="http://www.w3.org/2000/svg">
+                <g transform="matrix(1, 0, 0, 1, 27.009001, -39.238998)">
+                  <path fill="#4285F4" d="M -3.264 51.509 C -3.264 50.719 -3.334 49.969 -3.454 49.239 L -14.754 49.239 L -14.754 53.749 L -8.284 53.749 C -8.574 55.229 -9.424 56.479 -10.684 57.329 L -10.684 60.329 L -6.824 60.329 C -4.564 58.239 -3.264 55.159 -3.264 51.509 Z"/>
+                  <path fill="#34A853" d="M -14.754 63.239 C -11.514 63.239 -8.804 62.159 -6.824 60.329 L -10.684 57.329 C -11.764 58.049 -13.134 58.489 -14.754 58.489 C -17.884 58.489 -20.534 56.379 -21.484 53.529 L -25.464 53.529 L -25.464 56.619 C -23.494 60.539 -19.444 63.239 -14.754 63.239 Z"/>
+                  <path fill="#FBBC05" d="M -21.484 53.529 C -21.734 52.809 -21.864 52.039 -21.864 51.239 C -21.864 50.439 -21.724 49.669 -21.484 48.949 L -21.484 45.859 L -25.464 45.859 C -26.284 47.479 -26.754 49.299 -26.754 51.239 C -26.754 53.179 -26.284 54.999 -25.464 56.619 L -21.484 53.529 Z"/>
+                  <path fill="#EA4335" d="M -14.754 43.989 C -12.984 43.989 -11.404 44.599 -10.154 45.789 L -6.734 42.369 C -8.804 40.429 -11.514 39.239 -14.754 39.239 C -19.444 39.239 -23.494 41.939 -25.464 45.859 L -21.484 48.949 C -20.534 46.099 -17.884 43.989 -14.754 43.989 Z"/>
+                </g>
+              </svg>
+              <span>Continue with Google</span>
+            </button>
+            <p className="text-gray-400 text-xs text-center mt-2 px-6">By signing in, you agree to our Terms of Service and Privacy Policy.</p>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
+  // HOME VIEW
+  if (viewState === 'HOME') {
+    return (
+      <div className="w-full min-h-screen flex flex-col relative bg-[#FAFAFA] overflow-hidden">
+        <div className="decoration dec-1"></div>
+        <div className="decoration dec-2"></div>
+        
+        {/* Simple Top Nav with User Profile */}
+        <div className="w-full px-6 py-4 flex justify-end items-center relative z-20">
+          {session?.user && (
+            <div className="flex items-center gap-3 bg-white/70 backdrop-blur-md px-3 py-1.5 rounded-full shadow-sm border border-gray-100">
+               {session.user.user_metadata?.avatar_url ? (
+                 <img src={session.user.user_metadata.avatar_url} alt="Avatar" className="w-8 h-8 rounded-full border border-gray-200" />
+               ) : (
+                 <div className="w-8 h-8 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center font-bold text-xs uppercase border border-blue-200">
+                   {session.user.email?.[0]}
+                 </div>
+               )}
+               <span className="text-sm font-semibold text-gray-700 hidden sm:block max-w-[150px] truncate">
+                 {session.user.email}
+               </span>
+               <button 
+                 onClick={handleSignOut}
+                 className="ml-2 text-xs font-bold text-red-500 hover:text-red-600 transition-colors uppercase tracking-wider px-2 py-1 bg-red-50 hover:bg-red-100 rounded-md cursor-pointer border-none"
+               >
+                 Logout
+               </button>
+            </div>
+          )}
+        </div>
+
+        <div className="flex-1 w-full flex items-center justify-center p-4">
+          <div className="w-full max-w-[800px] relative z-10 flex flex-col items-center">
+            <div className="text-center mb-12">
+              <h1 className="text-[3.5rem] font-extrabold mb-2 tracking-tight text-[#111827]" style={{ fontFamily: "'Evolve Sans', sans-serif" }}>Evalme</h1>
+              <p className="text-gray-500 text-[18px]">Select a powerful AI learning tool to begin</p>
+            </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full">
             
@@ -1137,6 +1257,7 @@ You must return a valid JSON object matching this exact structure:
 
           </div>
         </div>
+      </div>
       </div>
     )
   }
