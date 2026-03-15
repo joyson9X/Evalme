@@ -1096,7 +1096,7 @@ You must return a valid JSON object matching this exact structure:
           <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
           Leave Course
         </button>
-        <iframe src="/sql_course.html?v=light-theme-v1" className="w-full h-full border-none m-0 p-0 block" title="SQL Interactive Course"></iframe>
+        <iframe src="/sql_course.html?v=dark-theme-1" className="w-full h-full border-none m-0 p-0 block" title="SQL Interactive Course"></iframe>
       </div>
     )
   }
