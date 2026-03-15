@@ -880,18 +880,14 @@ You must return a valid JSON object matching this exact structure:
         {/* ═══ TOP NAV BAR ═══ */}
         <div className="h-[64px] bg-white border-b border-gray-100 flex items-center px-4 sm:px-6 gap-3 sm:gap-4 flex-shrink-0 z-50 relative text-gray-900 shadow-[0_2px_10px_rgba(0,0,0,0.02)]">
           
-          {/* Menu / Sidebar Toggle (Leftmost, Udemy style) */}
+          {/* Menu / Sidebar Toggle */}
           <button 
             onClick={() => setIsSidebarOpen(prev => !prev)}
             className="flex items-center justify-center text-gray-600 hover:text-gray-900 transition-colors border-none bg-transparent cursor-pointer flex-shrink-0 h-10 w-10 sm:h-11 sm:w-11 rounded-full hover:bg-gray-50 -ml-2"
             title={isSidebarOpen ? "Hide course content" : "Show course content"}
           >
             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-              {isSidebarOpen ? (
-                <path d="M18 6L6 18M6 6l12 12" />
-              ) : (
-                <path d="M3 12h18M3 6h18M3 18h18" />
-              )}
+              <path d="M3 12h18M3 6h18M3 18h18" />
             </svg>
           </button>
 
@@ -960,14 +956,6 @@ You must return a valid JSON object matching this exact structure:
               <h2 className="font-extrabold text-gray-900 text-[15px] tracking-tight leading-none m-0">
                 Course content
               </h2>
-              <button 
-                onClick={() => setIsSidebarOpen(false)}
-                className="w-8 h-8 rounded-md flex items-center justify-center hover:bg-gray-100 cursor-pointer transition-colors border-none bg-transparent text-gray-500"
-              >
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M18 6L6 18M6 6l12 12" />
-                </svg>
-              </button>
             </div>
 
             {/* Sidebar Sections */}
