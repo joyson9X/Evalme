@@ -61,6 +61,7 @@ function App() {
   const [currentQuizQuestionIndex, setCurrentQuizQuestionIndex] = useState(0)
   const [showQuizSummary, setShowQuizSummary] = useState(false)
   const [isSidebarOpen, setIsSidebarOpen] = useState(true)
+  const [selectedBlogId, setSelectedBlogId] = useState(null)
   const contentRef = useRef(null)
 
   // Navigation helper that syncs with browser history
@@ -1754,38 +1755,75 @@ You must return a valid JSON object matching this exact structure:
 
   // BLOGS VIEW
   if (viewState === 'BLOGS') {
-    return (
-      <div className="w-full min-h-screen bg-white text-gray-900 font-sans selection:bg-amber-100">
-        {/* Blog Header */}
-        <div className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-gray-100 px-6 py-4 flex items-center justify-between">
-          <button 
-            onClick={() => navigateTo('HOME')}
-            className="flex items-center gap-2 text-gray-500 hover:text-gray-900 font-bold transition-all border-none bg-transparent cursor-pointer text-sm"
-          >
-            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="3">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
-            </svg>
-            Back to Home
-          </button>
-          <img src="/logo.svg" alt="Evalme" className="h-[28px] object-contain" />
-          <div className="w-20"></div> {/* Spacer for symmetry */}
-        </div>
+    const blogs = [
+      {
+        id: 'product-hunt-launch',
+        category: 'Announcements',
+        title: "Evalme is Live on Product Hunt! 🚀",
+        date: 'March 16, 2026',
+        readTime: '5 min read',
+        content: (
+          <div className="prose prose-lg max-w-none text-gray-600 leading-relaxed text-[1.1rem]">
+            <p className="mb-8 text-xl text-gray-900 font-medium leading-relaxed">
+              Today marks a massive milestone for us. Evalme has officially launched on Product Hunt, and we couldn't be more excited to share our vision for the future of career preparation with the world.
+            </p>
 
-        <article className="max-w-3xl mx-auto px-6 py-20">
-          <header className="mb-16">
-            <div className="inline-flex items-center gap-2 bg-amber-50 text-amber-600 font-bold px-3 py-1 rounded-full text-[11px] uppercase tracking-widest mb-6 border border-amber-100">
-              AI & Careers
-            </div>
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black text-gray-900 leading-[1.1] tracking-tight mb-8">
-              How Evalme is Revolutionizing AI Interview Preparation
-            </h1>
-            <div className="flex items-center gap-4 text-gray-400 text-sm font-medium">
-              <span>March 16, 2026</span>
-              <span className="w-1 h-1 bg-gray-200 rounded-full"></span>
-              <span>8 min read</span>
-            </div>
-          </header>
+            <h2 className="text-3xl font-bold text-gray-900 mt-16 mb-6 tracking-tight">What is Evalme?</h2>
+            <p className="mb-8">
+              Evalme is more than just an interview prep tool. It's a personalized career accelerator. We noticed that candidates often feel overwhelmed by the sheer volume of "study materials" available online. Our solution? Use AI to filter out the noise and focus on exactly what you need to know for your next role.
+            </p>
 
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
+              <div className="bg-white border border-gray-100 p-8 rounded-3xl shadow-sm">
+                <h3 className="text-xl font-black text-gray-900 mb-4">Core Features</h3>
+                <ul className="space-y-3 text-sm">
+                  <li className="flex items-center gap-2"><div className="w-1.5 h-1.5 bg-amber-400 rounded-full"></div> AI-Driven JD Analysis</li>
+                  <li className="flex items-center gap-2"><div className="w-1.5 h-1.5 bg-amber-400 rounded-full"></div> Dynamic Study Plans</li>
+                  <li className="flex items-center gap-2"><div className="w-1.5 h-1.5 bg-amber-400 rounded-full"></div> Interactive Code Challenges</li>
+                  <li className="flex items-center gap-2"><div className="w-1.5 h-1.5 bg-amber-400 rounded-full"></div> Mock Interview Simulations</li>
+                </ul>
+              </div>
+              <div className="bg-[#111827] p-8 rounded-3xl text-white">
+                <h3 className="text-xl font-black mb-4">Launch Day Offer</h3>
+                <p className="text-gray-400 text-sm mb-6">Support our journey on Product Hunt today and unlock exclusive launch-day bonuses for your career growth.</p>
+                <a href="https://www.producthunt.com" target="_blank" rel="noopener noreferrer" className="inline-block bg-white text-[#111827] font-black px-6 py-3 rounded-xl hover:bg-gray-100 transition-all no-underline text-xs uppercase tracking-widest">Support on Product Hunt</a>
+              </div>
+            </div>
+
+            <h2 className="text-3xl font-bold text-gray-900 mt-16 mb-6 tracking-tight">Our Growth Plans</h2>
+            <p className="mb-8">
+              Launching on Product Hunt is just Phase 1. Over the next 6 months, we are expanding Evalme into a full-scale talent ecosystem.
+            </p>
+            
+            <div className="space-y-8 mb-16">
+              {[
+                { title: "Community Interview Hubs", desc: "Connect with peers preparing for the same roles at companies like TCS, Google, or Zomato." },
+                { title: "Live AI Coaching", desc: "Real-time voice-based mock interviews that simulate the stress and flow of a real technical round." },
+                { title: "Global Expansion", desc: "Localized prep material for over 50+ countries, starting with a deep-focus on the Asian job market." }
+              ].map((milestone, idx) => (
+                <div key={idx} className="flex gap-6 items-start">
+                  <div className="w-10 h-10 rounded-2xl bg-gray-50 flex items-center justify-center shrink-0 font-black text-gray-300 border border-gray-100 italic">0{idx+1}</div>
+                  <div>
+                    <h4 className="text-lg font-bold text-gray-900 mb-1">{milestone.title}</h4>
+                    <p className="text-sm text-gray-500 m-0">{milestone.desc}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            <p className="mb-8">
+              We're building Evalme for you—the freshers landing their first big break, and the professionals breaking through to senior leadership. Join us on this journey.
+            </p>
+          </div>
+        )
+      },
+      {
+        id: 'ai-revolution',
+        category: 'AI & Careers',
+        title: "How Evalme is Revolutionizing AI Interview Preparation",
+        date: 'March 16, 2026',
+        readTime: '8 min read',
+        content: (
           <div className="prose prose-lg max-w-none text-gray-600 leading-relaxed text-[1.1rem]">
             <p className="mb-8 text-xl text-gray-900 font-medium leading-relaxed">
               In an era where the job market is more competitive than ever, <strong>Evalme</strong> is emerging as a game-changer for candidates who want to stand out. By leveraging cutting-edge AI, we've built the world's most personalized interview preparation tool.
@@ -1829,6 +1867,74 @@ You must return a valid JSON object matching this exact structure:
             <p className="mb-8">
               We believe coding should be taught where it's written. Our <strong>Coding Academy</strong> provides interactive environments where you can solve problems that are relevant to your target role. Whether it's SQL, Python, or Frontend Development, Evalme's AI coaches you through every line of code.
             </p>
+          </div>
+        )
+      }
+    ];
+
+    const currentBlog = blogs.find(b => b.id === selectedBlogId);
+
+    return (
+      <div className="w-full min-h-screen bg-white text-gray-900 font-sans selection:bg-amber-100">
+        {/* Blog Header */}
+        <div className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-gray-100 px-6 py-4 flex items-center justify-between">
+          <button 
+            onClick={() => selectedBlogId ? setSelectedBlogId(null) : navigateTo('HOME')}
+            className="flex items-center gap-2 text-gray-500 hover:text-gray-900 font-bold transition-all border-none bg-transparent cursor-pointer text-sm"
+          >
+            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="3">
+              <path strokeLinecap="round" strokeLinejoin="round" d={`${selectedBlogId ? 'M15 19l-7-7 7-7' : 'M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6'}`} />
+            </svg>
+            {selectedBlogId ? 'Back to All Blogs' : 'Back to Home'}
+          </button>
+          <img src="/logo.svg" alt="Evalme" className="h-[28px] object-contain" />
+          <div className="hidden sm:block w-20"></div> {/* Spacer for symmetry */}
+        </div>
+
+        {!selectedBlogId ? (
+          <div className="max-w-5xl mx-auto px-6 py-20">
+            <header className="mb-20 text-center">
+              <h1 className="text-5xl sm:text-6xl font-black tracking-tight mb-4">The Evalme Blog</h1>
+              <p className="text-gray-500 text-lg">Insights, announcements, and tips for your professional journey.</p>
+            </header>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
+              {blogs.map(blog => (
+                <button 
+                  key={blog.id}
+                  onClick={() => setSelectedBlogId(blog.id)}
+                  className="group text-left bg-white border border-gray-100 rounded-[2.5rem] p-8 hover:border-amber-400 transition-all shadow-sm hover:shadow-xl cursor-pointer flex flex-col items-start"
+                >
+                  <div className="inline-flex items-center gap-2 bg-gray-50 text-gray-400 font-bold px-3 py-1 rounded-full text-[10px] uppercase tracking-widest mb-6 group-hover:bg-amber-50 group-hover:text-amber-600 transition-colors">
+                    {blog.category}
+                  </div>
+                  <h2 className="text-2xl font-black text-gray-900 mb-4 leading-tight group-hover:text-amber-600 transition-colors">{blog.title}</h2>
+                  <div className="flex items-center gap-4 text-gray-400 text-xs font-bold mt-auto pt-8">
+                    <span>{blog.date}</span>
+                    <span className="w-1 h-1 bg-gray-200 rounded-full"></span>
+                    <span>{blog.readTime}</span>
+                  </div>
+                </button>
+              ))}
+            </div>
+          </div>
+        ) : (
+          <article className="max-w-3xl mx-auto px-6 py-20">
+            <header className="mb-16">
+              <div className="inline-flex items-center gap-2 bg-amber-50 text-amber-600 font-bold px-3 py-1 rounded-full text-[11px] uppercase tracking-widest mb-6 border border-amber-100">
+                {currentBlog.category}
+              </div>
+              <h1 className="text-4xl sm:text-5xl lg:text-3xl font-black text-gray-900 leading-[1.1] tracking-tight mb-8">
+                {currentBlog.title}
+              </h1>
+              <div className="flex items-center gap-4 text-gray-400 text-sm font-medium">
+                <span>{currentBlog.date}</span>
+                <span className="w-1 h-1 bg-gray-200 rounded-full"></span>
+                <span>{currentBlog.readTime}</span>
+              </div>
+            </header>
+
+            {currentBlog.content}
 
             <div className="bg-gray-900 rounded-3xl p-10 mt-20 text-center relative overflow-hidden">
                <div className="absolute top-0 right-0 w-64 h-64 bg-amber-400/10 rounded-full blur-3xl -translate-y-32 translate-x-32"></div>
@@ -1841,8 +1947,8 @@ You must return a valid JSON object matching this exact structure:
                  Build Your Plan Now
                </button>
             </div>
-          </div>
-        </article>
+          </article>
+        )}
 
         {/* Blog Footer */}
         <footer className="bg-gray-50 border-t border-gray-100 py-12 px-6">
