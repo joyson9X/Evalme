@@ -1511,7 +1511,7 @@ You must return a valid JSON object matching this exact structure:
   // PRICING VIEW
   if (viewState === 'PRICING') {
     return (
-      <div className="w-full min-h-screen flex items-center justify-center relative bg-[#FAFAFA] py-12 px-4">
+      <div className="w-full min-h-[100dvh] flex items-center justify-center relative bg-[#FAFAFA] py-8 px-4">
         <div className="decoration dec-1"></div>
         <div className="decoration dec-2"></div>
 
@@ -1596,7 +1596,7 @@ You must return a valid JSON object matching this exact structure:
   // AUTH VIEW
   if (viewState === 'AUTH') {
     return (
-      <div className="w-full min-h-screen flex items-center justify-center relative bg-[#FAFAFA] py-12 px-4">
+      <div className="w-full min-h-[100dvh] flex items-center justify-center relative bg-[#FAFAFA] py-8 px-4">
         <div className="decoration dec-1"></div>
         <div className="decoration dec-2"></div>
 
@@ -1606,7 +1606,7 @@ You must return a valid JSON object matching this exact structure:
             <p className="text-gray-500 text-[18px]">Sign in to access AI interview prep & coding paths</p>
           </div>
 
-          <div className="bg-white rounded-3xl p-8 shadow-[0_8px_30px_rgb(0,0,0,0.06)] border border-gray-100 w-full relative overflow-hidden flex flex-col gap-6">
+          <div className="bg-white rounded-3xl p-6 sm:p-8 shadow-[0_8px_30px_rgb(0,0,0,0.06)] border border-gray-100 w-full relative overflow-hidden flex flex-col gap-5 sm:gap-6">
             <button 
               onClick={handleGoogleSignIn}
               className="w-full flex items-center justify-center gap-4 bg-white border border-gray-200 text-gray-800 font-bold px-6 py-4 rounded-xl hover:bg-gray-50 hover:border-gray-300 transition-all cursor-pointer shadow-sm active:scale-[0.98]"
@@ -1631,7 +1631,7 @@ You must return a valid JSON object matching this exact structure:
   // HOME VIEW
   if (viewState === 'HOME') {
     return (
-      <div className="w-full min-h-screen flex flex-col relative bg-[#FAFAFA]">
+      <div className="w-full min-h-[100dvh] flex flex-col relative bg-[#FAFAFA]">
         <div className="decoration dec-1"></div>
         <div className="decoration dec-2"></div>
         
@@ -1670,10 +1670,10 @@ You must return a valid JSON object matching this exact structure:
           )}
         </div>
 
-        <div className="flex-1 max-w-[850px] flex flex-col items-center mx-auto px-6 py-12">
-          <div className="text-center mb-10 flex flex-col items-center">
-            <img src="/logo.svg" alt="Evalme" className="h-[44px] mb-5 object-contain" />
-            <p className="text-gray-500 text-[18px]">Select a powerful AI learning tool to begin</p>
+        <div className="flex-1 max-w-[850px] flex flex-col items-center mx-auto px-6 py-8 sm:py-12">
+          <div className="text-center mb-6 sm:mb-10 flex flex-col items-center">
+            <img src="/logo.svg" alt="Evalme" className="h-[36px] sm:h-[44px] mb-4 sm:mb-5 object-contain" />
+            <p className="text-gray-500 text-[16px] sm:text-[18px]">Select a powerful AI learning tool to begin</p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full">
@@ -1681,7 +1681,7 @@ You must return a valid JSON object matching this exact structure:
             {/* Tile 1: Job Plan Maker */}
             <button 
               onClick={() => navigateTo('GENERATOR')}
-              className="group text-left bg-white rounded-3xl p-8 shadow-[0_8px_30px_rgb(0,0,0,0.06)] border border-gray-100 hover:border-[var(--pikachu-yellow)] transition-all cursor-pointer hover:-translate-y-1 hover:shadow-xl relative overflow-hidden flex flex-col items-start"
+              className="group text-left bg-white rounded-3xl p-6 sm:p-8 shadow-[0_8px_30px_rgb(0,0,0,0.06)] border border-gray-100 hover:border-[var(--pikachu-yellow)] transition-all cursor-pointer hover:-translate-y-1 hover:shadow-xl relative overflow-hidden flex flex-col items-start"
             >
               <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-[var(--pikachu-yellow)] to-transparent opacity-10 rounded-bl-full transform translate-x-8 -translate-y-8 group-hover:scale-110 transition-transform duration-500"></div>
               
@@ -1705,7 +1705,7 @@ You must return a valid JSON object matching this exact structure:
             {/* Tile 2: Learn Coding */}
             <button 
               onClick={() => isPremium ? navigateTo('CODING_COURSES') : navigateTo('PRICING')}
-              className="group text-left bg-white rounded-3xl p-8 shadow-[0_8px_30px_rgb(0,0,0,0.06)] border border-gray-100 hover:border-[#8BE9FD] transition-all cursor-pointer hover:-translate-y-1 hover:shadow-xl relative overflow-hidden flex flex-col items-start"
+              className="group text-left bg-white rounded-3xl p-6 sm:p-8 shadow-[0_8px_30px_rgb(0,0,0,0.06)] border border-gray-100 hover:border-[#8BE9FD] transition-all cursor-pointer hover:-translate-y-1 hover:shadow-xl relative overflow-hidden flex flex-col items-start"
             >
               <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-[#8BE9FD] to-transparent opacity-10 rounded-bl-full transform translate-x-8 -translate-y-8 group-hover:scale-110 transition-transform duration-500"></div>
 
@@ -1864,7 +1864,7 @@ You must return a valid JSON object matching this exact structure:
   // CODING COURSES HUB
   if (viewState === 'CODING_COURSES') {
     return (
-      <div className="w-full min-h-screen flex items-center justify-center relative bg-[#FAFAFA] py-12 px-4">
+      <div className="w-full min-h-[100dvh] flex items-center justify-center relative bg-[#FAFAFA] py-8 px-4">
         <div className="decoration dec-1"></div>
         <div className="decoration dec-2"></div>
 
@@ -1933,14 +1933,14 @@ You must return a valid JSON object matching this exact structure:
 
 
 
-        <div className="bg-white rounded-3xl p-8 sm:p-10 shadow-[0_8px_30px_rgb(0,0,0,0.06)] relative overflow-hidden">
+        <div className="bg-white rounded-3xl p-6 sm:p-10 shadow-[0_8px_30px_rgb(0,0,0,0.06)] relative overflow-hidden">
           
-          <div className="text-center mb-8 flex flex-col items-center">
-            <img src="/logo.svg" alt="Evalme" className="h-[40px] mb-4 object-contain" />
-            <p className="text-gray-500 text-[15px]">Generate tailored descriptions instantly</p>
+          <div className="text-center mb-6 sm:mb-8 flex flex-col items-center">
+            <img src="/logo.svg" alt="Evalme" className="h-[32px] sm:h-[40px] mb-3 sm:mb-4 object-contain" />
+            <p className="text-gray-500 text-[14px] sm:text-[15px]">Generate tailored descriptions instantly</p>
           </div>
           
-          <form className="flex flex-col gap-6" onSubmit={e => e.preventDefault()}>
+          <form className="flex flex-col gap-4 sm:gap-6" onSubmit={e => e.preventDefault()}>
             <div>
               <label className="block font-bold mb-2 text-[14px] text-[#111827]">Job Role</label>
               <input 
