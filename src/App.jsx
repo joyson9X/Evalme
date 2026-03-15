@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import mammoth from 'mammoth';
 import { supabase } from './supabaseClient';
 import Mermaid from 'react-mermaid2';
@@ -60,6 +60,13 @@ function App() {
   const [currentQuizQuestionIndex, setCurrentQuizQuestionIndex] = useState(0)
   const [showQuizSummary, setShowQuizSummary] = useState(false)
   const [isSidebarOpen, setIsSidebarOpen] = useState(true)
+  const contentRef = useRef(null)
+
+  useEffect(() => {
+    if (contentRef.current) {
+      contentRef.current.scrollTop = 0;
+    }
+  }, [activeModuleIndex, activeTopicIndex]);
 
   useEffect(() => {
     setCurrentQuizQuestionIndex(0);
@@ -812,6 +819,23 @@ You must return a valid JSON object matching this exact structure:
   }
 
   // Next lesson logic handler
+  const handlePrevLesson = () => {
+    if (!planData) return;
+    
+    // If not at the first topic of the module
+    if (activeTopicIndex > 0) {
+      setActiveTopicIndex(activeTopicIndex - 1);
+    } 
+    // Go back to the previous module's last topic/quiz
+    else if (activeModuleIndex > 0) {
+      const prevModIdx = activeModuleIndex - 1;
+      const prevMod = planData[prevModIdx];
+      const hasQuiz = Array.isArray(prevMod.quiz) && prevMod.quiz.length > 0;
+      setActiveModuleIndex(prevModIdx);
+      setActiveTopicIndex((prevMod.topics?.length || 0) + (hasQuiz ? 1 : 0) - 1);
+    }
+  };
+
   const handleNextLesson = () => {
     if (!planData || !planData[activeModuleIndex] || !planData[activeModuleIndex].topics) return;
     
@@ -1069,7 +1093,7 @@ You must return a valid JSON object matching this exact structure:
 
           {/* ─── MAIN CONTENT AREA ─── */}
           <div className="flex-1 flex flex-col overflow-hidden bg-white">
-            <div className="flex-1 overflow-y-auto">
+            <div className="flex-1 overflow-y-auto" ref={contentRef}>
               <div className="max-w-3xl mx-auto px-4 sm:px-8 lg:px-12 py-8 pb-32">
                 
                 {!isQuizScreen ? (
@@ -1340,18 +1364,31 @@ You must return a valid JSON object matching this exact structure:
             {(!isQuizScreen || (showQuizSummary && isQuizPassed())) && (
               <div className="bg-white border-t border-gray-100 px-6 sm:px-12 py-4 z-20 flex-shrink-0 shadow-[0_-4px_24px_rgba(0,0,0,0.02)] relative">
                 <div className="max-w-3xl mx-auto cp-bottom-bar-inner flex items-center justify-between gap-4">
-                  <div className="font-bold text-gray-400 text-[13px] hidden sm:block tracking-wide">
-                    {isQuizScreen ? `Module ${currentModule.day} Quiz` : `Lesson ${activeTopicIndex + 1} of ${currentModule.topics.length}`}
-                  </div>
                   <button 
-                    onClick={handleNextLesson}
-                    className="cp-btn-complete bg-[#111827] text-white font-bold px-8 py-3.5 rounded-xl border-none cursor-pointer hover:bg-black transition-all hover:-translate-y-0.5 flex items-center justify-center gap-2.5 text-[15px] sm:w-auto w-full shadow-[0_4px_14px_rgba(0,0,0,0.15)]"
+                    onClick={handlePrevLesson}
+                    disabled={activeModuleIndex === 0 && activeTopicIndex === 0}
+                    className="flex items-center justify-center gap-2 text-gray-400 hover:text-gray-900 font-bold transition-all border-none bg-transparent cursor-pointer disabled:opacity-0 disabled:pointer-events-none group pr-4"
                   >
-                    Mark Complete & Next
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                      <path d="M5 12h14M12 5l7 7-7 7" />
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="transition-transform group-hover:-translate-x-1">
+                      <path d="M19 12H5M12 19l-7-7 7-7" />
                     </svg>
+                    <span className="hidden sm:inline">Previous</span>
                   </button>
+
+                  <div className="flex-1 flex justify-center sm:justify-between items-center">
+                    <div className="font-bold text-gray-300 text-[13px] hidden sm:block tracking-wide">
+                      {isQuizScreen ? `Module ${currentModule.day} Quiz` : `Lesson ${activeTopicIndex + 1} of ${currentModule.topics.length}`}
+                    </div>
+                    <button 
+                      onClick={handleNextLesson}
+                      className="cp-btn-complete bg-[#111827] text-white font-bold px-8 py-3.5 rounded-xl border-none cursor-pointer hover:bg-black transition-all hover:-translate-y-0.5 flex items-center justify-center gap-2.5 text-[15px] sm:w-auto w-full shadow-[0_4px_14px_rgba(0,0,0,0.15)]"
+                    >
+                      {activeModuleIndex === planData.length - 1 && activeTopicIndex === (currentModule.topics.length + (Array.isArray(currentModule.quiz) && currentModule.quiz.length > 0 ? 1 : 0) - 1) ? 'Finish Course' : 'Mark Complete & Next'}
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M5 12h14M12 5l7 7-7 7" />
+                      </svg>
+                    </button>
+                  </div>
                 </div>
               </div>
             )}
@@ -1726,13 +1763,7 @@ You must return a valid JSON object matching this exact structure:
 
       <div className="w-full max-w-[500px] relative z-10 p-4">
         
-        <button 
-          onClick={() => setViewState('HOME')}
-          className="mb-6 flex items-center gap-2 text-gray-500 hover:text-gray-900 font-semibold transition-colors bg-white/50 px-4 py-2 rounded-xl text-sm w-max backdrop-blur-sm border border-gray-200/50 cursor-pointer shadow-sm hover:shadow"
-        >
-          <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
-          Back to Home
-        </button>
+
 
         <div className="bg-white rounded-3xl p-8 sm:p-10 shadow-[0_8px_30px_rgb(0,0,0,0.06)] relative overflow-hidden">
           
