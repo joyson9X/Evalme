@@ -37,8 +37,7 @@ const GoogleAd = ({ slot, className = '', style = {} }) => {
   useEffect(() => {
     // Inject AdSense script if not present
     if (!document.querySelector('script[src*="adsbygoogle"]')) {
-      const script = document.createElement('script');
-      script.src = "https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-xxxxxxxxxxxxxxxx"; // PLACEHOLDER
+      script.src = "https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=pub-1467905577153156";
       script.async = true;
       script.crossOrigin = "anonymous";
       document.head.appendChild(script);
@@ -55,7 +54,7 @@ const GoogleAd = ({ slot, className = '', style = {} }) => {
     <div className={`flex items-center justify-center bg-gray-50/30 rounded-2xl border border-dashed border-gray-200/50 overflow-hidden ${className}`} style={{ minHeight: '600px', ...style }}>
       <ins className="adsbygoogle"
            style={{ display: 'block', width: '100%', height: '100%', ...style }}
-           data-ad-client="ca-pub-xxxxxxxxxxxxxxxx" // PLACEHOLDER
+           data-ad-client="pub-1467905577153156"
            data-ad-slot={slot}
            data-ad-format="auto"
            data-full-width-responsive="true"></ins>
