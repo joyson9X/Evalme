@@ -919,19 +919,18 @@ You must return a valid JSON object matching this exact structure:
           ></div>
 
           {/* ─── SIDEBAR ─── */}
-          <aside className={`cp-sidebar ${!isSidebarOpen ? 'collapsed' : ''} w-80 bg-white border-r border-gray-200 flex flex-col flex-shrink-0 z-50 md:z-20 md:relative md:shadow-none shadow-[4px_0_24px_rgba(0,0,0,0.1)]`}>
+          <aside className={`cp-sidebar ${!isSidebarOpen ? 'collapsed' : ''} w-80 bg-[#1C1D1F] flex flex-col flex-shrink-0 z-50 md:z-20 md:relative md:shadow-none shadow-[4px_0_24px_rgba(0,0,0,0.3)]`}>
             
             {/* Sidebar Header */}
-            <div className="px-4 py-3 border-b border-gray-100 flex items-center justify-between gap-2 flex-shrink-0">
-              <h2 className="font-bold text-gray-900 text-sm truncate leading-tight m-0">
+            <div className="px-4 py-3.5 border-b border-white/10 flex items-center justify-between gap-2 flex-shrink-0">
+              <h2 className="font-bold text-white text-[13px] tracking-wide leading-tight m-0">
                 Course content
               </h2>
-              {/* Close button — visible on mobile */}
               <button 
                 onClick={() => setIsSidebarOpen(false)}
-                className="md:hidden w-8 h-8 rounded-lg flex items-center justify-center hover:bg-gray-100 cursor-pointer transition-colors border-none bg-transparent text-gray-400"
+                className="w-7 h-7 rounded flex items-center justify-center hover:bg-white/10 cursor-pointer transition-colors border-none bg-transparent text-gray-400"
               >
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                   <path d="M18 6L6 18M6 6l12 12" />
                 </svg>
               </button>
@@ -949,20 +948,15 @@ You must return a valid JSON object matching this exact structure:
                 const isCurrentModule = mIdx === activeModuleIndex;
 
                 return (
-                  <div key={mIdx} className="border-b border-gray-100">
-                    {/* Section Header — accordion style */}
-                    <div className={`px-4 py-3 cursor-default select-none ${isCurrentModule ? 'bg-gray-50' : 'bg-white'}`}>
-                      <div className="flex items-center justify-between gap-2">
-                        <div className="flex-1 min-w-0">
-                          <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest block">Section {mod.day}</span>
-                          <div className="text-[0.85rem] font-bold text-gray-800 leading-snug truncate" title={mod.title}>{mod.title}</div>
-                        </div>
-                        <span className="text-[11px] font-bold text-gray-400 tabular-nums whitespace-nowrap flex-shrink-0">
-                          {completedInMod}/{totalInMod}
-                        </span>
+                  <div key={mIdx}>
+                    {/* Section Header */}
+                    <div className={`px-4 py-2.5 border-b border-white/5 select-none ${isCurrentModule ? 'bg-white/[0.06]' : 'bg-[#1C1D1F]'}`}>
+                      <div className="flex items-center justify-between gap-2 mb-1">
+                        <span className="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Section {mod.day}</span>
+                        <span className="text-[10px] font-bold text-gray-500 tabular-nums">{completedInMod}/{totalInMod}</span>
                       </div>
-                      {/* Mini progress bar for section */}
-                      <div className="w-full h-[3px] bg-gray-100 rounded-full mt-2 overflow-hidden">
+                      <div className="text-[13px] font-semibold text-gray-200 leading-snug truncate" title={mod.title}>{mod.title}</div>
+                      <div className="w-full h-[2px] bg-white/10 rounded-full mt-2 overflow-hidden">
                         <div 
                           className="h-full bg-[var(--pikachu-yellow)] rounded-full transition-all duration-300"
                           style={{ width: `${totalInMod > 0 ? (completedInMod / totalInMod) * 100 : 0}%` }}
@@ -971,7 +965,7 @@ You must return a valid JSON object matching this exact structure:
                     </div>
 
                     {/* Topic Items */}
-                    <div className="flex flex-col">
+                    <div className="flex flex-col border-b border-white/5">
                       {mod.topics?.map((topic, tIdx) => {
                         const isActive = mIdx === activeModuleIndex && tIdx === activeTopicIndex;
                         const isCompleted = completedTopics.has(`${mIdx}-${tIdx}`);
@@ -983,30 +977,34 @@ You must return a valid JSON object matching this exact structure:
                               setActiveTopicIndex(tIdx);
                               if (window.innerWidth < 768) setIsSidebarOpen(false);
                             }}
-                            className={`text-left w-full border-none bg-transparent pl-4 pr-3 py-2.5 cursor-pointer transition-all flex items-center gap-2.5 overflow-hidden min-h-[40px] ${
+                            className={`text-left w-full border-none bg-transparent pl-3 pr-3 py-[7px] cursor-pointer transition-all flex items-center gap-2.5 overflow-hidden ${
                               isActive 
-                                ? 'bg-[#FFFDF5] border-l-[3px] border-l-[var(--pikachu-yellow)] shadow-[inset_0_0_0_1px_rgba(255,222,0,0.15)]' 
-                                : 'border-l-[3px] border-l-transparent hover:bg-gray-50'
+                                ? 'bg-white/[0.08] border-l-[3px] border-l-[var(--pikachu-yellow)]' 
+                                : 'border-l-[3px] border-l-transparent hover:bg-white/[0.04]'
                             }`}
                             title={`${tIdx + 1}. ${topic.name}`}
                           >
-                            <div className={`w-[18px] h-[18px] rounded flex items-center justify-center flex-shrink-0 transition-colors ${
-                              isCompleted ? 'bg-green-500' : 'border border-gray-300 bg-white'
-                            }`}>
-                              {isCompleted && (
+                            {isCompleted ? (
+                              <div className="w-5 h-5 rounded-full bg-green-500 flex items-center justify-center flex-shrink-0">
                                 <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round">
                                   <polyline points="20 6 9 17 4 12"></polyline>
                                 </svg>
-                              )}
-                            </div>
-                            <span className={`flex-1 block truncate text-[13px] leading-snug ${
+                              </div>
+                            ) : (
+                              <div className={`w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0 text-[10px] font-bold ${
+                                isActive ? 'bg-[var(--pikachu-yellow)] text-gray-900' : 'bg-white/10 text-gray-500'
+                              }`}>
+                                {tIdx + 1}
+                              </div>
+                            )}
+                            <span className={`flex-1 block truncate text-[13px] leading-tight ${
                               isCompleted 
-                                ? 'text-gray-400 line-through' 
+                                ? 'text-gray-500 line-through' 
                                 : isActive 
-                                  ? 'font-semibold text-gray-900' 
-                                  : 'text-gray-600'
+                                  ? 'font-semibold text-white' 
+                                  : 'text-gray-400'
                             }`}>
-                              {tIdx + 1}. {topic.name}
+                              {topic.name}
                             </span>
                           </button>
                         );
@@ -1025,30 +1023,34 @@ You must return a valid JSON object matching this exact structure:
                               setActiveTopicIndex(tIdx);
                               if (window.innerWidth < 768) setIsSidebarOpen(false);
                             }}
-                            className={`text-left w-full border-none bg-transparent pl-4 pr-3 py-2.5 cursor-pointer transition-all flex items-center gap-2.5 overflow-hidden min-h-[40px] ${
+                            className={`text-left w-full border-none bg-transparent pl-3 pr-3 py-[7px] cursor-pointer transition-all flex items-center gap-2.5 overflow-hidden ${
                               isActive 
-                                ? 'bg-purple-50 border-l-[3px] border-l-purple-400' 
-                                : 'border-l-[3px] border-l-transparent hover:bg-gray-50'
+                                ? 'bg-purple-500/20 border-l-[3px] border-l-purple-400' 
+                                : 'border-l-[3px] border-l-transparent hover:bg-white/[0.04]'
                             }`}
                             title={`Module ${mod.day} Quiz`}
                           >
-                            <div className={`w-[18px] h-[18px] rounded flex items-center justify-center flex-shrink-0 transition-colors ${
-                              isCompleted ? 'bg-purple-500' : 'border border-purple-300 bg-purple-50'
-                            }`}>
-                              {isCompleted ? (
+                            {isCompleted ? (
+                              <div className="w-5 h-5 rounded-full bg-purple-500 flex items-center justify-center flex-shrink-0">
                                 <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round">
                                   <polyline points="20 6 9 17 4 12"></polyline>
                                 </svg>
-                              ) : (
-                                <span className="text-purple-500 font-bold text-[9px]">?</span>
-                              )}
-                            </div>
-                            <span className={`block truncate flex-1 text-[13px] leading-snug ${
+                              </div>
+                            ) : (
+                              <div className={`w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0 ${
+                                isActive ? 'bg-purple-500 text-white' : 'bg-purple-500/20 text-purple-400'
+                              }`}>
+                                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+                                  <path d="M9.09 9a3 3 0 015.83 1c0 2-3 3-3 3M12 17h.01" />
+                                </svg>
+                              </div>
+                            )}
+                            <span className={`block truncate flex-1 text-[13px] leading-tight ${
                               isCompleted 
-                                ? 'text-gray-400 line-through' 
+                                ? 'text-gray-500 line-through' 
                                 : isActive 
-                                  ? 'font-semibold text-purple-700' 
-                                  : 'text-purple-600'
+                                  ? 'font-semibold text-purple-300' 
+                                  : 'text-purple-400'
                             }`}>
                               Quiz
                             </span>
