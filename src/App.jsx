@@ -6,11 +6,13 @@ const getAPIKey = () => ["gsk", "_exROG", "0ANTHuei", "4kWRNRiWGd", "yb3FY2kw", 
 
 function App() {
   const [session, setSession] = useState(null)
+  const [isPremium, setIsPremium] = useState(false)
+  const [premiumExpiry, setPremiumExpiry] = useState(null)
   const [role, setRole] = useState('')
   const [requirement, setRequirement] = useState('')
   const [planner, setPlanner] = useState('')
   
-  const [viewState, setViewState] = useState('AUTH_SPINNER') // 'AUTH_SPINNER', 'AUTH', 'HOME', 'GENERATOR', 'PLAN', 'COURSE_PLAYER', etc
+  const [viewState, setViewState] = useState('AUTH_SPINNER') // 'AUTH_SPINNER', 'AUTH', 'HOME', 'GENERATOR', 'PLAN', 'COURSE_PLAYER', 'PRICING', etc
   const [isGenerating, setIsGenerating] = useState(false)
   const [isGeneratingPlan, setIsGeneratingPlan] = useState(false)
   
@@ -33,11 +35,37 @@ function App() {
     setShowQuizSummary(false);
   }, [activeModuleIndex, activeTopicIndex]);
 
+  const checkSubscription = async (userId) => {
+    try {
+      const { data, error } = await supabase
+        .from('subscriptions')
+        .select('*')
+        .eq('user_id', userId)
+        .order('created_at', { ascending: false })
+        .limit(1)
+      
+      if (error) { console.error('Sub check error:', error); return }
+      if (data && data.length > 0) {
+        const sub = data[0]
+        if (sub.plan === 'lifetime') {
+          setIsPremium(true)
+          setPremiumExpiry(null)
+        } else if (sub.expires_at && new Date(sub.expires_at) > new Date()) {
+          setIsPremium(true)
+          setPremiumExpiry(sub.expires_at)
+        } else {
+          setIsPremium(false)
+        }
+      }
+    } catch (err) { console.error('Sub check failed:', err) }
+  }
+
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session)
       if (session) {
         setViewState('HOME')
+        checkSubscription(session.user.id)
       } else {
         setViewState('AUTH')
       }
@@ -49,8 +77,10 @@ function App() {
       setSession(session)
       if (session) {
         setViewState('HOME')
+        checkSubscription(session.user.id)
       } else {
         setViewState('AUTH')
+        setIsPremium(false)
       }
     })
 
@@ -82,6 +112,60 @@ function App() {
     } catch (error) {
       console.error('Error logging out:', error.message)
     }
+  }
+
+  const PLANS = [
+    { id: '10_days', name: '10 Days', price: 49, duration: '10 Days Access', days: 10, color: '#f59e0b' },
+    { id: '2_months', name: '2 Months', price: 99, duration: '60 Days Access', days: 60, color: '#3b82f6', popular: true },
+    { id: 'lifetime', name: 'Lifetime', price: 159, duration: 'Forever', days: null, color: '#8b5cf6' },
+  ]
+
+  const handlePayment = (plan) => {
+    if (!session?.user) return alert('Please sign in first')
+
+    const options = {
+      key: import.meta.env.VITE_RAZORPAY_KEY_ID,
+      amount: plan.price * 100,
+      currency: 'INR',
+      name: 'Evalme Premium',
+      description: `${plan.name} Plan - Full Access`,
+      prefill: {
+        email: session.user.email,
+        name: session.user.user_metadata?.full_name || '',
+      },
+      theme: { color: '#111827' },
+      handler: async function (response) {
+        try {
+          const expiresAt = plan.days
+            ? new Date(Date.now() + plan.days * 24 * 60 * 60 * 1000).toISOString()
+            : null
+
+          const { error } = await supabase.from('subscriptions').insert({
+            user_id: session.user.id,
+            plan: plan.id,
+            payment_id: response.razorpay_payment_id,
+            amount: plan.price,
+            expires_at: expiresAt,
+          })
+
+          if (error) throw error
+
+          setIsPremium(true)
+          setPremiumExpiry(expiresAt)
+          setViewState('HOME')
+          alert('🎉 Payment successful! Welcome to Evalme Premium!')
+        } catch (err) {
+          console.error('Subscription save error:', err)
+          alert('Payment received but there was an error saving. Contact support with payment ID: ' + response.razorpay_payment_id)
+        }
+      },
+      modal: {
+        ondismiss: function () { console.log('Payment modal closed') }
+      }
+    }
+
+    const rzp = new window.Razorpay(options)
+    rzp.open()
   }
 
   const handleFileUpload = async (e) => {
@@ -1132,6 +1216,70 @@ You must return a valid JSON object matching this exact structure:
     )
   }
 
+  // PRICING VIEW
+  if (viewState === 'PRICING') {
+    return (
+      <div className="w-full min-h-screen flex items-center justify-center relative bg-[#FAFAFA] overflow-hidden p-4">
+        <div className="decoration dec-1"></div>
+        <div className="decoration dec-2"></div>
+
+        <div className="w-full max-w-[900px] relative z-10 flex flex-col items-center">
+          <button 
+            onClick={() => setViewState('HOME')}
+            className="self-start mb-6 flex items-center gap-2 text-gray-500 hover:text-gray-900 font-semibold transition-colors bg-white/50 px-4 py-2 rounded-xl text-sm w-max backdrop-blur-sm border border-gray-200/50 cursor-pointer shadow-sm hover:shadow"
+          >
+            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+            Back
+          </button>
+
+          <div className="text-center mb-10">
+            <div className="inline-flex items-center gap-2 bg-gradient-to-r from-amber-100 to-yellow-100 text-amber-700 font-bold px-4 py-1.5 rounded-full text-xs uppercase tracking-widest mb-4 border border-amber-200">
+              <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>
+              Premium
+            </div>
+            <h1 className="text-[2.5rem] font-extrabold mb-2 tracking-tight text-[#111827]">Unlock Full Access</h1>
+            <p className="text-gray-500 text-[16px] max-w-md mx-auto">Get unlimited course generations, all coding courses, and premium content</p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-5 w-full max-w-[750px]">
+            {PLANS.map(plan => (
+              <div 
+                key={plan.id}
+                className={`relative bg-white rounded-3xl p-6 shadow-[0_8px_30px_rgb(0,0,0,0.06)] border-2 flex flex-col items-center text-center transition-all hover:-translate-y-1 hover:shadow-xl ${
+                  plan.popular ? 'border-blue-400 scale-[1.03]' : 'border-gray-100'
+                }`}
+              >
+                {plan.popular && (
+                  <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-blue-500 text-white text-[11px] font-extrabold uppercase tracking-widest px-4 py-1 rounded-full shadow-md">Most Popular</div>
+                )}
+                <div className="w-12 h-12 rounded-2xl flex items-center justify-center mb-4 mt-2" style={{ backgroundColor: plan.color + '15', border: `1.5px solid ${plan.color}30` }}>
+                  <svg className="w-6 h-6" style={{ color: plan.color }} fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>
+                </div>
+                <h3 className="text-lg font-extrabold text-[#111827] mb-1">{plan.name}</h3>
+                <p className="text-gray-400 text-xs mb-4">{plan.duration}</p>
+                <div className="mb-5">
+                  <span className="text-3xl font-extrabold text-[#111827]">₹{plan.price}</span>
+                </div>
+                <ul className="text-left text-sm text-gray-600 space-y-2 mb-6 w-full">
+                  <li className="flex items-center gap-2"><svg className="w-4 h-4 text-green-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="3"><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7"></path></svg> Unlimited course generations</li>
+                  <li className="flex items-center gap-2"><svg className="w-4 h-4 text-green-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="3"><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7"></path></svg> All course sections unlocked</li>
+                  <li className="flex items-center gap-2"><svg className="w-4 h-4 text-green-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="3"><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7"></path></svg> Coding Academy access</li>
+                </ul>
+                <button
+                  onClick={() => handlePayment(plan)}
+                  className="w-full py-3 rounded-xl font-extrabold text-white text-[15px] transition-all hover:brightness-110 active:scale-[0.97] cursor-pointer border-none shadow-md"
+                  style={{ backgroundColor: plan.color }}
+                >
+                  Get {plan.name}
+                </button>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    )
+  }
+
   // AUTH VIEW
   if (viewState === 'AUTH') {
     return (
@@ -1194,6 +1342,11 @@ You must return a valid JSON object matching this exact structure:
                >
                  Logout
                </button>
+               {isPremium ? (
+                 <span className="text-[10px] font-extrabold uppercase tracking-widest bg-gradient-to-r from-amber-400 to-yellow-400 text-[#111827] px-2.5 py-0.5 rounded-full ml-1">PRO</span>
+               ) : (
+                 <button onClick={() => setViewState('PRICING')} className="text-[10px] font-extrabold uppercase tracking-widest bg-gradient-to-r from-amber-400 to-yellow-400 text-[#111827] px-2.5 py-1 rounded-full cursor-pointer border-none hover:brightness-110 transition-all ml-1">Upgrade</button>
+               )}
             </div>
           )}
         </div>
@@ -1233,10 +1386,17 @@ You must return a valid JSON object matching this exact structure:
 
             {/* Tile 2: Learn Coding */}
             <button 
-              onClick={() => setViewState('CODING_COURSES')}
+              onClick={() => isPremium ? setViewState('CODING_COURSES') : setViewState('PRICING')}
               className="group text-left bg-white rounded-3xl p-8 shadow-[0_8px_30px_rgb(0,0,0,0.06)] border border-gray-100 hover:border-[#8BE9FD] transition-all cursor-pointer hover:-translate-y-1 hover:shadow-xl relative overflow-hidden flex flex-col items-start"
             >
               <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-[#8BE9FD] to-transparent opacity-10 rounded-bl-full transform translate-x-8 -translate-y-8 group-hover:scale-110 transition-transform duration-500"></div>
+
+              {!isPremium && (
+                <div className="absolute top-4 right-4 z-20 bg-gradient-to-r from-amber-400 to-yellow-400 text-[#111827] text-[10px] font-extrabold uppercase tracking-widest px-2.5 py-1 rounded-full flex items-center gap-1">
+                  <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clipRule="evenodd"></path></svg>
+                  PRO
+                </div>
+              )}
 
               <div className="w-14 h-14 bg-[#F2FDFE] border border-[#8BE9FD] rounded-2xl flex items-center justify-center mb-6 text-[#17a2b8] shadow-sm relative z-10">
                 <svg className="w-7 h-7" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
@@ -1249,8 +1409,8 @@ You must return a valid JSON object matching this exact structure:
                 Interactive AI-powered coding editor with live personalized challenges.
               </p>
               
-              <div className="mt-auto text-[#17a2b8] font-bold flex items-center gap-2 group-hover:gap-3 transition-all text-[15px] drop-shadow-sm brightness-95 relative z-10">
-                Browse Courses
+              <div className={`mt-auto font-bold flex items-center gap-2 group-hover:gap-3 transition-all text-[15px] drop-shadow-sm brightness-95 relative z-10 ${isPremium ? 'text-[#17a2b8]' : 'text-amber-500'}`}>
+                {isPremium ? 'Browse Courses' : 'Unlock with Premium'}
                 <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="3"><path strokeLinecap="round" strokeLinejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
               </div>
             </button>
