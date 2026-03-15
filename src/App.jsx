@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import mammoth from 'mammoth';
 
 const getAPIKey = () => ["gsk", "_exROG", "0ANTHuei", "4kWRNRiWGd", "yb3FY2kw", "XlfNxiT1", "Tmclth", "AIO3J7o"].join("");
 
@@ -12,6 +13,8 @@ function App() {
   const [isGeneratingPlan, setIsGeneratingPlan] = useState(false)
   
   const [hasError, setHasError] = useState(false)
+  const [isParsing, setIsParsing] = useState(false)
+  const [parseError, setParseError] = useState('')
   const [jobData, setJobData] = useState(null)
   const [planData, setPlanData] = useState(null)
   
@@ -29,6 +32,53 @@ function App() {
   }, [activeModuleIndex, activeTopicIndex]);
 
 
+
+  const handleFileUpload = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    setIsParsing(true);
+    setParseError("");
+
+    try {
+      if (file.name.toLowerCase().endsWith('.pdf') || file.type === 'application/pdf') {
+        const pdfjsLib = window.pdfjsLib;
+        if (!pdfjsLib) {
+          await new Promise((resolve, reject) => {
+            const script = document.createElement('script');
+            script.src = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js";
+            script.onload = resolve;
+            script.onerror = reject;
+            document.head.appendChild(script);
+          });
+          window.pdfjsLib.GlobalWorkerOptions.workerSrc = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
+        }
+        
+        const arrayBuffer = await file.arrayBuffer();
+        const pdf = await window.pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+        let fullText = "";
+        for (let i = 1; i <= pdf.numPages; i++) {
+           const page = await pdf.getPage(i);
+           const content = await page.getTextContent();
+           fullText += content.items.map(item => item.str).join(' ') + " ";
+        }
+        setRequirement(prev => (prev ? prev + "\n\n" : "") + fullText.trim().substring(0, 15000));
+
+      } else if (file.name.toLowerCase().endsWith('.docx') || file.type.includes('wordprocessingml')) {
+        const arrayBuffer = await file.arrayBuffer();
+        const result = await mammoth.extractRawText({ arrayBuffer });
+        setRequirement(prev => (prev ? prev + "\n\n" : "") + result.value.trim().substring(0, 15000));
+      } else {
+        setParseError("Please upload a .pdf or .docx document.");
+      }
+    } catch (err) {
+      console.error("Parse error:", err);
+      setParseError("Could not read document. Try copying text manually.");
+    } finally {
+      setIsParsing(false);
+      e.target.value = null;
+    }
+  }
 
   const handleGenerate = async () => {
     if (!role || !requirement || !planner) {
@@ -949,9 +999,21 @@ You must return a valid JSON object matching this exact structure:
             </div>
 
             <div>
-              <label className="block font-semibold mb-2 text-sm text-gray-900">Job Requirement</label>
+              <div className="flex justify-between items-end mb-2">
+                <label className="block font-semibold text-sm text-gray-900">Job Requirement</label>
+                <label className={`cursor-pointer text-xs font-bold bg-[#EFEFEF] hover:bg-[#E0E0E0] text-gray-700 px-3 py-1.5 rounded-lg transition-colors flex items-center gap-1.5 border border-gray-200 ${isParsing ? 'opacity-70 pointer-events-none' : ''}`}>
+                  {isParsing ? (
+                    <div className="w-3.5 h-3.5 border-2 border-gray-400 border-t-gray-700 rounded-full animate-spin"></div>
+                  ) : (
+                    <svg className="w-4 h-4 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"></path></svg>
+                  )}
+                  {isParsing ? "Scanning File..." : "Attach JD (.pdf / .docx)"}
+                  <input type="file" className="hidden" accept=".pdf,.docx,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document" onChange={handleFileUpload} disabled={isParsing} />
+                </label>
+              </div>
+              {parseError && <p className="text-red-500 text-xs mb-2 font-medium animate-pulse">{parseError}</p>}
               <textarea 
-                className="w-full bg-[#F5F5F5] border-2 border-transparent rounded-xl px-5 py-4 text-base text-gray-900 transition-all outline-none placeholder:text-[#A0A0A0] hover:bg-[#EFEFEF] focus:bg-white focus:border-[var(--pikachu-yellow)] focus:shadow-[0_0_0_4px_rgba(255,222,0,0.15)] resize-y min-h-[120px]"
+                className={`w-full bg-[#F5F5F5] border-2 border-transparent rounded-xl px-5 py-4 text-base text-gray-900 transition-all outline-none placeholder:text-[#A0A0A0] hover:bg-[#EFEFEF] focus:bg-white focus:border-[var(--pikachu-yellow)] focus:shadow-[0_0_0_4px_rgba(255,222,0,0.15)] resize-y min-h-[120px] ${isParsing ? 'opacity-50 blur-[1px] pointer-events-none' : ''}`}
                 placeholder="Describe the responsibilities, skills, and experience needed..." 
                 value={requirement}
                 onChange={e => setRequirement(e.target.value)}
