@@ -999,9 +999,9 @@ You must return a valid JSON object matching this exact structure:
                 </svg>
               </div>
               
-              <h2 className="text-2xl font-bold text-[#111827] mb-2 tracking-tight relative z-10">Job Plan Maker</h2>
+              <h2 className="text-2xl font-bold text-[#111827] mb-2 tracking-tight relative z-10">Interview Prep Planner</h2>
               <p className="text-gray-500 text-[15px] leading-relaxed mb-8 relative z-10">
-                Generate highly tailored day-by-day learning curriculums for any job role.
+                Generate a highly tailored day-by-day interview preparation planner to ace your interview.
               </p>
               
               <div className="mt-auto text-amber-500 font-bold flex items-center gap-2 group-hover:gap-3 transition-all text-[15px] drop-shadow-sm brightness-95 relative z-10">
