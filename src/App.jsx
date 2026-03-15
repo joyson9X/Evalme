@@ -71,6 +71,7 @@ function App() {
     } else {
       window.history.pushState({ view: newState }, '', '');
     }
+    window.scrollTo(0, 0); // Ensure view starts at top
   };
 
   // Listen for browser back/forward buttons
@@ -655,7 +656,7 @@ You must return a valid JSON object matching this exact structure:
     }
 
     return (
-      <div className="w-full min-h-[100dvh] pb-20 bg-[#F4F5F7] overflow-x-hidden overflow-y-auto font-sans relative">
+      <div className="w-full min-h-screen pb-20 bg-[#F4F5F7] overflow-x-hidden overflow-y-auto font-sans relative">
         <div className="decoration dec-1 blur-[120px] opacity-30"></div>
         <div className="decoration dec-2 blur-[100px] opacity-20"></div>
         
@@ -1431,7 +1432,7 @@ You must return a valid JSON object matching this exact structure:
 
   if (viewState === 'OVERVIEW' && jobData) {
     return (
-      <div className="w-full min-h-[100dvh] py-10 px-4 flex flex-col items-center bg-[#FAFAFA] overflow-x-hidden overflow-y-auto relative">
+      <div className="w-full min-h-screen py-10 px-4 flex flex-col items-center bg-[#FAFAFA] relative">
         <div className="decoration dec-1"></div>
         <div className="decoration dec-2"></div>
         
@@ -1500,7 +1501,7 @@ You must return a valid JSON object matching this exact structure:
   // PRICING VIEW
   if (viewState === 'PRICING') {
     return (
-      <div className="w-full min-h-[100dvh] flex items-center justify-center relative bg-[#FAFAFA] overflow-x-hidden overflow-y-auto py-12 px-4">
+      <div className="w-full min-h-screen flex items-center justify-center relative bg-[#FAFAFA] py-12 px-4">
         <div className="decoration dec-1"></div>
         <div className="decoration dec-2"></div>
 
@@ -1585,7 +1586,7 @@ You must return a valid JSON object matching this exact structure:
   // AUTH VIEW
   if (viewState === 'AUTH') {
     return (
-      <div className="w-full min-h-[100dvh] flex items-center justify-center relative bg-[#FAFAFA] overflow-x-hidden overflow-y-auto py-12 px-4">
+      <div className="w-full min-h-screen flex items-center justify-center relative bg-[#FAFAFA] py-12 px-4">
         <div className="decoration dec-1"></div>
         <div className="decoration dec-2"></div>
 
@@ -1620,7 +1621,7 @@ You must return a valid JSON object matching this exact structure:
   // HOME VIEW
   if (viewState === 'HOME') {
     return (
-      <div className="w-full min-h-[100dvh] flex flex-col relative bg-[#FAFAFA] overflow-x-hidden overflow-y-auto">
+      <div className="w-full min-h-screen flex flex-col relative bg-[#FAFAFA]">
         <div className="decoration dec-1"></div>
         <div className="decoration dec-2"></div>
         
@@ -1730,7 +1731,7 @@ You must return a valid JSON object matching this exact structure:
   // CODING COURSES HUB
   if (viewState === 'CODING_COURSES') {
     return (
-      <div className="w-full min-h-[100dvh] flex items-center justify-center relative bg-[#FAFAFA] overflow-x-hidden overflow-y-auto py-12 px-4">
+      <div className="w-full min-h-screen flex items-center justify-center relative bg-[#FAFAFA] py-12 px-4">
         <div className="decoration dec-1"></div>
         <div className="decoration dec-2"></div>
 
@@ -1790,7 +1791,7 @@ You must return a valid JSON object matching this exact structure:
 
   // GENERATOR VIEW
   return (
-    <div className="w-full min-h-[100dvh] flex items-center justify-center relative bg-[#FAFAFA] overflow-x-hidden overflow-y-auto py-12 px-4">
+    <div className="w-full min-h-screen flex items-center justify-center relative bg-[#FAFAFA] py-12 px-4">
       <div className="decoration dec-1"></div>
       <div className="decoration dec-2"></div>
 
@@ -1815,7 +1816,6 @@ You must return a valid JSON object matching this exact structure:
                 placeholder="e.g. Frontend Developer" 
                 value={role}
                 onChange={e => setRole(e.target.value)}
-                autoFocus
               />
             </div>
 

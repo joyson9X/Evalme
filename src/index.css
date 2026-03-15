@@ -145,11 +145,16 @@ input[type="radio"]:checked ~ .radio-custom:after {
 
 /* ─── Course Player: Sidebar Transition ─── */
 .cp-sidebar {
-  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  will-change: transform;
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), margin-left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  will-change: transform, margin-left;
 }
 .cp-sidebar.collapsed {
   transform: translateX(-100%);
+}
+@media (min-width: 768px) {
+  .cp-sidebar.collapsed {
+    margin-left: -340px;
+  }
 }
 
 /* Mobile overlay backdrop */
