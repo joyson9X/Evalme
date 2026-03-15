@@ -1032,9 +1032,8 @@ You must return a valid JSON object matching this exact structure:
               <label className="block font-bold mb-3 text-[14px] text-[#111827]">Planner Duration</label>
               <div className="flex gap-6">
                 {['3 Days', '7 Days', '10 Days'].map(duration => (
-                  <label key={duration} className="flex items-center cursor-pointer text-[15px] text-[#111827] font-medium group relative">
-                    <div className={`w-5 h-5 rounded-full border-2 mr-2.5 flex items-center justify-center transition-colors ${planner === duration ? 'border-gray-900' : 'border-gray-200 bg-[#FAFAFA]'}`}>
-                      {planner === duration && <div className="w-2 h-2 bg-gray-900 rounded-full flex-shrink-0"></div>}
+                  <label key={duration} className="flex items-center cursor-pointer text-[15px] text-[#111827] font-semibold group relative">
+                    <div className={`w-[22px] h-[22px] rounded-full mr-3 border flex items-center justify-center transition-all duration-200 ${planner === duration ? 'border-[6px] border-[#111827] bg-white' : 'border-[#E5E7EB] bg-[#F9FAFB] group-hover:bg-[#F3F4F6] group-hover:border-[#D1D5DB]'}`}>
                     </div>
                     <input 
                       type="radio" 
