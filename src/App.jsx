@@ -80,6 +80,7 @@ function App() {
     const handlePopState = (event) => {
       if (event.state && event.state.view) {
         setViewState(event.state.view);
+        window.scrollTo(0, 0);
       }
     };
     window.addEventListener('popstate', handlePopState);
@@ -1404,7 +1405,7 @@ You must return a valid JSON object matching this exact structure:
 
             {/* ═══ STICKY BOTTOM BAR ═══ */}
             {(!isQuizScreen || (showQuizSummary && isQuizPassed())) && (
-              <div className="bg-white border-t border-gray-100 px-6 sm:px-12 py-4 z-20 flex-shrink-0 shadow-[0_-4px_24px_rgba(0,0,0,0.02)] relative">
+              <div className="bg-white border-t border-gray-100 px-6 sm:px-12 py-4 pb-[calc(1rem+env(safe-area-inset-bottom))] z-20 flex-shrink-0 shadow-[0_-4px_24px_rgba(0,0,0,0.02)] relative">
                 <div className="max-w-3xl mx-auto cp-bottom-bar-inner flex items-center justify-between gap-4">
                   <button 
                     onClick={handlePrevLesson}
@@ -2030,7 +2031,7 @@ You must return a valid JSON object matching this exact structure:
 
   // GENERATOR VIEW
   return (
-    <div className="w-full min-h-screen flex items-center justify-center relative bg-[#FAFAFA] py-12 px-4">
+    <div className="w-full min-h-[100dvh] flex items-center justify-center relative bg-[#FAFAFA] py-8 sm:py-12 px-4">
       <div className="decoration dec-1"></div>
       <div className="decoration dec-2"></div>
 

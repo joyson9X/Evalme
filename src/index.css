@@ -11,6 +11,11 @@
   --input-bg: #F5F5F5;
 }
 
+html {
+  scroll-behavior: smooth;
+  overflow-x: hidden;
+}
+
 body {
   font-family: 'Outfit', sans-serif;
   background-color: var(--bg-color);
@@ -19,6 +24,28 @@ body {
   margin: 0;
   position: relative;
   overflow-x: hidden;
+  overscroll-behavior-y: none; /* Prevents pull-to-refresh on mobile which can be disruptive */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  scroll-behavior: smooth;
+}
+
+/* Mobile-Specific Interaction Fixes */
+@media (hover: none) {
+  /* Disable sticky hover on touch devices */
+  button:hover, 
+  a:hover,
+  .group:hover .group-hover\:bg-white,
+  .group:hover .group-hover\:border-gray-200 {
+    background-color: inherit !important;
+    border-color: inherit !important;
+    transform: none !important;
+  }
+}
+
+* {
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
 }
 
 /* Decorative background elements */
@@ -29,6 +56,7 @@ body {
   z-index: 0;
   opacity: 0.6;
   pointer-events: none;
+  will-change: transform; /* Hardware acceleration for smoother animations */
 }
 
 .dec-1 {
