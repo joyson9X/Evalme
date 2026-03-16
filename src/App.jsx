@@ -1671,7 +1671,7 @@ You must return a valid JSON object matching this exact structure:
           )}
         </div>
 
-        <div className="flex-1 max-w-[850px] flex flex-col items-center mx-auto px-6 py-8 sm:py-12">
+        <div className="flex-1 max-w-[850px] flex flex-col items-center mx-auto px-6 py-8 sm:py-12 relative z-10">
           <div className="text-center mb-6 sm:mb-10 flex flex-col items-center">
             <img src="/logo.svg" alt="Evalme" className="h-[36px] sm:h-[44px] mb-4 sm:mb-5 object-contain" />
             <p className="text-gray-500 text-[16px] sm:text-[18px]">Select a powerful AI learning tool to begin</p>
