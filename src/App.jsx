@@ -1637,22 +1637,20 @@ You must return a valid JSON object matching this exact structure:
   // AUTH VIEW
   if (viewState === 'AUTH') {
     return (
-      <div className="w-full relative bg-[#FAFAFA] pt-20 sm:pt-8 pb-12 px-4">
+      <div className="w-full min-h-dvh flex flex-col items-center justify-center bg-[#FAFAFA] relative px-4 py-12">
         <div className="decoration dec-1"></div>
         <div className="decoration dec-2"></div>
 
-        <div className="w-full max-w-[440px] relative z-10 flex flex-col items-center">
-          <div className="text-center mb-10 w-full flex flex-col items-center">
-            <img src="/logo.svg" alt="Evalme" className="h-[48px] mb-6 object-contain" />
-            <p className="text-gray-500 text-[18px]">Sign in to access AI interview prep & coding paths</p>
-          </div>
+        <div className="w-full max-w-sm relative z-10 flex flex-col items-center">
+          <img src="/logo.svg" alt="Evalme" className="h-10 sm:h-12 mb-4 object-contain" />
+          <p className="text-gray-500 text-sm sm:text-base text-center mb-8 max-w-xs">Sign in to access AI interview prep & coding paths</p>
 
-          <div className="bg-white rounded-3xl p-6 sm:p-8 shadow-[0_8px_30px_rgb(0,0,0,0.06)] border border-gray-100 w-full relative overflow-hidden flex flex-col gap-5 sm:gap-6">
+          <div className="bg-white rounded-2xl p-6 sm:p-8 shadow-sm border border-gray-100 w-full">
             <button
               onClick={handleGoogleSignIn}
-              className="w-full flex items-center justify-center gap-4 bg-white border border-gray-200 text-gray-800 font-bold px-6 py-4 rounded-xl hover:bg-gray-50 hover:border-gray-300 transition-all cursor-pointer shadow-sm active:scale-[0.98]"
+              className="w-full flex items-center justify-center gap-3 bg-white border-2 border-gray-200 text-gray-800 font-bold px-5 py-3.5 rounded-xl hover:bg-gray-50 hover:border-gray-300 transition-all cursor-pointer active:scale-[0.98]"
             >
-              <svg viewBox="0 0 24 24" width="24" height="24" xmlns="http://www.w3.org/2000/svg">
+              <svg viewBox="0 0 24 24" width="22" height="22" xmlns="http://www.w3.org/2000/svg">
                 <g transform="matrix(1, 0, 0, 1, 27.009001, -39.238998)">
                   <path fill="#4285F4" d="M -3.264 51.509 C -3.264 50.719 -3.334 49.969 -3.454 49.239 L -14.754 49.239 L -14.754 53.749 L -8.284 53.749 C -8.574 55.229 -9.424 56.479 -10.684 57.329 L -10.684 60.329 L -6.824 60.329 C -4.564 58.239 -3.264 55.159 -3.264 51.509 Z" />
                   <path fill="#34A853" d="M -14.754 63.239 C -11.514 63.239 -8.804 62.159 -6.824 60.329 L -10.684 57.329 C -11.764 58.049 -13.134 58.489 -14.754 58.489 C -17.884 58.489 -20.534 56.379 -21.484 53.529 L -25.464 53.529 L -25.464 56.619 C -23.494 60.539 -19.444 63.239 -14.754 63.239 Z" />
@@ -1660,9 +1658,9 @@ You must return a valid JSON object matching this exact structure:
                   <path fill="#EA4335" d="M -14.754 43.989 C -12.984 43.989 -11.404 44.599 -10.154 45.789 L -6.734 42.369 C -8.804 40.429 -11.514 39.239 -14.754 39.239 C -19.444 39.239 -23.494 41.939 -25.464 45.859 L -21.484 48.949 C -20.534 46.099 -17.884 43.989 -14.754 43.989 Z" />
                 </g>
               </svg>
-              <span>Continue with Google</span>
+              Continue with Google
             </button>
-            <p className="text-gray-400 text-xs text-center mt-2 px-6">By signing in, you agree to our Terms of Service and Privacy Policy.</p>
+            <p className="text-gray-400 text-[11px] text-center mt-4">By signing in, you agree to our Terms of Service and Privacy Policy.</p>
           </div>
         </div>
       </div>
@@ -2217,72 +2215,81 @@ You must return a valid JSON object matching this exact structure:
 
   // GENERATOR VIEW
   return (
-    <div className="w-full relative bg-[#FAFAFA] pt-16 sm:pt-12 pb-12 px-4">
+    <div className="w-full bg-[#FAFAFA] relative">
       <div className="decoration dec-1"></div>
       <div className="decoration dec-2"></div>
 
-      <div className="w-full max-w-[500px] relative z-10 p-4">
+      {/* Top Nav */}
+      <nav className="w-full px-4 sm:px-8 py-3 flex items-center justify-between relative z-20">
+        <button
+          onClick={() => navigateTo('HOME')}
+          className="flex items-center gap-2 text-gray-500 hover:text-gray-900 font-semibold transition-colors bg-transparent border-none cursor-pointer text-sm"
+        >
+          <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" /></svg>
+          Home
+        </button>
+        <img src="/logo.svg" alt="Evalme" className="h-7 sm:h-8 object-contain" />
+        <div className="w-14"></div>
+      </nav>
 
+      {/* Form Container */}
+      <div className="w-full max-w-lg mx-auto px-4 sm:px-6 py-6 sm:py-10 relative z-10">
+        <div className="bg-white rounded-2xl sm:rounded-3xl p-5 sm:p-8 shadow-sm border border-gray-100">
 
-
-
-        <div className="bg-white rounded-3xl p-6 sm:p-10 shadow-[0_8px_30px_rgb(0,0,0,0.06)] relative overflow-hidden">
-
-          <div className="text-center mb-6 sm:mb-8 flex flex-col items-center">
-            <img src="/logo.svg" alt="Evalme" className="h-[32px] sm:h-[40px] mb-3 sm:mb-4 object-contain" />
-            <p className="text-gray-500 text-[14px] sm:text-[15px]">Generate tailored descriptions instantly</p>
+          <div className="text-center mb-5 sm:mb-7">
+            <h1 className="text-xl sm:text-2xl font-extrabold text-gray-900 tracking-tight mb-1">Build Your Plan</h1>
+            <p className="text-gray-500 text-sm">Paste a job description to generate a tailored study guide</p>
           </div>
 
-          <form className="flex flex-col gap-4 sm:gap-6" onSubmit={e => e.preventDefault()}>
+          <form className="flex flex-col gap-4 sm:gap-5" onSubmit={e => e.preventDefault()}>
+            {/* Job Role */}
             <div>
-              <label className="block font-bold mb-2 text-[14px] text-[#111827]">Job Role</label>
+              <label className="block font-bold mb-1.5 text-sm text-gray-800">Job Role</label>
               <input
                 type="text"
-                className="w-full bg-white border-2 border-gray-200 rounded-xl px-4 py-3.5 text-[15px] text-gray-900 transition-all outline-none placeholder:text-gray-400 focus:shadow-[0_0_0_4px_rgba(255,222,0,0.15)] focus:border-[var(--pikachu-yellow)]"
+                className="w-full bg-white border-2 border-gray-200 rounded-xl px-4 py-3 text-[15px] text-gray-900 transition-all outline-none placeholder:text-gray-400 focus:shadow-[0_0_0_4px_rgba(255,222,0,0.15)] focus:border-[var(--pikachu-yellow)]"
                 placeholder="e.g. Frontend Developer"
                 value={role}
                 onChange={e => setRole(e.target.value)}
               />
             </div>
 
+            {/* Job Requirement */}
             <div>
-              <label className="block font-bold mb-3 text-[14px] text-[#111827]">Job Requirement</label>
-
-              <div className="relative group">
+              <label className="block font-bold mb-1.5 text-sm text-gray-800">Job Description</label>
+              <div className="relative">
                 <textarea
-                  className={`w-full bg-[#FAFAFA] border-2 border-gray-100 rounded-[2rem] px-6 py-6 pb-16 text-[15px] text-gray-900 transition-all outline-none placeholder:text-gray-400 hover:bg-white hover:border-gray-200 focus:bg-white focus:border-[var(--pikachu-yellow)] focus:shadow-[0_0_0_5px_rgba(255,222,0,0.1)] resize-none min-h-[180px] ${isParsing ? 'opacity-50 blur-[1px] pointer-events-none' : ''}`}
-                  placeholder="Paste job description here or use the icon below to upload a file..."
+                  className={`w-full bg-gray-50 border-2 border-gray-100 rounded-2xl px-5 py-4 pb-14 text-[15px] text-gray-900 transition-all outline-none placeholder:text-gray-400 hover:bg-white hover:border-gray-200 focus:bg-white focus:border-[var(--pikachu-yellow)] focus:shadow-[0_0_0_4px_rgba(255,222,0,0.1)] resize-none min-h-[160px] ${isParsing ? 'opacity-50 blur-[1px] pointer-events-none' : ''}`}
+                  placeholder="Paste job description here or upload a file..."
                   value={requirement}
                   onChange={e => setRequirement(e.target.value)}
                 />
-
-                <div className="absolute bottom-4 left-4 right-4 flex justify-between items-end pointer-events-none">
-                  <label className={`pointer-events-auto cursor-pointer flex items-center justify-center w-11 h-11 bg-white border border-gray-100 hover:border-gray-200 rounded-full shadow-sm transition-all active:scale-[0.95] group/btn ${isParsing ? 'opacity-50' : ''}`}>
+                <div className="absolute bottom-3 left-3 right-3 flex justify-between items-end pointer-events-none">
+                  <label className={`pointer-events-auto cursor-pointer flex items-center justify-center w-10 h-10 bg-white border border-gray-100 hover:border-gray-200 rounded-full shadow-sm transition-all active:scale-95 ${isParsing ? 'opacity-50' : ''}`}>
                     {isParsing ? (
                       <div className="w-5 h-5 border-2 border-gray-200 border-t-[var(--pikachu-yellow)] rounded-full animate-spin"></div>
                     ) : (
-                      <svg className="w-5 h-5 text-gray-400 group-hover/btn:text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5">
+                      <svg className="w-4.5 h-4.5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5">
                         <path strokeLinecap="round" strokeLinejoin="round" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.414a4 4 0 00-5.656-5.656l-6.415 6.414a6 6 0 108.486 8.486L20.5 13" />
                       </svg>
                     )}
                     <input type="file" className="hidden" accept=".pdf,.docx,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document" onChange={handleFileUpload} disabled={isParsing} />
                   </label>
-
                   {requirement && !isParsing && (
-                    <div className="bg-amber-50 text-amber-600 text-[10px] font-black uppercase tracking-widest px-3 py-1.5 rounded-full border border-amber-100 flex items-center gap-1.5 mb-1.5">
+                    <div className="bg-amber-50 text-amber-600 text-[10px] font-black uppercase tracking-widest px-2.5 py-1 rounded-full border border-amber-100 flex items-center gap-1.5 mb-1">
                       <div className="w-1.5 h-1.5 bg-amber-400 rounded-full animate-pulse"></div>
-                      Content Ready
+                      Ready
                     </div>
                   )}
                 </div>
               </div>
-
-              {parseError && <p className="text-red-500 text-xs mt-3 mb-0 text-center font-medium animate-pulse">{parseError}</p>}
+              {parseError && <p className="text-red-500 text-xs mt-2 text-center font-medium">{parseError}</p>}
             </div>
 
+            {/* Planner Duration */}
             <div>
-              <label className="block font-bold mb-4 text-[13px] uppercase tracking-widest text-gray-400">Planner Duration</label>
-              <div className="bg-[#F3F4F6] p-1.5 rounded-2xl flex gap-1 shadow-inner border border-gray-100/50">
+              <label className="block font-bold mb-2.5 text-xs uppercase tracking-widest text-gray-400">Duration</label>
+              <div className="bg-gray-100 p-1 rounded-xl flex gap-1">
                 {['3 Days', '7 Days', '10 Days'].map(duration => {
                   const isActive = planner === duration;
                   return (
@@ -2290,7 +2297,7 @@ You must return a valid JSON object matching this exact structure:
                       key={duration}
                       type="button"
                       onClick={() => setPlanner(duration)}
-                      className={`flex-1 py-3 px-4 rounded-[14px] text-[14px] font-bold transition-all duration-300 cursor-pointer border-none flex items-center justify-center ${isActive ? 'bg-white text-gray-900 shadow-[0_4px_12px_rgba(0,0,0,0.08)]' : 'bg-transparent text-gray-400 hover:text-gray-600'}`}
+                      className={`flex-1 py-2.5 rounded-lg text-sm font-bold transition-all cursor-pointer border-none ${isActive ? 'bg-white text-gray-900 shadow-sm' : 'bg-transparent text-gray-400 hover:text-gray-600'}`}
                     >
                       {duration}
                     </button>
@@ -2299,18 +2306,19 @@ You must return a valid JSON object matching this exact structure:
               </div>
             </div>
 
+            {/* Generate Button */}
             <button
               type="button"
               onClick={handleGenerate}
               disabled={isGenerating}
-              className={`w-full bg-[#fce01a] text-[#111827] border-none rounded-xl py-4 flex items-center justify-center gap-2 cursor-pointer transition-all mt-2 shadow-[0_2px_10px_rgba(252,224,26,0.3)] hover:brightness-105 active:scale-[0.98] disabled:opacity-80 disabled:pointer-events-none ${hasError ? 'animate-shake' : ''}`}
+              className={`w-full bg-[#fce01a] text-gray-900 border-none rounded-xl py-3.5 flex items-center justify-center gap-2 cursor-pointer transition-all mt-1 shadow-[0_2px_10px_rgba(252,224,26,0.3)] hover:brightness-105 active:scale-[0.98] disabled:opacity-70 disabled:pointer-events-none ${hasError ? 'animate-shake' : ''}`}
             >
               {!isGenerating && (
                 <svg className="w-5 h-5 fill-none stroke-current stroke-2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24">
                   <path d="M13 10V3L4 14h7v7l9-11h-7z"></path>
                 </svg>
               )}
-              <span className="font-extrabold text-[16px] tracking-wide">{isGenerating ? 'Building Your Course...' : 'Generate'}</span>
+              <span className="font-extrabold text-[15px] tracking-wide">{isGenerating ? 'Building Your Course...' : 'Generate'}</span>
             </button>
           </form>
         </div>
