@@ -9,7 +9,7 @@ const fetchWithRetry = async (url, options, retries = 3, delay = 2000) => {
   for (let i = 0; i < retries; i++) {
     const response = await fetch(url, options);
     if (response.ok) return response;
-    
+
     if (response.status === 429 || response.status >= 500) {
       console.warn(`API rate limited or server error (${response.status}). Retrying in ${delay}ms... (Attempt ${i + 1}/${retries})`);
       await new Promise((resolve) => setTimeout(resolve, delay));
@@ -40,11 +40,11 @@ function App() {
   const [role, setRole] = useState('')
   const [requirement, setRequirement] = useState('')
   const [planner, setPlanner] = useState('')
-  
+
   const [viewState, setViewState] = useState('AUTH_SPINNER') // 'AUTH_SPINNER', 'AUTH', 'HOME', 'GENERATOR', 'PLAN', 'COURSE_PLAYER', 'PRICING', etc
   const [isGenerating, setIsGenerating] = useState(false)
   const [isGeneratingPlan, setIsGeneratingPlan] = useState(false)
-  
+
   const [hasError, setHasError] = useState(false)
   const [isParsing, setIsParsing] = useState(false)
   const [parseError, setParseError] = useState('')
@@ -52,7 +52,7 @@ function App() {
   const [planData, setPlanData] = useState(null)
   const [couponCode, setCouponCode] = useState('')
   const [couponError, setCouponError] = useState('')
-  
+
   // Course Player Tracking State
   const [activeModuleIndex, setActiveModuleIndex] = useState(0)
   const [activeTopicIndex, setActiveTopicIndex] = useState(0)
@@ -84,12 +84,12 @@ function App() {
       }
     };
     window.addEventListener('popstate', handlePopState);
-    
+
     // Initialize history state on first meaningful view
     if (viewState !== 'AUTH_SPINNER' && viewState !== 'AUTH') {
       window.history.replaceState({ view: viewState }, '', '');
     }
-    
+
     return () => window.removeEventListener('popstate', handlePopState);
   }, []);
 
@@ -137,7 +137,7 @@ function App() {
         .eq('user_id', userId)
         .order('created_at', { ascending: false })
         .limit(1)
-      
+
       if (error) { console.error('Sub check error:', error); return }
       if (data && data.length > 0) {
         const sub = data[0]
@@ -159,8 +159,8 @@ function App() {
     const savedView = sessionStorage.getItem('evalme_viewState')
     const savedJobData = sessionStorage.getItem('evalme_jobData')
     const savedPlanData = sessionStorage.getItem('evalme_planData')
-    if (savedJobData) try { setJobData(JSON.parse(savedJobData)) } catch(e) {}
-    if (savedPlanData) try { setPlanData(JSON.parse(savedPlanData)) } catch(e) {}
+    if (savedJobData) try { setJobData(JSON.parse(savedJobData)) } catch (e) { }
+    if (savedPlanData) try { setPlanData(JSON.parse(savedPlanData)) } catch (e) { }
 
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session)
@@ -325,14 +325,14 @@ function App() {
           });
           window.pdfjsLib.GlobalWorkerOptions.workerSrc = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
         }
-        
+
         const arrayBuffer = await file.arrayBuffer();
         const pdf = await window.pdfjsLib.getDocument({ data: arrayBuffer }).promise;
         let fullText = "";
         for (let i = 1; i <= pdf.numPages; i++) {
-           const page = await pdf.getPage(i);
-           const content = await page.getTextContent();
-           fullText += content.items.map(item => item.str).join(' ') + " ";
+          const page = await pdf.getPage(i);
+          const content = await page.getTextContent();
+          fullText += content.items.map(item => item.str).join(' ') + " ";
         }
         setRequirement(prev => (prev ? prev + "\n\n" : "") + fullText.trim().substring(0, 15000));
 
@@ -408,7 +408,7 @@ Do not include extra conversational text or preambles, just output the requested
 
       const data = await response.json();
       const generatedText = data.choices[0].message.content;
-      
+
       const newJobData = {
         role,
         duration: planner,
@@ -514,7 +514,7 @@ You must return a valid JSON object matching this exact structure:
       setActiveModuleIndex(0);
       setActiveTopicIndex(0);
       navigateTo('PLAN');
-      
+
     } catch (error) {
       console.error("Generation error:", error);
       alert("Error generating: " + error.message)
@@ -525,7 +525,7 @@ You must return a valid JSON object matching this exact structure:
 
   const handleGeneratePlan = async () => {
     setIsGeneratingPlan(true)
-    
+
     // Convert text like "7 Days" to number 7
     const numDays = parseInt(jobData.duration.split(' ')[0]) || 7;
 
@@ -605,32 +605,32 @@ You must return a valid JSON object matching this exact structure:
       }
 
       const data = await response.json();
-      
+
       let rawContent = data.choices[0].message.content;
-      
+
       let parsedPlan;
       try {
-         // The Groq json_object mode requires returning a JSON object. 
-         // But the prompt says return an array. Let's wrap string search or try parsing straight.
-         // Groq with json_object mode forces the output to be an object. So we expect `{ "plan": [...] }` or just the array if Groq bends the rule.
-         const parsedRaw = JSON.parse(rawContent);
-         parsedPlan = Array.isArray(parsedRaw) ? parsedRaw : (parsedRaw.plan || Object.values(parsedRaw)[0]);
-         if (!Array.isArray(parsedPlan)) throw new Error("Parsed plan is not an array");
+        // The Groq json_object mode requires returning a JSON object. 
+        // But the prompt says return an array. Let's wrap string search or try parsing straight.
+        // Groq with json_object mode forces the output to be an object. So we expect `{ "plan": [...] }` or just the array if Groq bends the rule.
+        const parsedRaw = JSON.parse(rawContent);
+        parsedPlan = Array.isArray(parsedRaw) ? parsedRaw : (parsedRaw.plan || Object.values(parsedRaw)[0]);
+        if (!Array.isArray(parsedPlan)) throw new Error("Parsed plan is not an array");
       } catch (parseErr) {
-         // Fallback if the user prompt was strict on array without object root
-         console.warn("Initial JSON parse failed or not array, cleaning string.", parseErr);
-         rawContent = rawContent.replace(/```json\s*/gi, '').replace(/```\s*/gi, '').trim();
-         // If it's forced into an object by Groq response_format we extract the values.
-         const fallbackParse = JSON.parse(rawContent);
-         parsedPlan = Array.isArray(fallbackParse) ? fallbackParse : (fallbackParse.plan || Object.values(fallbackParse)[0]);
+        // Fallback if the user prompt was strict on array without object root
+        console.warn("Initial JSON parse failed or not array, cleaning string.", parseErr);
+        rawContent = rawContent.replace(/```json\s*/gi, '').replace(/```\s*/gi, '').trim();
+        // If it's forced into an object by Groq response_format we extract the values.
+        const fallbackParse = JSON.parse(rawContent);
+        parsedPlan = Array.isArray(fallbackParse) ? fallbackParse : (fallbackParse.plan || Object.values(fallbackParse)[0]);
       }
-      
+
       setPlanData(parsedPlan);
       // Reset player state whenever a new plan is generated
       setActiveModuleIndex(0);
       setActiveTopicIndex(0);
       navigateTo('PLAN');
-      
+
     } catch (error) {
       console.error("Plan generation error:", error);
       alert("Error building study plan: " + error.message);
@@ -646,43 +646,43 @@ You must return a valid JSON object matching this exact structure:
       if (Array.isArray(mod.quiz) && mod.quiz.length > 0) totalSteps += 1;
     });
     const progressPercent = totalSteps > 0 ? Math.round((completedTopics.size / totalSteps) * 100) : 0;
-    
+
     // Find first uncompleted step or default to 0,0
     let nextModIdx = 0;
     let nextTopIdx = 0;
     let found = false;
-    for(let m=0; m<planData.length; m++) {
-       const mod = planData[m];
-       const len = mod.topics?.length || 0;
-       const hasQuiz = Array.isArray(mod.quiz) && mod.quiz.length > 0;
-       const totalInMod = len + (hasQuiz ? 1 : 0);
-       for(let t=0; t<totalInMod; t++) {
-           if (!completedTopics.has(`${m}-${t}`)) {
-              nextModIdx = m;
-              nextTopIdx = t;
-              found = true;
-              break;
-           }
-       }
-       if (found) break;
+    for (let m = 0; m < planData.length; m++) {
+      const mod = planData[m];
+      const len = mod.topics?.length || 0;
+      const hasQuiz = Array.isArray(mod.quiz) && mod.quiz.length > 0;
+      const totalInMod = len + (hasQuiz ? 1 : 0);
+      for (let t = 0; t < totalInMod; t++) {
+        if (!completedTopics.has(`${m}-${t}`)) {
+          nextModIdx = m;
+          nextTopIdx = t;
+          found = true;
+          break;
+        }
+      }
+      if (found) break;
     }
 
     return (
       <div className="w-full min-h-screen pb-20 bg-[#F4F5F7] overflow-x-hidden overflow-y-auto font-sans relative">
         <div className="decoration dec-1 blur-[120px] opacity-30"></div>
         <div className="decoration dec-2 blur-[100px] opacity-20"></div>
-        
+
         {/* PREMIUM HERO BANNER */}
         <div className="w-full bg-white border-b border-gray-200 py-12 px-6 shadow-sm relative z-10">
           <div className="max-w-[900px] mx-auto flex flex-col items-start pt-6">
-            <button 
+            <button
               onClick={() => {
                 navigateTo('GENERATOR');
                 setPlanData(null);
               }}
               className="mb-8 flex items-center gap-2 text-gray-500 font-bold uppercase tracking-wider text-xs hover:text-gray-900 transition-colors border-none bg-transparent cursor-pointer"
             >
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M19 12H5M12 19l-7-7 7-7" /></svg>
               Back to Generator
             </button>
             <div className="flex flex-col md:flex-row md:items-end w-full justify-between gap-6">
@@ -697,9 +697,9 @@ You must return a valid JSON object matching this exact structure:
                   Your customized pathway to master {jobData.role} in {jobData.duration}.
                 </p>
               </div>
-              
+
               <div className="flex-shrink-0 w-full md:w-auto mt-4 md:mt-0">
-                <button 
+                <button
                   onClick={() => {
                     setActiveModuleIndex(nextModIdx);
                     setActiveTopicIndex(nextTopIdx);
@@ -709,41 +709,41 @@ You must return a valid JSON object matching this exact structure:
                 >
                   <div className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/10 to-white/0 -translate-x-[150%] skew-x-[-20deg] group-hover:animate-[shine_1.5s_ease-out]"></div>
                   {progressPercent > 0 ? 'Resume Preparation' : 'Start Preparation'}
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polygon points="5 3 19 12 5 21 5 3" /></svg>
                 </button>
               </div>
             </div>
 
             {/* PROGRESS BAR */}
             <div className="w-full mt-10 bg-gray-50 rounded-2xl p-5 border border-gray-100 flex items-center gap-6 shadow-sm">
-               <div className="flex-shrink-0 flex items-center justify-center w-16 h-16 rounded-full border-[6px] border-gray-200 relative">
-                  {progressPercent === 100 && (
-                    <div className="absolute inset-[-6px] rounded-full border-[6px] border-green-500 z-10"></div>
-                  )}
-                  <div className="text-gray-900 font-extrabold text-xl">{progressPercent}%</div>
-                  {progressPercent > 0 && progressPercent < 100 && (
-                     <div 
-                       className="absolute inset-[-6px] rounded-full border-[6px] border-[var(--pikachu-yellow)] rotate-[-90deg] border-t-transparent border-r-transparent border-b-transparent z-10 transition-all duration-1000"
-                       style={{ transform: `rotate(${-90 + (progressPercent/100)*360}deg)` }}
-                     ></div>
-                  )}
-               </div>
-               <div className="flex-1 w-full">
-                  <div className="flex justify-between items-center mb-2">
-                     <span className="font-bold text-gray-900">Overall Progress</span>
-                     <span className="font-bold text-gray-500 text-sm">{completedTopics.size} / {totalSteps} items</span>
-                  </div>
-                  <div className="w-full bg-gray-200 h-3 rounded-full overflow-hidden">
-                     <div 
-                        className="bg-gradient-to-r from-[var(--pikachu-yellow)] to-[var(--volt-yellow)] h-full rounded-full transition-all duration-1000 ease-out"
-                        style={{ width: `${progressPercent}%` }}
-                     ></div>
-                  </div>
-               </div>
+              <div className="flex-shrink-0 flex items-center justify-center w-16 h-16 rounded-full border-[6px] border-gray-200 relative">
+                {progressPercent === 100 && (
+                  <div className="absolute inset-[-6px] rounded-full border-[6px] border-green-500 z-10"></div>
+                )}
+                <div className="text-gray-900 font-extrabold text-xl">{progressPercent}%</div>
+                {progressPercent > 0 && progressPercent < 100 && (
+                  <div
+                    className="absolute inset-[-6px] rounded-full border-[6px] border-[var(--pikachu-yellow)] rotate-[-90deg] border-t-transparent border-r-transparent border-b-transparent z-10 transition-all duration-1000"
+                    style={{ transform: `rotate(${-90 + (progressPercent / 100) * 360}deg)` }}
+                  ></div>
+                )}
+              </div>
+              <div className="flex-1 w-full">
+                <div className="flex justify-between items-center mb-2">
+                  <span className="font-bold text-gray-900">Overall Progress</span>
+                  <span className="font-bold text-gray-500 text-sm">{completedTopics.size} / {totalSteps} items</span>
+                </div>
+                <div className="w-full bg-gray-200 h-3 rounded-full overflow-hidden">
+                  <div
+                    className="bg-gradient-to-r from-[var(--pikachu-yellow)] to-[var(--volt-yellow)] h-full rounded-full transition-all duration-1000 ease-out"
+                    style={{ width: `${progressPercent}%` }}
+                  ></div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
-        
+
         {/* TIMELINE SECTION */}
         <div className="max-w-[900px] mx-auto py-12 relative z-10 pr-4 sm:pr-6">
           <div className="absolute left-[36px] md:left-[80px] top-12 bottom-12 w-1 bg-gradient-to-b from-gray-200 via-gray-300 to-gray-200 rounded-full z-0 transform -translate-x-1/2"></div>
@@ -753,8 +753,8 @@ You must return a valid JSON object matching this exact structure:
               const hasQuiz = Array.isArray(dayObj.quiz) && dayObj.quiz.length > 0;
               const totalItemsInMod = (dayObj.topics?.length || 0) + (hasQuiz ? 1 : 0);
               let completedInMod = 0;
-              for(let t=0; t<totalItemsInMod; t++) {
-                 if (completedTopics.has(`${index}-${t}`)) completedInMod++;
+              for (let t = 0; t < totalItemsInMod; t++) {
+                if (completedTopics.has(`${index}-${t}`)) completedInMod++;
               }
               const isModCompleted = completedInMod === totalItemsInMod && totalItemsInMod > 0;
 
@@ -762,11 +762,11 @@ You must return a valid JSON object matching this exact structure:
                 <div key={index} className="relative z-10 pl-[70px] md:pl-[140px]">
                   {/* Timeline Dot */}
                   <div className="absolute left-[36px] md:left-[80px] top-10 w-9 h-9 rounded-full border-[6px] shadow-sm z-10 flex items-center justify-center bg-white border-[var(--pikachu-yellow)] transform -translate-x-1/2">
-                     {isModCompleted ? (
-                       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="black" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-                     ) : (
-                       <div className="w-2.5 h-2.5 bg-gray-900 rounded-full"></div>
-                     )}
+                    {isModCompleted ? (
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="black" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12" /></svg>
+                    ) : (
+                      <div className="w-2.5 h-2.5 bg-gray-900 rounded-full"></div>
+                    )}
                   </div>
 
                   {/* Module Card */}
@@ -788,64 +788,64 @@ You must return a valid JSON object matching this exact structure:
                         {dayObj.topics?.map((topic, tIdx) => {
                           const isCompleted = completedTopics.has(`${index}-${tIdx}`);
                           return (
-                            <button 
-                               key={tIdx} 
-                               className="w-full text-left bg-white border-b border-gray-100 last:border-0 p-5 transition-all hover:bg-gray-50 flex items-start sm:items-center gap-5 cursor-pointer group/item"
-                               onClick={() => {
-                                 setActiveModuleIndex(index);
-                                 setActiveTopicIndex(tIdx);
-                                 navigateTo('COURSE_PLAYER');
-                               }}
+                            <button
+                              key={tIdx}
+                              className="w-full text-left bg-white border-b border-gray-100 last:border-0 p-5 transition-all hover:bg-gray-50 flex items-start sm:items-center gap-5 cursor-pointer group/item"
+                              onClick={() => {
+                                setActiveModuleIndex(index);
+                                setActiveTopicIndex(tIdx);
+                                navigateTo('COURSE_PLAYER');
+                              }}
                             >
-                               <div className={`mt-0.5 sm:mt-0 flex-shrink-0 w-7 h-7 rounded-lg flex items-center justify-center transition-all duration-300 ${isCompleted ? 'bg-green-500 text-white shadow-md shadow-green-500/20' : 'bg-gray-100 text-gray-400 group-hover/item:text-[var(--pikachu-yellow)] group-hover/item:border-[var(--pikachu-yellow)] border border-gray-200'}`}>
-                                 {isCompleted ? (
-                                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-                                 ) : (
-                                   <div className="w-1.5 h-1.5 bg-current rounded-full transition-colors"></div>
-                                 )}
-                               </div>
-                               <div className="flex-1">
-                                  <span className={`text-[16px] leading-relaxed font-bold block ${isCompleted ? 'text-gray-400 line-through' : 'text-gray-800 group-hover/item:text-black'}`}>
-                                    {tIdx + 1}. {topic.name}
-                                  </span>
-                               </div>
-                               <div className="hidden sm:flex text-gray-300 group-hover/item:text-gray-500 transition-colors transform group-hover/item:translate-x-1 duration-300">
-                                   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-                               </div>
+                              <div className={`mt-0.5 sm:mt-0 flex-shrink-0 w-7 h-7 rounded-lg flex items-center justify-center transition-all duration-300 ${isCompleted ? 'bg-green-500 text-white shadow-md shadow-green-500/20' : 'bg-gray-100 text-gray-400 group-hover/item:text-[var(--pikachu-yellow)] group-hover/item:border-[var(--pikachu-yellow)] border border-gray-200'}`}>
+                                {isCompleted ? (
+                                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12" /></svg>
+                                ) : (
+                                  <div className="w-1.5 h-1.5 bg-current rounded-full transition-colors"></div>
+                                )}
+                              </div>
+                              <div className="flex-1">
+                                <span className={`text-[16px] leading-relaxed font-bold block ${isCompleted ? 'text-gray-400 line-through' : 'text-gray-800 group-hover/item:text-black'}`}>
+                                  {tIdx + 1}. {topic.name}
+                                </span>
+                              </div>
+                              <div className="hidden sm:flex text-gray-300 group-hover/item:text-gray-500 transition-colors transform group-hover/item:translate-x-1 duration-300">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14M12 5l7 7-7 7" /></svg>
+                              </div>
                             </button>
                           )
                         })}
-                        
+
                         {hasQuiz && (() => {
                           const qIdx = dayObj.topics?.length || 0;
                           const isCompleted = completedTopics.has(`${index}-${qIdx}`);
                           return (
-                            <button 
-                               key="quiz" 
-                               className="w-full text-left bg-[#FCFCFD] border-b border-gray-100 last:border-0 p-5 transition-all hover:bg-purple-50 flex items-start sm:items-center gap-5 cursor-pointer relative overflow-hidden group/quiz"
-                               onClick={() => {
-                                 setActiveModuleIndex(index);
-                                 setActiveTopicIndex(qIdx);
-                                 navigateTo('COURSE_PLAYER');
-                               }}
+                            <button
+                              key="quiz"
+                              className="w-full text-left bg-[#FCFCFD] border-b border-gray-100 last:border-0 p-5 transition-all hover:bg-purple-50 flex items-start sm:items-center gap-5 cursor-pointer relative overflow-hidden group/quiz"
+                              onClick={() => {
+                                setActiveModuleIndex(index);
+                                setActiveTopicIndex(qIdx);
+                                navigateTo('COURSE_PLAYER');
+                              }}
                             >
-                               {/* Subtle decorative purple line for quiz */}
-                               <div className={`absolute left-0 top-0 bottom-0 w-1 transition-all duration-300 ${isCompleted ? 'bg-purple-600' : 'bg-purple-300 group-hover/quiz:bg-purple-500'}`}></div>
-                               <div className={`ml-2 mt-0.5 sm:mt-0 flex-shrink-0 w-7 h-7 rounded-lg flex items-center justify-center transition-all duration-300 ${isCompleted ? 'bg-purple-600 text-white shadow-md shadow-purple-600/20' : 'bg-purple-50 text-purple-400 border border-purple-200 group-hover/quiz:border-purple-400 group-hover/quiz:text-purple-600'}`}>
-                                 {isCompleted ? (
-                                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-                                 ) : (
-                                   <span className="font-bold text-sm">?</span>
-                                 )}
-                               </div>
-                               <div className="flex-1">
-                                  <span className={`text-[16px] leading-relaxed font-bold block ${isCompleted ? 'text-gray-400 line-through' : 'text-purple-800 group-hover/quiz:text-purple-900'}`}>
-                                    Module {dayObj.day} Quiz Integration
-                                  </span>
-                               </div>
-                               <div className="hidden sm:flex text-purple-300 group-hover/quiz:text-purple-500 transition-colors transform group-hover/quiz:translate-x-1 duration-300">
-                                   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-                               </div>
+                              {/* Subtle decorative purple line for quiz */}
+                              <div className={`absolute left-0 top-0 bottom-0 w-1 transition-all duration-300 ${isCompleted ? 'bg-purple-600' : 'bg-purple-300 group-hover/quiz:bg-purple-500'}`}></div>
+                              <div className={`ml-2 mt-0.5 sm:mt-0 flex-shrink-0 w-7 h-7 rounded-lg flex items-center justify-center transition-all duration-300 ${isCompleted ? 'bg-purple-600 text-white shadow-md shadow-purple-600/20' : 'bg-purple-50 text-purple-400 border border-purple-200 group-hover/quiz:border-purple-400 group-hover/quiz:text-purple-600'}`}>
+                                {isCompleted ? (
+                                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12" /></svg>
+                                ) : (
+                                  <span className="font-bold text-sm">?</span>
+                                )}
+                              </div>
+                              <div className="flex-1">
+                                <span className={`text-[16px] leading-relaxed font-bold block ${isCompleted ? 'text-gray-400 line-through' : 'text-purple-800 group-hover/quiz:text-purple-900'}`}>
+                                  Module {dayObj.day} Quiz Integration
+                                </span>
+                              </div>
+                              <div className="hidden sm:flex text-purple-300 group-hover/quiz:text-purple-500 transition-colors transform group-hover/quiz:translate-x-1 duration-300">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14M12 5l7 7-7 7" /></svg>
+                              </div>
                             </button>
                           )
                         })()}
@@ -864,11 +864,11 @@ You must return a valid JSON object matching this exact structure:
   // Next lesson logic handler
   const handlePrevLesson = () => {
     if (!planData) return;
-    
+
     // If not at the first topic of the module
     if (activeTopicIndex > 0) {
       setActiveTopicIndex(activeTopicIndex - 1);
-    } 
+    }
     // Go back to the previous module's last topic/quiz
     else if (activeModuleIndex > 0) {
       const prevModIdx = activeModuleIndex - 1;
@@ -881,19 +881,19 @@ You must return a valid JSON object matching this exact structure:
 
   const handleNextLesson = () => {
     if (!planData || !planData[activeModuleIndex] || !planData[activeModuleIndex].topics) return;
-    
+
     // Mark current topic as completed
     const topicKey = `${activeModuleIndex}-${activeTopicIndex}`;
     setCompletedTopics(prev => new Set([...prev, topicKey]));
-    
+
     const currentModuleTopicsLength = planData[activeModuleIndex].topics.length;
     const hasQuiz = Array.isArray(planData[activeModuleIndex].quiz) && planData[activeModuleIndex].quiz.length > 0;
     const totalStepsInModule = currentModuleTopicsLength + (hasQuiz ? 1 : 0);
-    
+
     // If there are more topics/quiz exactly in this module
     if (activeTopicIndex < totalStepsInModule - 1) {
       setActiveTopicIndex(activeTopicIndex + 1);
-    } 
+    }
     // Advance to next module if one exists
     else if (activeModuleIndex < planData.length - 1) {
       setActiveModuleIndex(activeModuleIndex + 1);
@@ -946,9 +946,9 @@ You must return a valid JSON object matching this exact structure:
 
         {/* ═══ TOP NAV BAR ═══ */}
         <div className="h-[64px] bg-white border-b border-gray-100 flex items-center px-4 sm:px-6 gap-3 sm:gap-4 flex-shrink-0 z-50 relative text-gray-900 shadow-[0_2px_10px_rgba(0,0,0,0.02)]">
-          
+
           {/* Menu / Sidebar Toggle */}
-          <button 
+          <button
             onClick={() => setIsSidebarOpen(prev => !prev)}
             className="flex items-center justify-center text-gray-600 hover:text-gray-900 transition-colors border-none bg-transparent cursor-pointer flex-shrink-0 h-10 w-10 sm:h-11 sm:w-11 rounded-full hover:bg-gray-50 -ml-2"
             title={isSidebarOpen ? "Hide course content" : "Show course content"}
@@ -975,7 +975,7 @@ You must return a valid JSON object matching this exact structure:
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="text-gray-900"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
               <div className="flex flex-col gap-1.5 mt-[2px]">
                 <div className="w-24 h-[5px] bg-gray-100 rounded-full overflow-hidden">
-                  <div 
+                  <div
                     className="h-full bg-gray-900 rounded-full transition-all duration-500"
                     style={{ width: `${totalLessons > 0 ? (completedTopics.size / totalLessons) * 100 : 0}%` }}
                   ></div>
@@ -985,7 +985,7 @@ You must return a valid JSON object matching this exact structure:
                 {completedTopics.size} / {totalLessons}
               </span>
             </div>
-            
+
             {/* Progress Pill Mobile */}
             <span className="md:hidden text-xs font-bold text-gray-600 tabular-nums bg-white px-3 py-1.5 rounded-full border border-gray-200 shadow-sm">
               {currentLessonGlobal} / {totalLessons}
@@ -997,14 +997,14 @@ You must return a valid JSON object matching this exact structure:
         <div className="flex-1 flex overflow-hidden relative">
 
           {/* Mobile backdrop */}
-          <div 
+          <div
             className={`cp-backdrop ${isSidebarOpen ? 'visible' : ''} md:hidden`}
             onClick={() => setIsSidebarOpen(false)}
           ></div>
 
           {/* ─── SIDEBAR ─── */}
           <aside className={`cp-sidebar ${!isSidebarOpen ? 'collapsed' : ''} w-[340px] bg-white border-r border-gray-200 flex flex-col flex-shrink-0 z-50 md:z-20 md:relative shadow-[4px_0_24px_rgba(0,0,0,0.05)] md:shadow-none`}>
-            
+
             {/* Sidebar Header */}
             <div className="px-6 py-5 border-b border-gray-100 flex items-center justify-between gap-3 flex-shrink-0">
               <h2 className="font-extrabold text-gray-900 text-[15px] tracking-tight leading-none m-0">
@@ -1033,7 +1033,7 @@ You must return a valid JSON object matching this exact structure:
                       </div>
                       <div className="text-[14px] font-bold text-gray-800 leading-snug truncate" title={mod.title}>{mod.title}</div>
                       <div className="w-full h-[2px] bg-gray-100 rounded-full mt-3 overflow-hidden">
-                        <div 
+                        <div
                           className="h-full bg-gray-900 rounded-full transition-all duration-300"
                           style={{ width: `${totalInMod > 0 ? (completedInMod / totalInMod) * 100 : 0}%` }}
                         ></div>
@@ -1046,7 +1046,7 @@ You must return a valid JSON object matching this exact structure:
                         const isActive = mIdx === activeModuleIndex && tIdx === activeTopicIndex;
                         const isCompleted = completedTopics.has(`${mIdx}-${tIdx}`);
                         return (
-                          <button 
+                          <button
                             key={tIdx}
                             onClick={() => {
                               setActiveModuleIndex(mIdx);
@@ -1064,33 +1064,31 @@ You must return a valid JSON object matching this exact structure:
                                   </svg>
                                 </div>
                               ) : (
-                                <div className={`w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 text-[11px] font-bold border transition-colors ${
-                                  isActive ? 'border-[var(--pikachu-yellow)] bg-[var(--pikachu-yellow)] text-gray-900' : 'border-gray-300 text-gray-400 group-hover:border-gray-400'
-                                }`}>
+                                <div className={`w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 text-[11px] font-bold border transition-colors ${isActive ? 'border-[var(--pikachu-yellow)] bg-[var(--pikachu-yellow)] text-gray-900' : 'border-gray-300 text-gray-400 group-hover:border-gray-400'
+                                  }`}>
                                   {tIdx + 1}
                                 </div>
                               )}
                             </div>
-                            <span className={`block flex-1 text-[13.5px] leading-snug pt-[1px] ${
-                              isCompleted 
-                                ? 'text-gray-400 line-through' 
-                                : isActive 
-                                  ? 'font-extrabold text-gray-900' 
+                            <span className={`block flex-1 text-[13.5px] leading-snug pt-[1px] ${isCompleted
+                                ? 'text-gray-400 line-through'
+                                : isActive
+                                  ? 'font-extrabold text-gray-900'
                                   : 'font-medium text-gray-600 group-hover:text-gray-900'
-                            }`}>
+                              }`}>
                               {topic.name}
                             </span>
                           </button>
                         );
                       })}
-                      
+
                       {/* Quiz Item */}
                       {hasQuiz && (() => {
                         const tIdx = mod.topics?.length || 0;
                         const isActive = mIdx === activeModuleIndex && tIdx === activeTopicIndex;
                         const isCompleted = completedTopics.has(`${mIdx}-${tIdx}`);
                         return (
-                          <button 
+                          <button
                             key="quiz"
                             onClick={() => {
                               setActiveModuleIndex(mIdx);
@@ -1108,20 +1106,18 @@ You must return a valid JSON object matching this exact structure:
                                   </svg>
                                 </div>
                               ) : (
-                                <div className={`w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 text-[11px] font-bold border transition-colors ${
-                                  isActive ? 'border-purple-600 bg-purple-600 text-white' : 'border-purple-200 text-purple-400 group-hover:border-purple-400 group-hover:text-purple-600'
-                                }`}>
+                                <div className={`w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 text-[11px] font-bold border transition-colors ${isActive ? 'border-purple-600 bg-purple-600 text-white' : 'border-purple-200 text-purple-400 group-hover:border-purple-400 group-hover:text-purple-600'
+                                  }`}>
                                   <span className="font-bold -mt-px text-[14px]">?</span>
                                 </div>
                               )}
                             </div>
-                            <span className={`block flex-1 text-[13.5px] leading-snug pt-[1px] ${
-                              isCompleted 
-                                ? 'text-gray-400 line-through' 
-                                : isActive 
-                                  ? 'font-extrabold text-purple-900' 
+                            <span className={`block flex-1 text-[13.5px] leading-snug pt-[1px] ${isCompleted
+                                ? 'text-gray-400 line-through'
+                                : isActive
+                                  ? 'font-extrabold text-purple-900'
                                   : 'font-medium text-purple-600 group-hover:text-purple-800'
-                            }`}>
+                              }`}>
                               Quiz
                             </span>
                           </button>
@@ -1138,7 +1134,7 @@ You must return a valid JSON object matching this exact structure:
           <div className="flex-1 flex flex-col overflow-hidden bg-white">
             <div className="flex-1 overflow-y-auto" ref={contentRef}>
               <div className="max-w-3xl mx-auto px-4 sm:px-8 lg:px-12 py-8 pb-32">
-                
+
                 {!isQuizScreen ? (
                   <>
                     {/* Breadcrumb */}
@@ -1147,7 +1143,7 @@ You must return a valid JSON object matching this exact structure:
                       <span className="text-gray-300">·</span>
                       <span>Lesson {activeTopicIndex + 1} of {currentModule.topics.length}</span>
                     </div>
-                    
+
                     <h1 className="text-3xl sm:text-4xl lg:text-[2.5rem] font-extrabold text-gray-900 mb-8 leading-[1.15] tracking-tight">
                       {currentTopic.name}
                     </h1>
@@ -1161,7 +1157,7 @@ You must return a valid JSON object matching this exact structure:
                         const rawText = currentTopic.readingMaterial || "";
                         const cleanText = rawText.replace(/\n/g, ' ').replace(/\s+/g, ' ');
                         const sentences = cleanText.split('. ').map(s => s.trim()).filter(s => s.length > 5);
-                        
+
                         if (sentences.length === 0) {
                           return <p className="text-gray-500 italic">No content available for this lesson.</p>;
                         }
@@ -1309,7 +1305,7 @@ You must return a valid JSON object matching this exact structure:
                                 )}
                                 {!isPassing && (
                                   <div>
-                                    <button 
+                                    <button
                                       onClick={() => {
                                         const newAnswers = { ...quizAnswers };
                                         quizData?.forEach((_, qIdx) => {
@@ -1358,7 +1354,7 @@ You must return a valid JSON object matching this exact structure:
                                   btnClass += "border-gray-200 bg-white hover:border-[var(--pikachu-yellow)] hover:bg-[#FFFEF8] text-gray-700 cursor-pointer";
                                 }
                                 return (
-                                  <button 
+                                  <button
                                     key={oIdx}
                                     disabled={hasAnswered}
                                     onClick={() => setQuizAnswers(prev => ({ ...prev, [answerKey]: oIdx }))}
@@ -1407,7 +1403,7 @@ You must return a valid JSON object matching this exact structure:
             {(!isQuizScreen || (showQuizSummary && isQuizPassed())) && (
               <div className="bg-white border-t border-gray-100 px-6 sm:px-12 py-4 pb-[calc(1rem+env(safe-area-inset-bottom))] z-20 flex-shrink-0 shadow-[0_-4px_24px_rgba(0,0,0,0.02)] relative">
                 <div className="max-w-3xl mx-auto cp-bottom-bar-inner flex items-center justify-between gap-4">
-                  <button 
+                  <button
                     onClick={handlePrevLesson}
                     disabled={activeModuleIndex === 0 && activeTopicIndex === 0}
                     className="flex items-center justify-center gap-2 text-gray-400 hover:text-gray-900 font-bold transition-all border-none bg-transparent cursor-pointer disabled:opacity-0 disabled:pointer-events-none group pr-4"
@@ -1422,7 +1418,7 @@ You must return a valid JSON object matching this exact structure:
                     <div className="font-bold text-gray-300 text-[13px] hidden sm:block tracking-wide">
                       {isQuizScreen ? `Module ${currentModule.day} Quiz` : `Lesson ${activeTopicIndex + 1} of ${currentModule.topics.length}`}
                     </div>
-                    <button 
+                    <button
                       onClick={handleNextLesson}
                       className="cp-btn-complete bg-[#111827] text-white font-bold px-8 py-3.5 rounded-xl border-none cursor-pointer hover:bg-black transition-all hover:-translate-y-0.5 flex items-center justify-center gap-2.5 text-[15px] sm:w-auto w-full shadow-[0_4px_14px_rgba(0,0,0,0.15)]"
                     >
@@ -1447,9 +1443,9 @@ You must return a valid JSON object matching this exact structure:
       <div className="w-full min-h-screen py-10 px-4 flex flex-col items-center bg-[#FAFAFA] relative">
         <div className="decoration dec-1"></div>
         <div className="decoration dec-2"></div>
-        
+
         <div className="w-full max-w-[800px] flex flex-col items-center gap-8 relative z-10">
-          <button 
+          <button
             onClick={() => {
               navigateTo('GENERATOR');
               setJobData(null);
@@ -1470,24 +1466,24 @@ You must return a valid JSON object matching this exact structure:
               <h2 className="my-8 text-[2rem] font-semibold pr-8 leading-tight">
                 {jobData.role}
               </h2>
-              
+
               <div className="mt-8 pt-6 border-t border-black/10 whitespace-pre-wrap leading-relaxed text-[#333] text-[0.95rem] max-h-[50vh] overflow-y-auto">
                 {jobData.description}
               </div>
             </div>
-            
+
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between p-4 pt-4 gap-4 font-bold text-sm">
               <div className="flex items-center gap-3">
-              <div className="w-8 h-8 bg-white/80 rounded-full flex items-center justify-center shadow-sm">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#222" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
-                </svg>
-              </div>
+                <div className="w-8 h-8 bg-white/80 rounded-full flex items-center justify-center shadow-sm">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#222" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+                  </svg>
+                </div>
                 <div>
                   <div className="font-bold">{jobData.role}</div>
                 </div>
               </div>
-              <button 
+              <button
                 onClick={handleGeneratePlan}
                 disabled={isGeneratingPlan}
                 className="w-full sm:w-max font-medium border-none flex items-center justify-center cursor-pointer text-center px-6 py-3 rounded-2xl bg-[#141417] text-white text-base transition-all hover:-translate-y-0.5 hover:bg-black disabled:opacity-75"
@@ -1518,7 +1514,7 @@ You must return a valid JSON object matching this exact structure:
         <div className="decoration dec-2"></div>
 
         <div className="w-full max-w-[900px] relative z-10 flex flex-col items-center">
-          <button 
+          <button
             onClick={() => navigateTo('HOME')}
             className="self-start mb-6 flex items-center gap-2 text-gray-500 hover:text-gray-900 font-semibold transition-colors bg-white/50 px-4 py-2 rounded-xl text-sm w-max backdrop-blur-sm border border-gray-200/50 cursor-pointer shadow-sm hover:shadow"
           >
@@ -1537,11 +1533,10 @@ You must return a valid JSON object matching this exact structure:
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-5 w-full max-w-[750px]">
             {PLANS.map(plan => (
-              <div 
+              <div
                 key={plan.id}
-                className={`relative bg-white rounded-3xl p-6 shadow-[0_8px_30px_rgb(0,0,0,0.06)] border-2 flex flex-col items-center text-center transition-all hover:-translate-y-1 hover:shadow-xl ${
-                  plan.popular ? 'border-blue-400 scale-[1.03]' : 'border-gray-100'
-                }`}
+                className={`relative bg-white rounded-3xl p-6 shadow-[0_8px_30px_rgb(0,0,0,0.06)] border-2 flex flex-col items-center text-center transition-all hover:-translate-y-1 hover:shadow-xl ${plan.popular ? 'border-blue-400 scale-[1.03]' : 'border-gray-100'
+                  }`}
               >
                 {plan.popular && (
                   <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-blue-500 text-white text-[11px] font-extrabold uppercase tracking-widest px-4 py-1 rounded-full shadow-md">Most Popular</div>
@@ -1609,16 +1604,16 @@ You must return a valid JSON object matching this exact structure:
           </div>
 
           <div className="bg-white rounded-3xl p-6 sm:p-8 shadow-[0_8px_30px_rgb(0,0,0,0.06)] border border-gray-100 w-full relative overflow-hidden flex flex-col gap-5 sm:gap-6">
-            <button 
+            <button
               onClick={handleGoogleSignIn}
               className="w-full flex items-center justify-center gap-4 bg-white border border-gray-200 text-gray-800 font-bold px-6 py-4 rounded-xl hover:bg-gray-50 hover:border-gray-300 transition-all cursor-pointer shadow-sm active:scale-[0.98]"
             >
               <svg viewBox="0 0 24 24" width="24" height="24" xmlns="http://www.w3.org/2000/svg">
                 <g transform="matrix(1, 0, 0, 1, 27.009001, -39.238998)">
-                  <path fill="#4285F4" d="M -3.264 51.509 C -3.264 50.719 -3.334 49.969 -3.454 49.239 L -14.754 49.239 L -14.754 53.749 L -8.284 53.749 C -8.574 55.229 -9.424 56.479 -10.684 57.329 L -10.684 60.329 L -6.824 60.329 C -4.564 58.239 -3.264 55.159 -3.264 51.509 Z"/>
-                  <path fill="#34A853" d="M -14.754 63.239 C -11.514 63.239 -8.804 62.159 -6.824 60.329 L -10.684 57.329 C -11.764 58.049 -13.134 58.489 -14.754 58.489 C -17.884 58.489 -20.534 56.379 -21.484 53.529 L -25.464 53.529 L -25.464 56.619 C -23.494 60.539 -19.444 63.239 -14.754 63.239 Z"/>
-                  <path fill="#FBBC05" d="M -21.484 53.529 C -21.734 52.809 -21.864 52.039 -21.864 51.239 C -21.864 50.439 -21.724 49.669 -21.484 48.949 L -21.484 45.859 L -25.464 45.859 C -26.284 47.479 -26.754 49.299 -26.754 51.239 C -26.754 53.179 -26.284 54.999 -25.464 56.619 L -21.484 53.529 Z"/>
-                  <path fill="#EA4335" d="M -14.754 43.989 C -12.984 43.989 -11.404 44.599 -10.154 45.789 L -6.734 42.369 C -8.804 40.429 -11.514 39.239 -14.754 39.239 C -19.444 39.239 -23.494 41.939 -25.464 45.859 L -21.484 48.949 C -20.534 46.099 -17.884 43.989 -14.754 43.989 Z"/>
+                  <path fill="#4285F4" d="M -3.264 51.509 C -3.264 50.719 -3.334 49.969 -3.454 49.239 L -14.754 49.239 L -14.754 53.749 L -8.284 53.749 C -8.574 55.229 -9.424 56.479 -10.684 57.329 L -10.684 60.329 L -6.824 60.329 C -4.564 58.239 -3.264 55.159 -3.264 51.509 Z" />
+                  <path fill="#34A853" d="M -14.754 63.239 C -11.514 63.239 -8.804 62.159 -6.824 60.329 L -10.684 57.329 C -11.764 58.049 -13.134 58.489 -14.754 58.489 C -17.884 58.489 -20.534 56.379 -21.484 53.529 L -25.464 53.529 L -25.464 56.619 C -23.494 60.539 -19.444 63.239 -14.754 63.239 Z" />
+                  <path fill="#FBBC05" d="M -21.484 53.529 C -21.734 52.809 -21.864 52.039 -21.864 51.239 C -21.864 50.439 -21.724 49.669 -21.484 48.949 L -21.484 45.859 L -25.464 45.859 C -26.284 47.479 -26.754 49.299 -26.754 51.239 C -26.754 53.179 -26.284 54.999 -25.464 56.619 L -21.484 53.529 Z" />
+                  <path fill="#EA4335" d="M -14.754 43.989 C -12.984 43.989 -11.404 44.599 -10.154 45.789 L -6.734 42.369 C -8.804 40.429 -11.514 39.239 -14.754 39.239 C -19.444 39.239 -23.494 41.939 -25.464 45.859 L -21.484 48.949 C -20.534 46.099 -17.884 43.989 -14.754 43.989 Z" />
                 </g>
               </svg>
               <span>Continue with Google</span>
@@ -1636,38 +1631,38 @@ You must return a valid JSON object matching this exact structure:
       <div className="w-full min-h-[100dvh] flex flex-col relative bg-[#FAFAFA]">
         <div className="decoration dec-1"></div>
         <div className="decoration dec-2"></div>
-        
+
         {/* Simple Top Nav with User Profile */}
         <div className="w-full px-6 py-4 flex justify-end items-center relative z-20">
           {session?.user && (
             <div className="flex items-center gap-3 bg-white px-2 py-2 rounded-full shadow-[0_4px_20px_rgba(0,0,0,0.03)] border border-gray-100/80 hover:shadow-md transition-all duration-300">
-               {session.user.user_metadata?.avatar_url ? (
-                 <img src={session.user.user_metadata.avatar_url} alt="Avatar" className="w-7 h-7 rounded-full border-2 border-white shadow-sm" />
-               ) : (
-                 <div className="w-7 h-7 rounded-full bg-[#111827] text-white flex items-center justify-center font-bold text-[10px] uppercase border-2 border-white shadow-sm">
-                   {session.user.email?.[0]}
-                 </div>
-               )}
-               
-               <div className="flex items-center gap-3 pr-2">
-                 <span className="text-[13px] font-bold text-gray-900 tracking-tight">
-                   {session.user.email.split('@')[0]}
-                 </span>
+              {session.user.user_metadata?.avatar_url ? (
+                <img src={session.user.user_metadata.avatar_url} alt="Avatar" className="w-7 h-7 rounded-full border-2 border-white shadow-sm" />
+              ) : (
+                <div className="w-7 h-7 rounded-full bg-[#111827] text-white flex items-center justify-center font-bold text-[10px] uppercase border-2 border-white shadow-sm">
+                  {session.user.email?.[0]}
+                </div>
+              )}
 
-                 {isPremium && (
-                   <div className="flex items-center bg-[#FDF2F8]/0 text-amber-500 gap-1 opacity-90">
-                     <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-                     <span className="text-[10px] font-black uppercase tracking-[0.15em] border-b border-amber-500/30">PRO</span>
-                   </div>
-                 )}
+              <div className="flex items-center gap-3 pr-2">
+                <span className="text-[13px] font-bold text-gray-900 tracking-tight">
+                  {session.user.email.split('@')[0]}
+                </span>
 
-                 <button 
-                   onClick={handleSignOut}
-                   className="text-[10px] font-bold text-gray-300 hover:text-red-400 transition-all uppercase tracking-[0.1em] cursor-pointer border-none bg-transparent"
-                 >
-                   Logout
-                 </button>
-               </div>
+                {isPremium && (
+                  <div className="flex items-center bg-[#FDF2F8]/0 text-amber-500 gap-1 opacity-90">
+                    <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" /></svg>
+                    <span className="text-[10px] font-black uppercase tracking-[0.15em] border-b border-amber-500/30">PRO</span>
+                  </div>
+                )}
+
+                <button
+                  onClick={handleSignOut}
+                  className="text-[10px] font-bold text-gray-300 hover:text-red-400 transition-all uppercase tracking-[0.1em] cursor-pointer border-none bg-transparent"
+                >
+                  Logout
+                </button>
+              </div>
             </div>
           )}
         </div>
@@ -1679,33 +1674,33 @@ You must return a valid JSON object matching this exact structure:
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full">
-            
+
             {/* Tile 1: Job Plan Maker */}
-            <button 
+            <button
               onClick={() => navigateTo('GENERATOR')}
               className="group text-left bg-white rounded-3xl p-6 sm:p-8 shadow-[0_8px_30px_rgb(0,0,0,0.06)] border border-gray-100 hover:border-[var(--pikachu-yellow)] transition-all cursor-pointer hover:-translate-y-1 hover:shadow-xl relative overflow-hidden flex flex-col items-start"
             >
               <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-[var(--pikachu-yellow)] to-transparent opacity-10 rounded-bl-full transform translate-x-8 -translate-y-8 group-hover:scale-110 transition-transform duration-500"></div>
-              
+
               <div className="w-14 h-14 bg-[#FFFDF5] border border-[var(--pikachu-yellow)] rounded-2xl flex items-center justify-center mb-6 text-amber-500 shadow-sm relative z-10">
                 <svg className="w-7 h-7" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
                 </svg>
               </div>
-              
+
               <h2 className="text-2xl font-bold text-[#111827] mb-2 tracking-tight relative z-10">Interview Prep Planner</h2>
               <p className="text-gray-500 text-[15px] leading-relaxed mb-8 relative z-10">
                 Generate a highly tailored day-by-day interview preparation planner to ace your interview.
               </p>
-              
+
               <div className="mt-auto text-amber-500 font-bold flex items-center gap-2 group-hover:gap-3 transition-all text-[15px] drop-shadow-sm brightness-95 relative z-10">
-                Start Building 
+                Start Building
                 <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="3"><path strokeLinecap="round" strokeLinejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
               </div>
             </button>
 
             {/* Tile 2: Learn Coding */}
-            <button 
+            <button
               onClick={() => isPremium ? navigateTo('CODING_COURSES') : navigateTo('PRICING')}
               className="group text-left bg-white rounded-3xl p-6 sm:p-8 shadow-[0_8px_30px_rgb(0,0,0,0.06)] border border-gray-100 hover:border-[#8BE9FD] transition-all cursor-pointer hover:-translate-y-1 hover:shadow-xl relative overflow-hidden flex flex-col items-start"
             >
@@ -1723,12 +1718,12 @@ You must return a valid JSON object matching this exact structure:
                   <path strokeLinecap="round" strokeLinejoin="round" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path>
                 </svg>
               </div>
-              
+
               <h2 className="text-2xl font-bold text-[#111827] mb-2 tracking-tight relative z-10">Learn Coding</h2>
               <p className="text-gray-500 text-[15px] leading-relaxed mb-6 relative z-10">
                 Interactive AI-powered coding editor with live personalized challenges.
               </p>
-              
+
               <div className={`mt-auto font-bold flex items-center gap-2 group-hover:gap-3 transition-all text-[15px] drop-shadow-sm brightness-95 relative z-10 ${isPremium ? 'text-[#17a2b8]' : 'text-amber-500'}`}>
                 {isPremium ? 'Browse Courses' : 'Unlock with Premium'}
                 <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="3"><path strokeLinecap="round" strokeLinejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
@@ -1738,7 +1733,7 @@ You must return a valid JSON object matching this exact structure:
 
           {/* Mini Footer Option */}
           <div className="mt-16 pt-8 border-t border-gray-100 flex flex-col items-center gap-4">
-            <button 
+            <button
               onClick={() => navigateTo('BLOGS')}
               className="text-gray-400 hover:text-gray-900 font-bold transition-all border-none bg-transparent cursor-pointer text-[13px] uppercase tracking-widest flex items-center gap-2 group"
             >
@@ -1795,7 +1790,7 @@ You must return a valid JSON object matching this exact structure:
             <p className="mb-8">
               Launching on Product Hunt is just Phase 1. Over the next 6 months, we are expanding Evalme into a full-scale talent ecosystem.
             </p>
-            
+
             <div className="space-y-8 mb-16">
               {[
                 { title: "Community Interview Hubs", desc: "Connect with peers preparing for the same roles at companies like TCS, Google, or Zomato." },
@@ -1803,7 +1798,7 @@ You must return a valid JSON object matching this exact structure:
                 { title: "Global Expansion", desc: "Localized prep material for over 50+ countries, starting with a deep-focus on the Asian job market." }
               ].map((milestone, idx) => (
                 <div key={idx} className="flex gap-6 items-start">
-                  <div className="w-10 h-10 rounded-2xl bg-gray-50 flex items-center justify-center shrink-0 font-black text-gray-300 border border-gray-100 italic">0{idx+1}</div>
+                  <div className="w-10 h-10 rounded-2xl bg-gray-50 flex items-center justify-center shrink-0 font-black text-gray-300 border border-gray-100 italic">0{idx + 1}</div>
                   <div>
                     <h4 className="text-lg font-bold text-gray-900 mb-1">{milestone.title}</h4>
                     <p className="text-sm text-gray-500 m-0">{milestone.desc}</p>
@@ -1879,7 +1874,7 @@ You must return a valid JSON object matching this exact structure:
       <div className="w-full min-h-screen bg-white text-gray-900 font-sans selection:bg-amber-100">
         {/* Blog Header */}
         <div className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-gray-100 px-6 py-4 flex items-center justify-between">
-          <button 
+          <button
             onClick={() => selectedBlogId ? setSelectedBlogId(null) : navigateTo('HOME')}
             className="flex items-center gap-2 text-gray-500 hover:text-gray-900 font-bold transition-all border-none bg-transparent cursor-pointer text-sm"
           >
@@ -1901,7 +1896,7 @@ You must return a valid JSON object matching this exact structure:
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
               {blogs.map(blog => (
-                <button 
+                <button
                   key={blog.id}
                   onClick={() => setSelectedBlogId(blog.id)}
                   className="group text-left bg-white border border-gray-100 rounded-[2.5rem] p-8 hover:border-amber-400 transition-all shadow-sm hover:shadow-xl cursor-pointer flex flex-col items-start"
@@ -1938,15 +1933,15 @@ You must return a valid JSON object matching this exact structure:
             {currentBlog.content}
 
             <div className="bg-gray-900 rounded-3xl p-10 mt-20 text-center relative overflow-hidden">
-               <div className="absolute top-0 right-0 w-64 h-64 bg-amber-400/10 rounded-full blur-3xl -translate-y-32 translate-x-32"></div>
-               <h3 className="text-white text-3xl font-bold mb-6">Ready to ace your next role?</h3>
-               <p className="text-gray-400 mb-8 max-w-md mx-auto">Join thousands of professionals using Evalme to automate their interview preparation.</p>
-               <button 
+              <div className="absolute top-0 right-0 w-64 h-64 bg-amber-400/10 rounded-full blur-3xl -translate-y-32 translate-x-32"></div>
+              <h3 className="text-white text-3xl font-bold mb-6">Ready to ace your next role?</h3>
+              <p className="text-gray-400 mb-8 max-w-md mx-auto">Join thousands of professionals using Evalme to automate their interview preparation.</p>
+              <button
                 onClick={() => navigateTo('GENERATOR')}
                 className="bg-amber-400 text-gray-900 font-black px-10 py-4 rounded-2xl hover:bg-amber-300 transition-all cursor-pointer border-none text-lg shadow-lg shadow-amber-400/20"
-               >
-                 Build Your Plan Now
-               </button>
+              >
+                Build Your Plan Now
+              </button>
             </div>
           </article>
         )}
@@ -1977,7 +1972,7 @@ You must return a valid JSON object matching this exact structure:
 
         <div className="w-full max-w-[800px] relative z-10 flex flex-col items-center">
           <div className="w-full mb-8 flex items-center justify-start max-w-[600px] mx-auto">
-            <button 
+            <button
               onClick={() => navigateTo('HOME')}
               className="flex items-center gap-2 text-gray-500 hover:text-gray-900 font-semibold transition-colors bg-white/50 px-4 py-2 rounded-xl text-sm w-max backdrop-blur-sm border border-gray-200/50 cursor-pointer shadow-sm hover:shadow"
             >
@@ -1993,8 +1988,8 @@ You must return a valid JSON object matching this exact structure:
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full max-w-[600px]">
             {/* SQL Course Tile */}
-            <button 
-              onClick={() => navigateTo('SQL_COURSE')}
+            <button
+              onClick={() => navigateTo('COURSE_OVERVIEW')}
               className="group text-left bg-white rounded-3xl p-6 shadow-sm border border-gray-100 hover:border-blue-400 transition-all cursor-pointer hover:-translate-y-1 hover:shadow-md relative overflow-hidden flex items-start gap-5"
             >
               <div className="w-14 h-14 shrink-0 bg-[#F0FBFF] border border-blue-200 rounded-2xl flex items-center justify-center text-blue-500 shadow-sm">
@@ -2013,11 +2008,126 @@ You must return a valid JSON object matching this exact structure:
     )
   }
 
+  // COURSE OVERVIEW VIEW
+  if (viewState === 'COURSE_OVERVIEW') {
+    return (
+      <div className="w-full min-h-[100dvh] bg-[#FAFAFA] relative overflow-x-hidden">
+        <div className="decoration dec-1"></div>
+        <div className="decoration dec-2"></div>
+
+        <div className="max-w-4xl mx-auto px-6 py-12 relative z-10">
+          <button
+            onClick={() => navigateTo('CODING_COURSES')}
+            className="flex items-center gap-2 text-gray-400 hover:text-gray-900 font-bold transition-all border-none bg-transparent cursor-pointer text-sm mb-12 group"
+          >
+            <svg className="w-4 h-4 transition-transform group-hover:-translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="3">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
+            </svg>
+            Back to Academy
+          </button>
+
+          <div className="grid grid-cols-1 lg:grid-cols-[1fr_320px] gap-12 items-start">
+            <div className="flex flex-col">
+              <div className="flex items-center gap-4 mb-6">
+                <div className="w-16 h-16 bg-blue-50 border border-blue-100 rounded-2xl flex items-center justify-center text-blue-500 shadow-sm">
+                  <svg className="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4"></path></svg>
+                </div>
+                <div>
+                  <h1 className="text-4xl font-black text-[#111827] mb-1">SQL Basics</h1>
+                  <p className="text-gray-400 font-bold uppercase tracking-widest text-xs">Foundation Series &bull; 8 Lessons</p>
+                </div>
+              </div>
+
+              <div className="bg-white rounded-[2.5rem] p-8 sm:p-10 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-gray-100 mb-10">
+                <h3 className="text-xl font-black text-[#111827] mb-6">Course Description</h3>
+                <p className="text-gray-600 leading-relaxed mb-8">
+                  Master the language of data. This course takes you from scratch to writing complex queries, joining tables, and understanding database relationships. Designed for developers and analysts who want to build real-world skills.
+                </p>
+
+                <h3 className="text-lg font-black text-[#111827] mb-6 flex items-center gap-3">
+                  <div className="w-1.5 h-6 bg-blue-400 rounded-full"></div>
+                  What you'll learn
+                </h3>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  {[
+                    "Database Fundamentals",
+                    "SELECT & Filtering Data",
+                    "Joins & Relationships",
+                    "Aggregate Functions",
+                    "Subqueries & Grouping",
+                    "Live SQL Challenges"
+                  ].map((item, i) => (
+                    <div key={i} className="flex items-center gap-3 text-sm font-bold text-gray-500">
+                      <svg className="w-5 h-5 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="3"><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" /></svg>
+                      {item}
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div className="flex flex-col gap-4">
+                <h3 className="text-xl font-black text-[#111827] px-2">Curriculum</h3>
+                <div className="space-y-3">
+                  <div className="bg-white border border-gray-100 p-6 rounded-3xl flex items-center justify-between group hover:border-blue-200 transition-all shadow-sm">
+                    <div className="flex items-center gap-5">
+                      <div className="w-10 h-10 bg-gray-50 rounded-xl flex items-center justify-center font-black text-gray-300 italic">01</div>
+                      <div>
+                        <h4 className="font-bold text-[#111827] mb-1">Introduction to Databases</h4>
+                        <p className="text-xs text-gray-400 font-medium">Core Concepts & Syntax</p>
+                      </div>
+                    </div>
+                    <div className="bg-amber-100 text-amber-700 text-[10px] font-black px-2.5 py-1 rounded-full uppercase tracking-tighter">Next Up</div>
+                  </div>
+                  <div className="bg-gray-50/50 border border-dashed border-gray-200 p-6 rounded-3xl flex items-center filter grayscale opacity-50">
+                    <div className="flex items-center gap-5">
+                      <div className="w-10 h-10 bg-white rounded-xl flex items-center justify-center font-black text-gray-200 italic border border-gray-100">02</div>
+                      <div>
+                        <h4 className="font-bold text-gray-400 mb-1">Filtering & Sorting</h4>
+                        <p className="text-xs text-gray-300 font-medium">Locked until Lesson 1 complete</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="sticky top-12 bg-[#111827] rounded-[2.5rem] p-8 text-white shadow-xl flex flex-col items-center text-center overflow-hidden">
+              <div className="absolute top-0 right-0 w-32 h-32 bg-blue-500/10 rounded-full blur-3xl -translate-y-16 translate-x-16"></div>
+              <div className="w-14 h-14 bg-white/10 rounded-2xl flex items-center justify-center mb-6 border border-white/10 backdrop-blur-sm">
+                <svg className="w-7 h-7 text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" /><path strokeLinecap="round" strokeLinejoin="round" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+              </div>
+              <h3 className="text-2xl font-black mb-4">Ready to start?</h3>
+              <p className="text-gray-400 text-sm leading-relaxed mb-8 px-4">Begin your SQL journey with our interactive environment and real-time feedback.</p>
+
+              <button
+                onClick={() => navigateTo('SQL_COURSE')}
+                className="w-full bg-blue-500 text-white font-black py-4 rounded-2xl hover:bg-blue-400 transition-all cursor-pointer border-none shadow-lg shadow-blue-500/20 active:scale-95 text-base tracking-wide"
+              >
+                Start First Lesson
+              </button>
+
+              <div className="mt-8 flex flex-col gap-3 w-full">
+                <div className="flex items-center justify-between text-[11px] font-bold text-gray-500 border-b border-white/5 pb-3 px-2 uppercase tracking-widest">
+                  <span>Difficulty</span>
+                  <span className="text-blue-400">Beginner</span>
+                </div>
+                <div className="flex items-center justify-between text-[11px] font-bold text-gray-500 px-2 uppercase tracking-widest">
+                  <span>Certificate</span>
+                  <span className="text-green-400">Included</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
   // SQL COURSE RENDER
   if (viewState === 'SQL_COURSE') {
     return (
       <div className="w-full h-screen relative bg-white">
-        <button 
+        <button
           onClick={() => navigateTo('CODING_COURSES')}
           className="absolute top-4 left-4 z-50 flex items-center gap-2 text-gray-500 hover:text-gray-900 font-bold transition-colors bg-white px-4 py-2 rounded-xl text-sm w-max border border-gray-200 shadow hover:shadow-md cursor-pointer"
         >
@@ -2036,24 +2146,24 @@ You must return a valid JSON object matching this exact structure:
       <div className="decoration dec-2"></div>
 
       <div className="w-full max-w-[500px] relative z-10 p-4">
-        
+
 
 
 
         <div className="bg-white rounded-3xl p-6 sm:p-10 shadow-[0_8px_30px_rgb(0,0,0,0.06)] relative overflow-hidden">
-          
+
           <div className="text-center mb-6 sm:mb-8 flex flex-col items-center">
             <img src="/logo.svg" alt="Evalme" className="h-[32px] sm:h-[40px] mb-3 sm:mb-4 object-contain" />
             <p className="text-gray-500 text-[14px] sm:text-[15px]">Generate tailored descriptions instantly</p>
           </div>
-          
+
           <form className="flex flex-col gap-4 sm:gap-6" onSubmit={e => e.preventDefault()}>
             <div>
               <label className="block font-bold mb-2 text-[14px] text-[#111827]">Job Role</label>
-              <input 
-                type="text" 
+              <input
+                type="text"
                 className="w-full bg-white border-2 border-gray-200 rounded-xl px-4 py-3.5 text-[15px] text-gray-900 transition-all outline-none placeholder:text-gray-400 focus:shadow-[0_0_0_4px_rgba(255,222,0,0.15)] focus:border-[var(--pikachu-yellow)]"
-                placeholder="e.g. Frontend Developer" 
+                placeholder="e.g. Frontend Developer"
                 value={role}
                 onChange={e => setRole(e.target.value)}
               />
@@ -2061,15 +2171,15 @@ You must return a valid JSON object matching this exact structure:
 
             <div>
               <label className="block font-bold mb-3 text-[14px] text-[#111827]">Job Requirement</label>
-              
+
               <div className="relative group">
-                <textarea 
+                <textarea
                   className={`w-full bg-[#FAFAFA] border-2 border-gray-100 rounded-[2rem] px-6 py-6 pb-16 text-[15px] text-gray-900 transition-all outline-none placeholder:text-gray-400 hover:bg-white hover:border-gray-200 focus:bg-white focus:border-[var(--pikachu-yellow)] focus:shadow-[0_0_0_5px_rgba(255,222,0,0.1)] resize-none min-h-[180px] ${isParsing ? 'opacity-50 blur-[1px] pointer-events-none' : ''}`}
-                  placeholder="Paste job description here or use the icon below to upload a file..." 
+                  placeholder="Paste job description here or use the icon below to upload a file..."
                   value={requirement}
                   onChange={e => setRequirement(e.target.value)}
                 />
-                
+
                 <div className="absolute bottom-4 left-4 right-4 flex justify-between items-end pointer-events-none">
                   <label className={`pointer-events-auto cursor-pointer flex items-center justify-center w-11 h-11 bg-white border border-gray-100 hover:border-gray-200 rounded-full shadow-sm transition-all active:scale-[0.95] group/btn ${isParsing ? 'opacity-50' : ''}`}>
                     {isParsing ? (
@@ -2100,8 +2210,8 @@ You must return a valid JSON object matching this exact structure:
                 {['3 Days', '7 Days', '10 Days'].map(duration => {
                   const isActive = planner === duration;
                   return (
-                    <button 
-                      key={duration} 
+                    <button
+                      key={duration}
                       type="button"
                       onClick={() => setPlanner(duration)}
                       className={`flex-1 py-3 px-4 rounded-[14px] text-[14px] font-bold transition-all duration-300 cursor-pointer border-none flex items-center justify-center ${isActive ? 'bg-white text-gray-900 shadow-[0_4px_12px_rgba(0,0,0,0.08)]' : 'bg-transparent text-gray-400 hover:text-gray-600'}`}
@@ -2113,8 +2223,8 @@ You must return a valid JSON object matching this exact structure:
               </div>
             </div>
 
-            <button 
-              type="button" 
+            <button
+              type="button"
               onClick={handleGenerate}
               disabled={isGenerating}
               className={`w-full bg-[#fce01a] text-[#111827] border-none rounded-xl py-4 flex items-center justify-center gap-2 cursor-pointer transition-all mt-2 shadow-[0_2px_10px_rgba(252,224,26,0.3)] hover:brightness-105 active:scale-[0.98] disabled:opacity-80 disabled:pointer-events-none ${hasError ? 'animate-shake' : ''}`}
