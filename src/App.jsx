@@ -712,9 +712,9 @@ You must return a valid JSON object matching this exact structure:
     }
 
     return (
-      <div className="w-full min-h-screen pb-20 bg-[#F4F5F7] overflow-x-hidden overflow-y-auto font-sans relative">
-        <div className="decoration dec-1 blur-[120px] opacity-30"></div>
-        <div className="decoration dec-2 blur-[100px] opacity-20"></div>
+      <div className="w-full bg-[#F4F5F7] font-sans relative pb-20">
+        <div className="decoration dec-1"></div>
+        <div className="decoration dec-2"></div>
 
         {/* PREMIUM HERO BANNER */}
         <div className="w-full bg-white border-b border-gray-200 py-12 px-6 shadow-sm relative z-10">
@@ -1484,7 +1484,7 @@ You must return a valid JSON object matching this exact structure:
 
   if (viewState === 'OVERVIEW' && jobData) {
     return (
-      <div className="w-full min-h-screen py-10 px-4 flex flex-col items-center bg-[#FAFAFA] relative">
+      <div className="w-full py-10 px-4 bg-[#FAFAFA] relative">
         <div className="decoration dec-1"></div>
         <div className="decoration dec-2"></div>
 
@@ -1915,7 +1915,7 @@ You must return a valid JSON object matching this exact structure:
     const currentBlog = blogs.find(b => b.id === selectedBlogId);
 
     return (
-      <div className="w-full min-h-screen bg-white text-gray-900 font-sans selection:bg-amber-100">
+      <div className="w-full bg-white text-gray-900 font-sans selection:bg-amber-100">
         {/* Blog Header */}
         <div className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-gray-100 px-6 py-4 flex items-center justify-between">
           <button

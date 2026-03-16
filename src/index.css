@@ -14,13 +14,18 @@
 /* Global Scroll Reset and Stability */
 html {
   overflow-x: hidden;
+  /* Remove the tap highlight flicker on mobile */
+  -webkit-tap-highlight-color: transparent;
+  /* Eliminate the 300ms tap delay */
+  touch-action: manipulation;
 }
 
 body {
   font-family: 'Outfit', sans-serif;
   background-color: var(--bg-color);
   color: var(--text-main);
-  min-height: 100vh;
+  /* Use dynamic viewport height to prevent address-bar jumps */
+  min-height: 100dvh;
   margin: 0;
   position: relative;
   overflow-x: hidden;
