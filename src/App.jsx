@@ -1672,123 +1672,155 @@ You must return a valid JSON object matching this exact structure:
   // HOME VIEW
   if (viewState === 'HOME') {
     return (
-      <div className="w-full relative bg-[#FAFAFA]">
+      <div className="w-full bg-[#FAFAFA] relative">
         <div className="decoration dec-1"></div>
         <div className="decoration dec-2"></div>
 
-        {/* Simple Top Nav with User Profile */}
-        <div className="w-full px-6 py-4 flex justify-end items-center relative z-20">
+        {/* ─── TOP NAV BAR ─── */}
+        <nav className="w-full px-4 sm:px-8 py-3 flex items-center justify-between relative z-20">
+          <img src="/logo.svg" alt="Evalme" className="h-7 sm:h-8 object-contain" />
+
           {session?.user && (
-            <div className="flex items-center gap-3 bg-white px-2 py-2 rounded-full shadow-[0_4px_20px_rgba(0,0,0,0.03)] border border-gray-100/80 hover:shadow-md transition-all duration-300">
-              {session.user.user_metadata?.avatar_url ? (
-                <img src={session.user.user_metadata.avatar_url} alt="Avatar" className="w-7 h-7 rounded-full border-2 border-white shadow-sm" />
-              ) : (
-                <div className="w-7 h-7 rounded-full bg-[#111827] text-white flex items-center justify-center font-bold text-[10px] uppercase border-2 border-white shadow-sm">
-                  {session.user.email?.[0]}
-                </div>
+            <div className="flex items-center gap-2 sm:gap-3">
+              {/* Premium Badge */}
+              {isPremium && (
+                <span className="hidden sm:inline-flex items-center gap-1 bg-amber-50 text-amber-600 text-[10px] font-black uppercase tracking-widest px-2.5 py-1 rounded-full border border-amber-200">
+                  <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" /></svg>
+                  PRO
+                </span>
               )}
 
-              <div className="flex items-center gap-3 pr-2">
-                <span className="text-[13px] font-bold text-gray-900 tracking-tight">
-                  {session.user.email.split('@')[0]}
-                </span>
-
-                {isPremium && (
-                  <div className="flex items-center bg-[#FDF2F8]/0 text-amber-500 gap-1 opacity-90">
-                    <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" /></svg>
-                    <span className="text-[10px] font-black uppercase tracking-[0.15em] border-b border-amber-500/30">PRO</span>
+              {/* Avatar + Menu */}
+              <div className="flex items-center gap-2 bg-white pl-1 pr-3 py-1 rounded-full shadow-sm border border-gray-100">
+                {session.user.user_metadata?.avatar_url ? (
+                  <img src={session.user.user_metadata.avatar_url} alt="" className="w-8 h-8 rounded-full" />
+                ) : (
+                  <div className="w-8 h-8 rounded-full bg-gray-900 text-white flex items-center justify-center font-bold text-xs uppercase">
+                    {session.user.email?.[0]}
                   </div>
                 )}
-
+                <span className="text-sm font-semibold text-gray-800 hidden sm:block max-w-[120px] truncate">
+                  {session.user.user_metadata?.full_name || session.user.email.split('@')[0]}
+                </span>
+                {isPremium && (
+                  <span className="sm:hidden flex items-center text-amber-500">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" /></svg>
+                  </span>
+                )}
                 <button
                   onClick={handleSignOut}
-                  className="text-[10px] font-bold text-gray-300 hover:text-red-400 transition-all uppercase tracking-[0.1em] cursor-pointer border-none bg-transparent"
+                  className="text-xs font-bold text-gray-400 hover:text-red-500 transition-colors cursor-pointer border-none bg-transparent ml-1"
+                  aria-label="Sign out"
                 >
-                  Logout
+                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" /></svg>
                 </button>
               </div>
             </div>
           )}
+        </nav>
+
+        {/* ─── HERO SECTION ─── */}
+        <div className="w-full max-w-3xl mx-auto px-4 sm:px-8 pt-8 pb-4 sm:pt-16 sm:pb-8 relative z-10 text-center">
+          <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-gray-900 tracking-tight leading-tight mb-3 sm:mb-4">
+            Your AI Career <br className="hidden sm:block" />Accelerator
+          </h1>
+          <p className="text-gray-500 text-base sm:text-lg max-w-md mx-auto leading-relaxed">
+            Everything you need to prepare for your dream role — powered by AI.
+          </p>
         </div>
 
-        <div className="flex-1 max-w-[850px] flex flex-col items-center mx-auto px-6 py-8 sm:py-12 relative z-10">
-          <div className="text-center mb-6 sm:mb-10 flex flex-col items-center">
-            <img src="/logo.svg" alt="Evalme" className="h-[36px] sm:h-[44px] mb-4 sm:mb-5 object-contain" />
-            <p className="text-gray-500 text-[16px] sm:text-[18px]">Select a powerful AI learning tool to begin</p>
-          </div>
+        {/* ─── FEATURE CARDS ─── */}
+        <div className="w-full max-w-3xl mx-auto px-4 sm:px-8 py-6 sm:py-10 relative z-10">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full">
-
-            {/* Tile 1: Job Plan Maker */}
+            {/* Card 1: Interview Prep */}
             <button
               onClick={() => navigateTo('GENERATOR')}
-              className="group text-left bg-white rounded-3xl p-6 sm:p-8 shadow-[0_8px_30px_rgb(0,0,0,0.06)] border border-gray-100 hover:border-[var(--pikachu-yellow)] transition-all cursor-pointer hover:-translate-y-1 hover:shadow-xl relative overflow-hidden flex flex-col items-start"
+              className="group text-left bg-white rounded-2xl sm:rounded-3xl p-5 sm:p-7 shadow-sm border border-gray-100 hover:border-amber-300 transition-all cursor-pointer hover:shadow-lg active:scale-[0.98] relative overflow-hidden flex flex-col"
             >
-              <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-[var(--pikachu-yellow)] to-transparent opacity-10 rounded-bl-full transform translate-x-8 -translate-y-8 group-hover:scale-110 transition-transform duration-500"></div>
+              <div className="absolute -top-10 -right-10 w-28 h-28 bg-amber-400/10 rounded-full group-hover:scale-150 transition-transform duration-500"></div>
 
-              <div className="w-14 h-14 bg-[#FFFDF5] border border-[var(--pikachu-yellow)] rounded-2xl flex items-center justify-center mb-6 text-amber-500 shadow-sm relative z-10">
-                <svg className="w-7 h-7" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+              <div className="w-12 h-12 bg-amber-50 border border-amber-200 rounded-xl flex items-center justify-center mb-5 text-amber-500 relative z-10">
+                <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                 </svg>
               </div>
 
-              <h2 className="text-2xl font-bold text-[#111827] mb-2 tracking-tight relative z-10">Interview Prep Planner</h2>
-              <p className="text-gray-500 text-[15px] leading-relaxed mb-8 relative z-10">
-                Generate a highly tailored day-by-day interview preparation planner to ace your interview.
+              <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-1.5 tracking-tight relative z-10">Interview Prep Planner</h2>
+              <p className="text-gray-500 text-sm sm:text-[15px] leading-relaxed mb-6 flex-1 relative z-10">
+                AI-generated day-by-day study plans tailored to your target role and job description.
               </p>
 
-              <div className="mt-auto text-amber-500 font-bold flex items-center gap-2 group-hover:gap-3 transition-all text-[15px] drop-shadow-sm brightness-95 relative z-10">
+              <span className="inline-flex items-center gap-2 text-amber-600 font-bold text-sm group-hover:gap-3 transition-all relative z-10">
                 Start Building
-                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="3"><path strokeLinecap="round" strokeLinejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
-              </div>
+                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" /></svg>
+              </span>
             </button>
 
-            {/* Tile 2: Learn Coding */}
+            {/* Card 2: Learn Coding */}
             <button
               onClick={() => isPremium ? navigateTo('CODING_COURSES') : navigateTo('PRICING')}
-              className="group text-left bg-white rounded-3xl p-6 sm:p-8 shadow-[0_8px_30px_rgb(0,0,0,0.06)] border border-gray-100 hover:border-[#8BE9FD] transition-all cursor-pointer hover:-translate-y-1 hover:shadow-xl relative overflow-hidden flex flex-col items-start"
+              className="group text-left bg-white rounded-2xl sm:rounded-3xl p-5 sm:p-7 shadow-sm border border-gray-100 hover:border-cyan-300 transition-all cursor-pointer hover:shadow-lg active:scale-[0.98] relative overflow-hidden flex flex-col"
             >
-              <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-[#8BE9FD] to-transparent opacity-10 rounded-bl-full transform translate-x-8 -translate-y-8 group-hover:scale-110 transition-transform duration-500"></div>
+              <div className="absolute -top-10 -right-10 w-28 h-28 bg-cyan-400/10 rounded-full group-hover:scale-150 transition-transform duration-500"></div>
 
               {!isPremium && (
-                <div className="absolute top-4 right-4 z-20 bg-gradient-to-r from-amber-400 to-yellow-400 text-[#111827] text-[10px] font-extrabold uppercase tracking-widest px-2.5 py-1 rounded-full flex items-center gap-1">
-                  <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clipRule="evenodd"></path></svg>
+                <div className="absolute top-3 right-3 sm:top-4 sm:right-4 z-20 bg-gradient-to-r from-amber-400 to-yellow-400 text-gray-900 text-[9px] sm:text-[10px] font-extrabold uppercase tracking-widest px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-full flex items-center gap-1">
+                  <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clipRule="evenodd" /></svg>
                   PRO
                 </div>
               )}
 
-              <div className="w-14 h-14 bg-[#F2FDFE] border border-[#8BE9FD] rounded-2xl flex items-center justify-center mb-6 text-[#17a2b8] shadow-sm relative z-10">
-                <svg className="w-7 h-7" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path>
+              <div className="w-12 h-12 bg-cyan-50 border border-cyan-200 rounded-xl flex items-center justify-center mb-5 text-cyan-600 relative z-10">
+                <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
                 </svg>
               </div>
 
-              <h2 className="text-2xl font-bold text-[#111827] mb-2 tracking-tight relative z-10">Learn Coding</h2>
-              <p className="text-gray-500 text-[15px] leading-relaxed mb-6 relative z-10">
-                Interactive AI-powered coding editor with live personalized challenges.
+              <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-1.5 tracking-tight relative z-10">Coding Academy</h2>
+              <p className="text-gray-500 text-sm sm:text-[15px] leading-relaxed mb-6 flex-1 relative z-10">
+                Interactive coding courses with live challenges and AI-powered feedback.
               </p>
 
-              <div className={`mt-auto font-bold flex items-center gap-2 group-hover:gap-3 transition-all text-[15px] drop-shadow-sm brightness-95 relative z-10 ${isPremium ? 'text-[#17a2b8]' : 'text-amber-500'}`}>
+              <span className={`inline-flex items-center gap-2 font-bold text-sm group-hover:gap-3 transition-all relative z-10 ${isPremium ? 'text-cyan-600' : 'text-amber-600'}`}>
                 {isPremium ? 'Browse Courses' : 'Unlock with Premium'}
-                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="3"><path strokeLinecap="round" strokeLinejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
-              </div>
+                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" /></svg>
+              </span>
             </button>
           </div>
 
-          {/* Mini Footer Option */}
-          <div className="mt-16 pt-8 border-t border-gray-100 flex flex-col items-center gap-4">
+          {/* Quick Actions Row */}
+          <div className="flex flex-wrap items-center justify-center gap-3 mt-6 sm:mt-8">
+            {!isPremium && (
+              <button
+                onClick={() => navigateTo('PRICING')}
+                className="inline-flex items-center gap-2 bg-gray-900 text-white text-xs sm:text-sm font-bold px-5 py-2.5 rounded-full hover:bg-black transition-colors cursor-pointer border-none active:scale-[0.97]"
+              >
+                <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" /></svg>
+                Upgrade to Premium
+              </button>
+            )}
             <button
               onClick={() => navigateTo('BLOGS')}
-              className="text-gray-400 hover:text-gray-900 font-bold transition-all border-none bg-transparent cursor-pointer text-[13px] uppercase tracking-widest flex items-center gap-2 group"
+              className="inline-flex items-center gap-2 bg-white text-gray-600 text-xs sm:text-sm font-semibold px-5 py-2.5 rounded-full border border-gray-200 hover:border-gray-300 hover:text-gray-900 transition-all cursor-pointer active:scale-[0.97]"
             >
-              Blogs
-              <svg className="w-4 h-4 transition-transform group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" />
-              </svg>
+              Read our Blog
+              <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" /></svg>
             </button>
-            <p className="text-gray-300 text-[11px] font-medium">&copy; 2026 Evalme. Built for the future of work.</p>
           </div>
         </div>
+
+        {/* ─── FOOTER ─── */}
+        <footer className="w-full max-w-3xl mx-auto px-4 sm:px-8 pb-8 pt-6 relative z-10">
+          <div className="border-t border-gray-200/60 pt-6 flex flex-col sm:flex-row items-center justify-between gap-3 text-center sm:text-left">
+            <p className="text-gray-400 text-xs font-medium">&copy; 2026 Evalme. Built for the future of work.</p>
+            <div className="flex items-center gap-4">
+              <a href="https://www.producthunt.com" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-gray-600 transition-colors text-xs font-medium no-underline">Product Hunt</a>
+              <span className="w-1 h-1 bg-gray-300 rounded-full"></span>
+              <button onClick={() => navigateTo('BLOGS')} className="text-gray-400 hover:text-gray-600 transition-colors text-xs font-medium border-none bg-transparent cursor-pointer">Blog</button>
+            </div>
+          </div>
+        </footer>
       </div>
     )
   }
