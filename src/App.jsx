@@ -2059,33 +2059,39 @@ You must return a valid JSON object matching this exact structure:
             </div>
 
             <div>
-              <label className="block font-bold mb-2 text-[14px] text-[#111827]">Job Requirement</label>
+              <label className="block font-bold mb-3 text-[14px] text-[#111827]">Job Requirement</label>
               
-              <label className={`cursor-pointer mb-4 w-full bg-white border border-dashed border-gray-300 hover:border-gray-400 rounded-xl flex flex-col items-center justify-center py-6 px-4 transition-all group ${isParsing ? 'opacity-70 pointer-events-none' : ''}`}>
-                {isParsing ? (
-                  <div className="w-8 h-8 border-4 border-gray-200 border-t-[var(--pikachu-yellow)] rounded-full animate-spin mb-3"></div>
-                ) : (
-                  <div className="w-10 h-10 bg-white shadow-sm border border-gray-100 rounded-full flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
-                    <svg className="w-5 h-5 text-gray-400 group-hover:text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="1.5"><path strokeLinecap="round" strokeLinejoin="round" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path></svg>
-                  </div>
-                )}
-                <span className="font-bold text-[#111827] text-[15px] mb-1">
-                  {isParsing ? "Scanning Document..." : "Upload Job Description"}
-                </span>
-                <span className="text-gray-400 text-xs font-normal">Supports PDF and Word Documents (.docx)</span>
-                <input type="file" className="hidden" accept=".pdf,.docx,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document" onChange={handleFileUpload} disabled={isParsing} />
-              </label>
-
-              {parseError && <p className="text-red-500 text-xs mb-3 text-center font-medium animate-pulse">{parseError}</p>}
-              
-              <div className="relative">
+              <div className="relative group">
                 <textarea 
-                  className={`w-full bg-[#FAFAFA] border border-gray-100 rounded-xl px-5 py-4 text-[14px] text-gray-900 transition-all outline-none placeholder:text-gray-400 hover:bg-[#F5F5F5] focus:bg-white focus:border-[var(--pikachu-yellow)] focus:shadow-[0_0_0_4px_rgba(255,222,0,0.15)] resize-none min-h-[100px] ${isParsing ? 'opacity-50 blur-[1px] pointer-events-none' : ''}`}
-                  placeholder="Or paste the text manually..." 
+                  className={`w-full bg-[#FAFAFA] border-2 border-gray-100 rounded-[2rem] px-6 py-6 pb-16 text-[15px] text-gray-900 transition-all outline-none placeholder:text-gray-400 hover:bg-white hover:border-gray-200 focus:bg-white focus:border-[var(--pikachu-yellow)] focus:shadow-[0_0_0_5px_rgba(255,222,0,0.1)] resize-none min-h-[180px] ${isParsing ? 'opacity-50 blur-[1px] pointer-events-none' : ''}`}
+                  placeholder="Paste job description here or use the icon below to upload a file..." 
                   value={requirement}
                   onChange={e => setRequirement(e.target.value)}
                 />
+                
+                <div className="absolute bottom-4 left-4 right-4 flex justify-between items-end pointer-events-none">
+                  <label className={`pointer-events-auto cursor-pointer flex items-center gap-2.5 bg-white border border-gray-100 hover:border-gray-200 px-5 py-2.5 rounded-2xl shadow-sm transition-all active:scale-[0.95] group/btn ${isParsing ? 'opacity-50' : ''}`}>
+                    {isParsing ? (
+                      <div className="w-4 h-4 border-2 border-gray-200 border-t-[var(--pikachu-yellow)] rounded-full animate-spin"></div>
+                    ) : (
+                      <svg className="w-5 h-5 text-gray-400 group-hover/btn:text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.414a4 4 0 00-5.656-5.656l-6.415 6.414a6 6 0 108.486 8.486L20.5 13" />
+                      </svg>
+                    )}
+                    <span className="text-xs font-black text-gray-500 group-hover/btn:text-gray-900 uppercase tracking-widest">{isParsing ? 'Scanning...' : 'Attach JD'}</span>
+                    <input type="file" className="hidden" accept=".pdf,.docx,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document" onChange={handleFileUpload} disabled={isParsing} />
+                  </label>
+
+                  {requirement && !isParsing && (
+                    <div className="bg-amber-50 text-amber-600 text-[10px] font-black uppercase tracking-widest px-3 py-1.5 rounded-full border border-amber-100 flex items-center gap-1.5 mb-1.5">
+                      <div className="w-1.5 h-1.5 bg-amber-400 rounded-full animate-pulse"></div>
+                      Content Ready
+                    </div>
+                  )}
+                </div>
               </div>
+
+              {parseError && <p className="text-red-500 text-xs mt-3 mb-0 text-center font-medium animate-pulse">{parseError}</p>}
             </div>
 
             <div>
