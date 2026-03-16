@@ -22,6 +22,24 @@ const fetchWithRetry = async (url, options, retries = 3, delay = 2000) => {
   return fetch(url, options);
 };
 
+const VIEW_PATH_MAP = {
+  'HOME': '/',
+  'PRICING': '/pricing',
+  'AUTH': '/login',
+  'GENERATOR': '/planner',
+  'PLAN': '/study-plan',
+  'OVERVIEW': '/job-overview',
+  'BLOGS': '/blogs',
+  'CODING_COURSES': '/academy',
+  'SQL_COURSE': '/sql-basics',
+  'COURSE_OVERVIEW': '/sql-overview',
+};
+
+const PATH_VIEW_MAP = Object.entries(VIEW_PATH_MAP).reduce((acc, [view, path]) => {
+  acc[path] = view;
+  return acc;
+}, {});
+
 const sanitizeMermaid = (chart) => {
   if (!chart) return '';
   let str = chart.replace(/\\n/g, '\n');
@@ -67,10 +85,11 @@ function App() {
   // Navigation helper that syncs with browser history
   const navigateTo = (newState, replace = false) => {
     setViewState(newState);
+    const path = VIEW_PATH_MAP[newState] || '/';
     if (replace) {
-      window.history.replaceState({ view: newState }, '', '');
+      window.history.replaceState({ view: newState }, '', path);
     } else {
-      window.history.pushState({ view: newState }, '', '');
+      window.history.pushState({ view: newState }, '', path);
     }
     window.scrollTo(0, 0); // Ensure view starts at top
   };
@@ -165,13 +184,25 @@ function App() {
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session)
       if (session) {
-        // Restore previous view or default to HOME
-        const initialView = savedView || 'HOME';
+        // Restore previous view or detect from URL
+        const path = window.location.pathname;
+        const urlView = PATH_VIEW_MAP[path];
+        
+        let initialView = savedView || 'HOME';
+        if (urlView) {
+          initialView = urlView;
+        }
+
         setViewState(initialView);
-        window.history.replaceState({ view: initialView }, '', '');
+        // Important: Update URL to match initialView if it was restored from session but URL was different
+        const targetPath = VIEW_PATH_MAP[initialView] || '/';
+        window.history.replaceState({ view: initialView }, '', targetPath);
+        
         checkSubscription(session.user.id);
       } else {
         setViewState('AUTH');
+        // If not logged in, keep /login or redirect if they were elsewhere
+        window.history.replaceState({ view: 'AUTH' }, '', '/login');
       }
     })
 
