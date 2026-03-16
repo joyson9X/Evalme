@@ -1531,7 +1531,7 @@ You must return a valid JSON object matching this exact structure:
   // AUTH SPINNER
   if (viewState === 'AUTH_SPINNER') {
     return (
-      <div className="w-full min-h-screen flex items-center justify-center relative bg-[#FAFAFA] overflow-hidden p-4">
+      <div className="w-full min-h-screen flex items-center justify-center relative bg-[#FAFAFA] p-4">
         <div className="w-12 h-12 border-4 border-gray-200 border-t-[var(--volt-yellow)] rounded-full animate-spin"></div>
       </div>
     )
@@ -1540,7 +1540,7 @@ You must return a valid JSON object matching this exact structure:
   // PRICING VIEW
   if (viewState === 'PRICING') {
     return (
-      <div className="w-full min-h-[100dvh] flex flex-col items-center justify-start sm:justify-center relative bg-[#FAFAFA] pt-16 sm:pt-8 pb-12 px-4 overflow-y-auto">
+      <div className="w-full relative bg-[#FAFAFA] pt-16 sm:pt-8 pb-12 px-4">
         <div className="decoration dec-1"></div>
         <div className="decoration dec-2"></div>
 
@@ -1624,7 +1624,7 @@ You must return a valid JSON object matching this exact structure:
   // AUTH VIEW
   if (viewState === 'AUTH') {
     return (
-      <div className="w-full min-h-[100dvh] flex flex-col items-center justify-start sm:justify-center relative bg-[#FAFAFA] pt-20 sm:pt-8 pb-12 px-4 overflow-y-auto">
+      <div className="w-full relative bg-[#FAFAFA] pt-20 sm:pt-8 pb-12 px-4">
         <div className="decoration dec-1"></div>
         <div className="decoration dec-2"></div>
 
@@ -1659,7 +1659,7 @@ You must return a valid JSON object matching this exact structure:
   // HOME VIEW
   if (viewState === 'HOME') {
     return (
-      <div className="w-full min-h-[100dvh] flex flex-col relative bg-[#FAFAFA]">
+      <div className="w-full relative bg-[#FAFAFA]">
         <div className="decoration dec-1"></div>
         <div className="decoration dec-2"></div>
 
@@ -1997,7 +1997,7 @@ You must return a valid JSON object matching this exact structure:
   // CODING COURSES HUB
   if (viewState === 'CODING_COURSES') {
     return (
-      <div className="w-full min-h-[100dvh] flex items-center justify-center relative bg-[#FAFAFA] py-8 px-4">
+      <div className="w-full relative bg-[#FAFAFA] py-8 px-4">
         <div className="decoration dec-1"></div>
         <div className="decoration dec-2"></div>
 
@@ -2042,7 +2042,7 @@ You must return a valid JSON object matching this exact structure:
   // COURSE OVERVIEW VIEW
   if (viewState === 'COURSE_OVERVIEW') {
     return (
-      <div className="w-full min-h-[100dvh] bg-[#FAFAFA] relative overflow-x-hidden">
+      <div className="w-full bg-[#FAFAFA] relative">
         <div className="decoration dec-1"></div>
         <div className="decoration dec-2"></div>
 
@@ -2172,7 +2172,7 @@ You must return a valid JSON object matching this exact structure:
 
   // GENERATOR VIEW
   return (
-    <div className="w-full min-h-[100dvh] flex flex-col items-center justify-start sm:justify-center relative bg-[#FAFAFA] pt-16 sm:pt-12 pb-12 px-4 overflow-y-auto">
+    <div className="w-full relative bg-[#FAFAFA] pt-16 sm:pt-12 pb-12 px-4">
       <div className="decoration dec-1"></div>
       <div className="decoration dec-2"></div>
 
