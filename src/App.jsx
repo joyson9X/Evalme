@@ -91,7 +91,8 @@ function App() {
     } else {
       window.history.pushState({ view: newState }, '', path);
     }
-    window.scrollTo(0, 0); // Ensure view starts at top
+    // Instant jump to top on navigation to avoid smooth-scroll "cranky" stutters
+    window.scrollTo({ top: 0, behavior: 'instant' });
   };
 
   // Listen for browser back/forward buttons
@@ -99,7 +100,7 @@ function App() {
     const handlePopState = (event) => {
       if (event.state && event.state.view) {
         setViewState(event.state.view);
-        window.scrollTo(0, 0);
+        window.scrollTo({ top: 0, behavior: 'instant' });
       }
     };
     window.addEventListener('popstate', handlePopState);
@@ -210,18 +211,30 @@ function App() {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((event, session) => {
       setSession(session)
+      // Only trigger navigation on INITIAL load or explicit SIGN IN/OUT to avoid loops
       if (event === 'SIGNED_IN') {
-        const sv = sessionStorage.getItem('evalme_viewState')
-        navigateTo(sv || 'HOME', true)
+        // Only navigate if we aren't already initialized to a view
+        setViewState(prev => {
+          if (prev === 'AUTH_SPINNER' || prev === 'AUTH') {
+            const sv = sessionStorage.getItem('evalme_viewState')
+            const path = window.location.pathname;
+            const urlView = PATH_VIEW_MAP[path];
+            const targetView = urlView || sv || 'HOME';
+            
+            // Internal redirect without full navigateTo jump if possible
+            const targetPath = VIEW_PATH_MAP[targetView] || '/';
+            window.history.replaceState({ view: targetView }, '', targetPath);
+            return targetView;
+          }
+          return prev;
+        });
         checkSubscription(session.user.id)
       } else if (event === 'SIGNED_OUT') {
         setViewState('AUTH')
         setIsPremium(false)
-        sessionStorage.removeItem('evalme_viewState')
-        sessionStorage.removeItem('evalme_jobData')
-        sessionStorage.removeItem('evalme_planData')
+        sessionStorage.clear() // Clean clear on sign out
+        window.history.replaceState({ view: 'AUTH' }, '', '/login');
       }
-      // For TOKEN_REFRESHED and other events, just update session silently
     })
 
     return () => subscription.unsubscribe()

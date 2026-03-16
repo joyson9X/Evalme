@@ -11,15 +11,9 @@
   --input-bg: #F5F5F5;
 }
 
+/* Global Scroll Reset and Stability */
 html {
   overflow-x: hidden;
-}
-
-/* Enable smooth scroll ONLY if the user is on a desktop/pointer device */
-@media (hover: hover) {
-  html {
-    scroll-behavior: smooth;
-  }
 }
 
 body {
