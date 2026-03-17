@@ -1,120 +1,168 @@
-import React from 'react';
-import Mermaid from 'react-mermaid2';
+import React, { useMemo } from 'react';
 
 const PlanDetails = ({ jobData, planData, navigateTo }) => {
+  
+  // Calculate total syllabus items across all modules
+  const totalItems = useMemo(() => {
+    return planData?.reduce((acc, module) => acc + (module.topics?.length || 0), 0) || 0;
+  }, [planData]);
+
+  // Handle course navigation
+  const handleStart = () => {
+    navigateTo('COURSE_PLAYER');
+  };
+
   return (
-    <div className="w-full min-h-[100dvh] bg-[#F9FAFB] relative font-sans overflow-hidden">
+    <div className="w-full min-h-[100dvh] bg-[#F9FAFB] relative font-sans text-gray-900 pb-24 selection:bg-[#EBFF00]/30 selection:text-[#111827]">
       
-      {/* Dynamic Background */}
-      <div className="absolute top-0 left-0 w-full h-[60vh] bg-gradient-to-b from-gray-100 to-transparent -z-10 pointer-events-none"></div>
+      {/* Top Background Mask */}
+      <div className="absolute top-0 left-0 w-full h-[300px] bg-gradient-to-b from-white to-[#F9FAFB] pointer-events-none"></div>
 
-      {/* Top Nav */}
-      <nav className="w-full max-w-6xl mx-auto px-6 py-6 flex items-center justify-between relative z-20 sticky top-0 bg-[#F9FAFB]/90 backdrop-blur-md border-b border-gray-200/50">
-        <button
-          onClick={() => navigateTo('OVERVIEW')}
-          className="flex items-center gap-2 text-gray-500 hover:text-[#111827] font-bold transition-all bg-white px-5 py-2.5 rounded-full text-sm border border-gray-200 cursor-pointer shadow-sm hover:shadow-md hover:-translate-y-0.5"
-        >
-          <svg className="w-4.5 h-4.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" /></svg>
-          Back to Overview
-        </button>
-        <img src="/logo.svg" alt="Evalme" className="h-8 object-contain drop-shadow-sm" />
-        <div className="w-32 hidden sm:block"></div>
-      </nav>
-
-      <div className="w-full max-w-5xl mx-auto px-6 pt-10 pb-24 relative z-10 flex flex-col md:flex-row gap-10">
+      {/* Main Container */}
+      <div className="max-w-4xl mx-auto px-6 pt-10 relative z-10 w-full">
         
-        {/* Left Column - Main Details */}
-        <div className="flex-1 w-full flex flex-col gap-10">
-           
-           <div className="bg-white rounded-[2rem] p-8 sm:p-10 shadow-[0_4px_20px_rgb(0,0,0,0.03)] border border-gray-100 relative overflow-hidden group">
-              {/* Highlight bar */}
-              <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-blue-500 to-indigo-500"></div>
-              
-              <div className="flex items-center gap-3 mb-6">
-                 <div className="w-12 h-12 bg-blue-50 rounded-xl flex items-center justify-center text-blue-500 border border-blue-100">
-                    <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>
-                 </div>
-                 <div>
-                    <h2 className="text-2xl font-black text-[#111827] tracking-tight">{jobData?.role || 'Custom Study Plan'}</h2>
-                    <p className="text-gray-500 text-sm font-bold uppercase tracking-widest">{jobData?.duration || '7 Days'} Intensive Plan</p>
-                 </div>
-              </div>
+        {/* Top Navbar / Back Link */}
+        <button
+          onClick={() => navigateTo('GENERATOR')}
+          className="flex items-center gap-2 text-gray-500 hover:text-[#111827] font-bold text-[11px] uppercase tracking-widest transition-colors bg-transparent border-none cursor-pointer mb-10"
+        >
+          <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" /></svg>
+          Back to Generator
+        </button>
 
-              <div className="border-t border-gray-100 pt-6 mt-2">
-                 <h3 className="text-sm font-extrabold text-gray-900 uppercase tracking-wider mb-4 flex items-center gap-2">
-                    <svg className="w-4 h-4 text-gray-400" fill="currentColor" viewBox="0 0 20 20"><path d="M9 2a1 1 0 000 2h2a1 1 0 100-2H9z"></path><path fillRule="evenodd" d="M4 5a2 2 0 012-2 3 3 0 003 3h2a3 3 0 003-3 2 2 0 012 2v11a2 2 0 01-2 2H6a2 2 0 01-2-2V5zm3 4a1 1 0 000 2h.01a1 1 0 100-2H7zm3 0a1 1 0 000 2h3a1 1 0 100-2h-3zm-3 4a1 1 0 100 2h.01a1 1 0 100-2H7zm3 0a1 1 0 100 2h3a1 1 0 100-2h-3z" clipRule="evenodd"></path></svg>
-                    Job Description Context
-                 </h3>
-                 <div className="bg-gray-50 rounded-xl p-5 text-[15px] text-gray-700 font-medium whitespace-pre-wrap leading-relaxed max-h-[300px] overflow-y-auto border border-gray-200/60 custom-scrollbar">
-                    {jobData?.description || 'Loading role context...'}
-                 </div>
+        {/* Header Hero Section */}
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-8 mb-10">
+           <div>
+              <div className="bg-[#EBFF00] text-[#111827] text-[11px] font-[900] uppercase tracking-widest px-3 py-1.5 rounded inline-block mb-4">
+                 {jobData?.duration || '3 DAYS'} INTENSIVE
               </div>
+              <h1 className="text-4xl md:text-[56px] font-[900] text-[#111827] tracking-tight mb-3 leading-none">
+                 {jobData?.role || 'Analyst'}
+              </h1>
+              <p className="text-gray-500 font-medium text-[17px] md:text-lg">
+                 Your customized pathway to master {jobData?.role || 'Analyst'} in {jobData?.duration || '3 Days'}.
+              </p>
            </div>
-
-           {/* Removed global Mermaid section as Groq generates per-topic diagrams instead */}
-
+           
+           <button 
+             onClick={handleStart}
+             className="bg-[#111827] text-white font-[800] text-[15px] px-8 py-4 rounded-xl flex items-center justify-center gap-3 hover:bg-gray-800 transition-colors shadow-[0_8px_20px_rgba(17,24,39,0.15)] hover:shadow-[0_12px_24px_rgba(17,24,39,0.2)] hover:-translate-y-0.5 cursor-pointer border-none flex-shrink-0"
+           >
+              Start Preparation
+              <svg className="w-[18px] h-[18px]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M14 5l7 7m0 0l-7 7m-7-7H3" /></svg>
+           </button>
         </div>
 
-        {/* Right Column - Timeline / Modules */}
-        <div className="w-full md:w-[400px] flex-shrink-0">
-           <div className="bg-[#111827] rounded-[2rem] p-8 shadow-[0_20px_40px_rgba(17,24,39,0.15)] sticky top-[100px] border border-gray-800">
-              <h3 className="text-xl font-bold text-white mb-6 tracking-tight flex items-center justify-between">
-                 Study Modules
-                 <span className="bg-gray-800 text-gray-300 text-[10px] uppercase font-black tracking-widest px-2.5 py-1 rounded-md">{planData?.length || 0} Modules</span>
-              </h3>
-              
-              <div className="relative border-l-2 border-gray-800 ml-4 pb-4 space-y-8 mt-8">
-                 {planData?.map((module, index) => (
-                    <div key={index} className="relative pl-8">
-                       {/* Timeline Dot */}
-                       <div className="absolute -left-[11px] top-1 w-5 h-5 rounded-full bg-[#111827] border-4 border-[#EBFF00] z-10 shadow-[0_0_0_4px_rgba(17,24,39,1)]"></div>
+        {/* Global Progress Card */}
+        <div className="w-full bg-white rounded-2xl border border-gray-100 p-6 flex items-center gap-6 shadow-[0_2px_10px_rgba(0,0,0,0.02)] mb-14">
+           {/* Circular Progress Indicator (0%) */}
+           <div className="w-[60px] h-[60px] rounded-full bg-gray-50 flex items-center justify-center relative shrink-0">
+              <svg className="w-full h-full -rotate-90 absolute top-0 left-0" viewBox="0 0 36 36">
+                 <path
+                   className="text-gray-200"
+                   d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                   fill="none"
+                   stroke="currentColor"
+                   strokeWidth="3.5"
+                 />
+                 <path
+                   className="text-[#111827]"
+                   strokeDasharray="0, 100"
+                   d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                   fill="none"
+                   stroke="currentColor"
+                   strokeWidth="3.5"
+                   strokeLinecap="round"
+                 />
+              </svg>
+              <span className="font-extrabold text-[#111827] text-[15px] z-10">0%</span>
+           </div>
+
+           <div className="flex-1">
+              <div className="flex justify-between items-end mb-3">
+                 <span className="font-[800] text-[#111827] text-[15px]">Overall Progress</span>
+                 <span className="text-gray-500 text-[12px] font-bold">0 / {totalItems} items</span>
+              </div>
+              <div className="w-full h-2.5 bg-gray-100 rounded-full overflow-hidden">
+                 <div className="h-full bg-[#111827] rounded-full w-0 transition-all duration-500"></div>
+              </div>
+           </div>
+        </div>
+
+        {/* Divider */}
+        <div className="h-[1px] w-[130vw] -ml-[15vw] bg-gray-200/60 mb-14 relative z-0"></div>
+
+        {/* Linear Timeline & Module Cards */}
+        <div className="relative">
+           {/* Vertical Timeline Line */}
+           <div className="absolute left-[11px] md:left-[27px] top-8 bottom-0 w-px bg-gray-300"></div>
+
+           <div className="space-y-10 md:space-y-16 mt-6">
+              {planData?.map((module, mIdx) => {
+                 const isFirst = mIdx === 0;
+
+                 return (
+                    <div key={mIdx} className="relative pl-10 md:pl-20">
                        
-                       <div className="bg-gray-800/50 hover:bg-gray-800 transition-colors p-5 rounded-2xl border border-gray-700/50 group cursor-pointer">
-                          <h4 className="font-extrabold text-[15px] text-white flex items-center justify-between mb-2">
-                            Module {module.day}
-                            <svg className="w-4 h-4 text-gray-500 group-hover:text-amber-400 group-hover:translate-x-1 transition-all" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="3"><path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" /></svg>
-                          </h4>
-                          <div className="text-xs text-amber-200 font-bold mb-3">{module.title}</div>
+                       {/* Timeline Marker (Yellow & Black dot for active, solid gray for pending) */}
+                       <div className={`absolute left-0 md:left-[16px] top-6 w-6 h-6 rounded-full border-[5px] border-[#F9FAFB] box-content bg-white z-10 flex items-center justify-center shadow-sm ${isFirst ? 'border-[#EBFF00]' : 'border-gray-300'}`}>
+                          <div className={`w-2.5 h-2.5 rounded-full ${isFirst ? 'bg-[#111827]' : 'bg-transparent'}`}></div>
+                       </div>
+                       
+                       {/* Module Card */}
+                       <div className="bg-white rounded-[1.5rem] md:rounded-[2rem] border border-gray-100 shadow-[0_4px_24px_rgba(0,0,0,0.02)] p-6 md:p-10">
                           
-                          <div className="space-y-1.5 mt-3">
-                             {module.topics?.slice(0,2).map((t, i) => (
-                                <div key={i} className="text-gray-400 text-sm font-medium flex items-start gap-2 line-clamp-1">
-                                  <span className="text-[#EBFF00] mt-0.5">&bull;</span> {t.name}
-                                </div>
-                             ))}
-                             {module.topics?.length > 2 && (
-                                <div className="text-gray-500 text-xs font-bold italic pt-1 pl-3">
-                                   + {module.topics.length - 2} more topics
-                                </div>
-                             )}
+                          {/* Module Header */}
+                          <div className="flex flex-col md:flex-row md:items-start justify-between gap-4 mb-8">
+                             <div>
+                                <div className="text-gray-400 text-[11px] font-[900] uppercase tracking-[0.15em] mb-3">Module {module.day}</div>
+                                <h2 className="text-[22px] md:text-3xl font-[900] text-[#111827] leading-tight max-w-[500px]">{module.title}</h2>
+                             </div>
+                             
+                             <div className="border border-gray-100 rounded-full px-4 py-1.5 text-[12px] font-[800] text-gray-500 shrink-0 self-start">
+                                0 / {module.topics?.length || 0}
+                             </div>
+                          </div>
+
+                          {/* Syllabus List Container */}
+                          <div className="pt-2">
+                             <div className="text-gray-400 text-[11px] font-[900] uppercase tracking-[0.15em] mb-4">Syllabus Items</div>
+                             
+                             <div className="flex flex-col">
+                                {module.topics?.map((topic, tIdx) => (
+                                   <div 
+                                     key={tIdx} 
+                                     onClick={handleStart}
+                                     className="flex items-center gap-4 py-4 md:py-5 border-b border-gray-100 last:border-0 group cursor-pointer hover:bg-gray-50/80 transition-colors -mx-4 md:-mx-6 px-4 md:px-6 rounded-xl"
+                                   >
+                                      <div className="w-[28px] h-[28px] rounded-full bg-gray-100 flex items-center justify-center shrink-0">
+                                         <div className="w-1.5 h-1.5 rounded-full bg-gray-300 group-hover:bg-gray-400 transition-colors"></div>
+                                      </div>
+                                      <div className="flex-1 font-[800] text-gray-800 text-[15px] md:text-[16px] group-hover:text-[#111827] transition-colors pr-4">
+                                         {tIdx + 1}. {topic.name}
+                                      </div>
+                                      <svg className="w-[18px] h-[18px] text-gray-300 group-hover:text-gray-600 transition-colors shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" /></svg>
+                                   </div>
+                                ))}
+                             </div>
                           </div>
                           
-                          <button 
-                            onClick={() => navigateTo('COURSE_PLAYER')}
-                            className="mt-5 w-full bg-white text-[#111827] font-bold py-2.5 rounded-xl text-sm transition-all hover:bg-[#EBFF00] border-none cursor-pointer"
-                          >
-                            Start Module
-                          </button>
                        </div>
                     </div>
-                 ))}
-                 
-                 {/* End of timeline marker */}
-                 <div className="absolute -left-[5px] -bottom-2 w-2 h-2 rounded-full bg-gray-700"></div>
+                 );
+              })}
+
+              {/* End of Timeline marker dot */}
+              <div className="absolute left-[11px] md:left-[27px] -bottom-[20px] w-0 pl-[0.5px]">
+                 <div className="w-2 h-2 rounded-full bg-gray-300 -ml-1"></div>
               </div>
+
            </div>
         </div>
 
       </div>
-
-      <style dangerouslySetInnerHTML={{__html: `
-        .custom-scrollbar::-webkit-scrollbar { width: 6px; }
-        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
-        .custom-scrollbar::-webkit-scrollbar-thumb { background-color: #E5E7EB; border-radius: 10px; }
-        .custom-scrollbar:hover::-webkit-scrollbar-thumb { background-color: #D1D5DB; }
-      `}} />
     </div>
-  )
+  );
 };
 
 export default PlanDetails;
