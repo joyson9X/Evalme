@@ -179,15 +179,15 @@ const Generator = ({
                     type="button"
                     onClick={handleGenerate}
                     disabled={isGenerating || !role || !requirement || !planner}
-                    className={`relative overflow-hidden group w-full bg-[#111827] text-white font-black border-none rounded-[1.25rem] h-[64px] sm:h-[72px] flex items-center justify-center gap-3 cursor-pointer transition-all shadow-[0_8px_24px_rgba(17,24,39,0.15)] hover:shadow-[0_12px_32px_rgba(17,24,39,0.25)] hover:-translate-y-0.5 active:scale-[0.98] disabled:opacity-40 disabled:pointer-events-none disabled:transform-none disabled:shadow-none ${hasError ? 'animate-shake bg-red-600 shadow-red-600/30' : ''}`}
+                    className={`relative overflow-hidden group w-full bg-[#111827] text-white font-[800] border-none rounded-full h-[60px] sm:h-[68px] flex items-center justify-center gap-3.5 cursor-pointer transition-all shadow-[0_8px_24px_rgba(17,24,39,0.15)] hover:shadow-[0_12px_32px_rgba(17,24,39,0.25)] hover:-translate-y-0.5 active:scale-[0.98] disabled:opacity-40 disabled:pointer-events-none disabled:transform-none disabled:shadow-none ${hasError ? 'animate-shake bg-red-600 shadow-red-600/30' : ''}`}
                   >
                      <div className="absolute inset-0 -translate-x-full group-hover:animate-[shimmer_2s_infinite] bg-gradient-to-r from-transparent via-white/10 to-transparent pointer-events-none"></div>
 
                      {!isGenerating ? (
                         <>
-                           <span className="text-[18px] sm:text-[20px] tracking-wide">Generate Plan</span>
-                           <div className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center transition-transform group-hover:translate-x-1 group-hover:bg-white/20">
-                             <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M14 5l7 7m0 0l-7 7m-7-7H3" /></svg>
+                           <span className="text-[17px] sm:text-[19px] tracking-wide ml-2">Generate Plan</span>
+                           <div className="w-[34px] h-[34px] rounded-full bg-white/10 flex items-center justify-center transition-transform group-hover:translate-x-1 group-hover:bg-white/20">
+                             <svg className="w-[18px] h-[18px]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M14 5l7 7m0 0l-7 7m-7-7H3" /></svg>
                            </div>
                         </>
                      ) : (
@@ -197,7 +197,7 @@ const Generator = ({
                              <div className="w-2 h-2 bg-white rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></div>
                              <div className="w-2 h-2 bg-white rounded-full animate-bounce" style={{ animationDelay: '300ms' }}></div>
                            </div>
-                           <span className="text-[18px] sm:text-[20px] tracking-wide ml-3">Synthesizing...</span>
+                           <span className="text-[17px] sm:text-[19px] tracking-wide ml-3">Synthesizing...</span>
                         </>
                      )}
                   </button>
