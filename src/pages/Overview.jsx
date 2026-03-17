@@ -1,6 +1,6 @@
 import React from 'react';
 
-const Overview = ({ courseData, navigateTo }) => {
+const Overview = ({ jobData, planData, navigateTo }) => {
   return (
     <div className="w-full min-h-[100dvh] bg-[#F9FAFB] relative font-sans overflow-hidden">
       
@@ -29,10 +29,10 @@ const Overview = ({ courseData, navigateTo }) => {
             Generated Plan
           </span>
           <h1 className="text-4xl md:text-5xl font-black text-[#111827] tracking-tight leading-[1.1] mb-2 font-display">
-            {courseData.course_name}
+            {jobData?.role || 'Personalized Study Masterplan'}
           </h1>
           <p className="text-gray-500 text-lg font-medium max-w-2xl">
-             Your personalized roadmap to master {courseData.role_targeted}. 
+             Your personalized roadmap to master {jobData?.role || 'your target role'}. 
           </p>
         </div>
 
@@ -43,7 +43,7 @@ const Overview = ({ courseData, navigateTo }) => {
                <svg className="w-4 h-4 text-amber-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
                Duration
              </span>
-             <span className="text-2xl font-black text-[#111827]">{courseData.duration}</span>
+             <span className="text-2xl font-black text-[#111827]">{jobData?.duration || '7 Days'}</span>
            </div>
            
            <div className="bg-white rounded-2xl p-5 border border-gray-100 shadow-[0_4px_15px_rgb(0,0,0,0.03)] flex flex-col">
@@ -51,7 +51,7 @@ const Overview = ({ courseData, navigateTo }) => {
                <svg className="w-4 h-4 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>
                Role
              </span>
-             <span className="text-lg font-bold text-[#111827] truncate" title={courseData.role_targeted}>{courseData.role_targeted}</span>
+             <span className="text-lg font-bold text-[#111827] truncate" title={jobData?.role}>{jobData?.role || 'Custom Role'}</span>
            </div>
 
            <div className="bg-white rounded-2xl p-5 border border-gray-100 shadow-[0_4px_15px_rgb(0,0,0,0.03)] flex flex-col sm:col-span-2">
@@ -60,13 +60,13 @@ const Overview = ({ courseData, navigateTo }) => {
                Core Focus
              </span>
              <div className="flex flex-wrap gap-2 mt-2">
-                {courseData.course_contents?.slice(0, 3).map((w, i) => (
+                {planData?.slice(0, 3).map((m, i) => (
                   <span key={i} className="bg-gray-100 text-[#111827] text-xs font-semibold px-2.5 py-1 rounded-md border border-gray-200">
-                    Day {w.week_number}
+                    Module {m.day}
                   </span>
                 ))}
-                {courseData.course_contents?.length > 3 && (
-                   <span className="bg-gray-50 text-gray-500 text-xs font-semibold px-2.5 py-1 rounded-md border border-gray-100">+{courseData.course_contents.length - 3} more</span>
+                {planData?.length > 3 && (
+                   <span className="bg-gray-50 text-gray-500 text-xs font-semibold px-2.5 py-1 rounded-md border border-gray-100">+{planData.length - 3} more</span>
                 )}
              </div>
            </div>
@@ -83,7 +83,7 @@ const Overview = ({ courseData, navigateTo }) => {
                 We've structured your study path from day one to the final interview. Stick to the daily breakdown and you'll be fully prepared.
              </p>
              <button
-                onClick={() => navigateTo('PLAN_DETAILS')}
+                onClick={() => navigateTo('PLAN')}
                 className="w-full sm:w-auto bg-[#EBFF00] hover:bg-[#d4e600] text-[#111827] font-black px-8 py-4 rounded-xl flex items-center justify-center gap-3 transition-all cursor-pointer shadow-[0_0_0_0_rgba(235,255,0,0.5)] hover:shadow-[0_0_0_8px_rgba(235,255,0,0.2)] hover:-translate-y-1 active:scale-[0.98]"
               >
                 <span>View Full Curriculum</span>

@@ -1493,10 +1493,22 @@ You must return a valid JSON object matching this exact structure:
   }
 
   // PLAN DETAILS VIEW
-  if (viewState === 'PLAN_DETAILS') {
+  if (viewState === 'PLAN') {
     return (
       <PlanDetails
-        courseData={courseData}
+        jobData={jobData}
+        planData={planData}
+        navigateTo={navigateTo}
+      />
+    );
+  }
+
+  // OVERVIEW VIEW
+  if (viewState === 'OVERVIEW' && jobData) {
+    return (
+      <Overview
+        jobData={jobData}
+        planData={planData}
         navigateTo={navigateTo}
       />
     );
@@ -1584,7 +1596,7 @@ You must return a valid JSON object matching this exact structure:
       handleFileUpload={handleFileUpload}
       handleGenerate={handleGenerate}
       isGenerating={isGenerating}
-      courseData={courseData}
+      jobData={jobData}
     />
   );
 }

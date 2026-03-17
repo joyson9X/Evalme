@@ -1,7 +1,7 @@
 import React from 'react';
 import Mermaid from 'react-mermaid2';
 
-const PlanDetails = ({ courseData, navigateTo }) => {
+const PlanDetails = ({ jobData, planData, navigateTo }) => {
   return (
     <div className="w-full min-h-[100dvh] bg-[#F9FAFB] relative font-sans overflow-hidden">
       
@@ -35,8 +35,8 @@ const PlanDetails = ({ courseData, navigateTo }) => {
                     <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>
                  </div>
                  <div>
-                    <h2 className="text-2xl font-black text-[#111827] tracking-tight">{courseData.role_targeted}</h2>
-                    <p className="text-gray-500 text-sm font-bold uppercase tracking-widest">{courseData.duration} Intensive Plan</p>
+                    <h2 className="text-2xl font-black text-[#111827] tracking-tight">{jobData?.role || 'Custom Study Plan'}</h2>
+                    <p className="text-gray-500 text-sm font-bold uppercase tracking-widest">{jobData?.duration || '7 Days'} Intensive Plan</p>
                  </div>
               </div>
 
@@ -46,24 +46,12 @@ const PlanDetails = ({ courseData, navigateTo }) => {
                     Job Description Context
                  </h3>
                  <div className="bg-gray-50 rounded-xl p-5 text-[15px] text-gray-700 font-medium whitespace-pre-wrap leading-relaxed max-h-[300px] overflow-y-auto border border-gray-200/60 custom-scrollbar">
-                    {courseData.jd_context}
+                    {jobData?.description || 'Loading role context...'}
                  </div>
               </div>
            </div>
 
-           {courseData.course_architecture_mermaid && (
-               <div className="bg-white rounded-[2rem] p-8 sm:p-10 shadow-[0_4px_20px_rgb(0,0,0,0.03)] border border-gray-100">
-                  <h3 className="text-2xl font-black text-[#111827] mb-6 flex items-center gap-3 tracking-tight">
-                    <div className="w-10 h-10 bg-amber-50 rounded-lg flex items-center justify-center text-amber-500 border border-amber-100">
-                       <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4" /></svg>
-                    </div>
-                    Curriculum Architecture
-                  </h3>
-                  <div className="w-full overflow-x-auto pb-4 bg-gray-50 rounded-xl border border-gray-100 p-4 flex justify-center">
-                    <Mermaid chart={courseData.course_architecture_mermaid} />
-                  </div>
-               </div>
-           )}
+           {/* Removed global Mermaid section as Groq generates per-topic diagrams instead */}
 
         </div>
 
@@ -72,30 +60,31 @@ const PlanDetails = ({ courseData, navigateTo }) => {
            <div className="bg-[#111827] rounded-[2rem] p-8 shadow-[0_20px_40px_rgba(17,24,39,0.15)] sticky top-[100px] border border-gray-800">
               <h3 className="text-xl font-bold text-white mb-6 tracking-tight flex items-center justify-between">
                  Study Modules
-                 <span className="bg-gray-800 text-gray-300 text-[10px] uppercase font-black tracking-widest px-2.5 py-1 rounded-md">{courseData.course_contents?.length} Days</span>
+                 <span className="bg-gray-800 text-gray-300 text-[10px] uppercase font-black tracking-widest px-2.5 py-1 rounded-md">{planData?.length || 0} Modules</span>
               </h3>
               
               <div className="relative border-l-2 border-gray-800 ml-4 pb-4 space-y-8 mt-8">
-                 {courseData.course_contents.map((week, index) => (
+                 {planData?.map((module, index) => (
                     <div key={index} className="relative pl-8">
                        {/* Timeline Dot */}
                        <div className="absolute -left-[11px] top-1 w-5 h-5 rounded-full bg-[#111827] border-4 border-[#EBFF00] z-10 shadow-[0_0_0_4px_rgba(17,24,39,1)]"></div>
                        
                        <div className="bg-gray-800/50 hover:bg-gray-800 transition-colors p-5 rounded-2xl border border-gray-700/50 group cursor-pointer">
                           <h4 className="font-extrabold text-[15px] text-white flex items-center justify-between mb-2">
-                            Day {week.week_number}
+                            Module {module.day}
                             <svg className="w-4 h-4 text-gray-500 group-hover:text-amber-400 group-hover:translate-x-1 transition-all" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="3"><path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" /></svg>
                           </h4>
+                          <div className="text-xs text-amber-200 font-bold mb-3">{module.title}</div>
                           
                           <div className="space-y-1.5 mt-3">
-                             {week.topics?.slice(0,2).map((t, i) => (
+                             {module.topics?.slice(0,2).map((t, i) => (
                                 <div key={i} className="text-gray-400 text-sm font-medium flex items-start gap-2 line-clamp-1">
-                                  <span className="text-[#EBFF00] mt-0.5">&bull;</span> {t}
+                                  <span className="text-[#EBFF00] mt-0.5">&bull;</span> {t.name}
                                 </div>
                              ))}
-                             {week.topics?.length > 2 && (
+                             {module.topics?.length > 2 && (
                                 <div className="text-gray-500 text-xs font-bold italic pt-1 pl-3">
-                                   + {week.topics.length - 2} more topics
+                                   + {module.topics.length - 2} more topics
                                 </div>
                              )}
                           </div>
