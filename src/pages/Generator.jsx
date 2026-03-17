@@ -53,28 +53,7 @@ const Generator = ({
            </p>
         </div>
 
-        {/* Feature blocks (Desktop only) */}
-        <div className="relative z-10 hidden lg:flex flex-col gap-6 mt-12">
-            <div className="flex items-center gap-4">
-               <div className="w-12 h-12 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center backdrop-blur-sm">
-                 <svg className="w-6 h-6 text-[#EBFF00]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
-               </div>
-               <div>
-                  <div className="font-bold text-white text-[15px]">AI Synthesis</div>
-                  <div className="text-gray-500 text-[13px] font-medium">Context-aware curriculum generation</div>
-               </div>
-            </div>
-            
-             <div className="flex items-center gap-4">
-               <div className="w-12 h-12 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center backdrop-blur-sm">
-                 <svg className="w-6 h-6 text-[#EBFF00]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-               </div>
-               <div>
-                  <div className="font-bold text-white text-[15px]">Interview Ready</div>
-                  <div className="text-gray-500 text-[13px] font-medium">Granular daily objectives</div>
-               </div>
-            </div>
-        </div>
+
       </div>
 
       {/* Right Column - The Interactive Form */}
@@ -200,17 +179,7 @@ const Generator = ({
                      )}
                   </button>
 
-                  <div className="mt-6 text-center">
-                    {!isGenerating && jobData && (
-                       <button
-                         type="button"
-                         onClick={() => navigateTo('PLAN')}
-                         className="text-gray-400 hover:text-gray-900 font-bold text-[13px] underline underline-offset-4 decoration-gray-200 hover:decoration-gray-900 transition-colors cursor-pointer bg-transparent border-none"
-                       >
-                         Or continue to previous plan 
-                       </button>
-                    )}
-                  </div>
+
                </div>
 
             </form>
