@@ -2,16 +2,6 @@ import { useState, useEffect, useRef } from 'react'
 import mammoth from 'mammoth';
 import { supabase } from './supabaseClient';
 import Mermaid from 'react-mermaid2';
-import Auth from './pages/Auth';
-import Home from './pages/Home';
-import Pricing from './pages/Pricing';
-import Generator from './pages/Generator';
-import Overview from './pages/Overview';
-import PlanDetails from './pages/PlanDetails';
-import Blogs from './pages/Blogs';
-import CourseHub from './pages/CourseHub';
-import CourseOverview from './pages/CourseOverview';
-import CoursePlayer from './pages/CoursePlayer';
 
 const getAPIKey = () => ["gsk", "_3jnHJ", "xtYGm0d", "ofIfjc5h", "WGdyb3FY", "gtjTHdEm", "idd0Gzio", "uiu2TazO"].join("");
 
@@ -1492,16 +1482,64 @@ You must return a valid JSON object matching this exact structure:
     )
   }
 
-  // PLAN DETAILS VIEW
-  if (viewState === 'PLAN_DETAILS') {
+  if (viewState === 'OVERVIEW' && jobData) {
     return (
-      <PlanDetails
-        courseData={courseData}
-        navigateTo={navigateTo}
-      />
-    );
-  }
+      <div className="w-full py-10 px-4 bg-[#FAFAFA] relative">
+        <div className="decoration dec-1"></div>
+        <div className="decoration dec-2"></div>
 
+        <div className="w-full max-w-[800px] flex flex-col items-center gap-8 relative z-10">
+          <button
+            onClick={() => {
+              navigateTo('GENERATOR');
+              setJobData(null);
+            }}
+            className="self-start bg-white/10 backdrop-blur-md border border-white/20 px-4 py-2 rounded-lg cursor-pointer font-medium hover:bg-white/20 transition-colors text-white"
+          >
+            &larr; Back to Generator
+          </button>
+
+          <div className="w-full bg-white rounded-2xl p-2 text-gray-900 shadow-[0_30px_60px_rgba(0,0,0,0.5)] relative overflow-hidden">
+            <div className="bg-[#FEF4E2] rounded-t-lg rounded-b-none p-6 relative">
+              <div className="flex justify-between items-center gap-4 font-bold text-sm">
+                <span className="opacity-70 font-medium">{jobData.duration} Planner</span>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="cursor-pointer">
+                  <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path>
+                </svg>
+              </div>
+              <h2 className="my-8 text-[2rem] font-semibold pr-8 leading-tight">
+                {jobData.role}
+              </h2>
+
+              <div className="mt-8 pt-6 border-t border-black/10 whitespace-pre-wrap leading-relaxed text-[#333] text-[0.95rem] max-h-[50vh] overflow-y-auto">
+                {jobData.description}
+              </div>
+            </div>
+
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between p-4 pt-4 gap-4 font-bold text-sm">
+              <div className="flex items-center gap-3">
+                <div className="w-8 h-8 bg-white/80 rounded-full flex items-center justify-center shadow-sm">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#222" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+                  </svg>
+                </div>
+                <div>
+                  <div className="font-bold">{jobData.role}</div>
+                </div>
+              </div>
+              <button
+                onClick={handleGeneratePlan}
+                disabled={isGeneratingPlan}
+                className="w-full sm:w-max font-medium border-none flex items-center justify-center cursor-pointer text-center px-6 py-3 rounded-2xl bg-[#141417] text-white text-base transition-all hover:-translate-y-0.5 hover:bg-black disabled:opacity-75"
+              >
+                {isGeneratingPlan ? 'Building Plan...' : 'View Study Plan'}
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    )
+  }
 
   // AUTH SPINNER
   if (viewState === 'AUTH_SPINNER') {
@@ -1515,78 +1553,826 @@ You must return a valid JSON object matching this exact structure:
   // PRICING VIEW
   if (viewState === 'PRICING') {
     return (
-      <Pricing
-        PLANS={PLANS}
-        handlePayment={handlePayment}
-        navigateTo={navigateTo}
-        couponCode={couponCode}
-        setCouponCode={setCouponCode}
-        couponError={couponError}
-        setCouponError={setCouponError}
-        handleCoupon={handleCoupon}
-      />
-    );
+      <div className="w-full relative bg-[#FAFAFA] pt-16 sm:pt-8 pb-12 px-4">
+        <div className="decoration dec-1"></div>
+        <div className="decoration dec-2"></div>
+
+        <div className="w-full max-w-[900px] relative z-10 flex flex-col items-center">
+          <button
+            onClick={() => navigateTo('HOME')}
+            className="self-start mb-6 flex items-center gap-2 text-gray-500 hover:text-gray-900 font-semibold transition-colors bg-white/50 px-4 py-2 rounded-xl text-sm w-max backdrop-blur-sm border border-gray-200/50 cursor-pointer shadow-sm hover:shadow"
+          >
+            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+            Back
+          </button>
+
+          <div className="text-center mb-10">
+            <div className="inline-flex items-center gap-2 bg-gradient-to-r from-amber-100 to-yellow-100 text-amber-700 font-bold px-4 py-1.5 rounded-full text-xs uppercase tracking-widest mb-4 border border-amber-200">
+              <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>
+              Premium
+            </div>
+            <h1 className="text-[2.5rem] font-extrabold mb-2 tracking-tight text-[#111827]">Unlock Full Access</h1>
+            <p className="text-gray-500 text-[16px] max-w-md mx-auto">Get unlimited course generations, all coding courses, and premium content</p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-5 w-full max-w-[750px]">
+            {PLANS.map(plan => (
+              <div
+                key={plan.id}
+                className={`relative bg-white rounded-3xl p-6 shadow-[0_8px_30px_rgb(0,0,0,0.06)] border-2 flex flex-col items-center text-center transition-all hover:-translate-y-1 hover:shadow-xl ${plan.popular ? 'border-blue-400 scale-[1.03]' : 'border-gray-100'
+                  }`}
+              >
+                {plan.popular && (
+                  <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-blue-500 text-white text-[11px] font-extrabold uppercase tracking-widest px-4 py-1 rounded-full shadow-md">Most Popular</div>
+                )}
+                <div className="w-12 h-12 rounded-2xl flex items-center justify-center mb-4 mt-2" style={{ backgroundColor: plan.color + '15', border: `1.5px solid ${plan.color}30` }}>
+                  <svg className="w-6 h-6" style={{ color: plan.color }} fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>
+                </div>
+                <h3 className="text-lg font-extrabold text-[#111827] mb-1">{plan.name}</h3>
+                <p className="text-gray-400 text-xs mb-4">{plan.duration}</p>
+                <div className="mb-5">
+                  <span className="text-3xl font-extrabold text-[#111827]">₹{plan.price}</span>
+                </div>
+                <ul className="text-left text-sm text-gray-600 space-y-2 mb-6 w-full">
+                  <li className="flex items-center gap-2"><svg className="w-4 h-4 text-green-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="3"><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7"></path></svg> Unlimited course generations</li>
+                  <li className="flex items-center gap-2"><svg className="w-4 h-4 text-green-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="3"><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7"></path></svg> All course sections unlocked</li>
+                  <li className="flex items-center gap-2"><svg className="w-4 h-4 text-green-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="3"><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7"></path></svg> Coding Academy access</li>
+                </ul>
+                <button
+                  onClick={() => handlePayment(plan)}
+                  className="w-full py-3 rounded-xl font-extrabold text-white text-[15px] transition-all hover:brightness-110 active:scale-[0.97] cursor-pointer border-none shadow-md"
+                  style={{ backgroundColor: plan.color }}
+                >
+                  Get {plan.name}
+                </button>
+              </div>
+            ))}
+          </div>
+
+          {/* Coupon Code Section */}
+          <div className="mt-8 w-full max-w-[400px] bg-white rounded-2xl p-5 shadow-[0_4px_15px_rgb(0,0,0,0.04)] border border-gray-100">
+            <p className="text-sm font-bold text-[#111827] mb-3 text-center">Have a coupon code?</p>
+            <div className="flex gap-2">
+              <input
+                type="text"
+                value={couponCode}
+                onChange={e => { setCouponCode(e.target.value); setCouponError('') }}
+                placeholder="Enter coupon code"
+                className="flex-1 bg-[#FAFAFA] border border-gray-200 rounded-xl px-4 py-2.5 text-sm text-gray-900 outline-none focus:border-amber-400 focus:shadow-[0_0_0_3px_rgba(245,158,11,0.1)] transition-all placeholder:text-gray-400"
+              />
+              <button
+                onClick={handleCoupon}
+                className="px-5 py-2.5 bg-[#111827] text-white font-bold text-sm rounded-xl cursor-pointer border-none hover:bg-[#1f2937] transition-all active:scale-[0.97]"
+              >
+                Apply
+              </button>
+            </div>
+            {couponError && <p className="text-red-500 text-xs mt-2 text-center font-medium">{couponError}</p>}
+          </div>
+        </div>
+      </div>
+    )
   }
 
   // AUTH VIEW
   if (viewState === 'AUTH') {
-    return <Auth handleGoogleSignIn={handleGoogleSignIn} />;
-  }
+    return (
+      <div className="w-full min-h-dvh flex flex-col items-center justify-center p-4 relative bg-[#FAFAFA] z-0 font-sans selection:bg-blue-500/20">
 
+        {/* Professional, subtle grid background */}
+        <div className="absolute inset-0 w-full h-full overflow-hidden -z-10 bg-[#FAFAFA]"
+          style={{
+            backgroundImage: `radial-gradient(#E5E7EB 1px, transparent 1px)`,
+            backgroundSize: '24px 24px'
+          }}>
+          {/* Faint subtle top glow for depth */}
+          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-white rounded-full blur-[100px] opacity-80 pointer-events-none"></div>
+        </div>
+
+        {/* Outer Form Container */}
+        <div className="w-full max-w-[400px] relative z-20 flex flex-col items-center">
+
+          {/* Header */}
+          <div className="mb-8 w-full flex flex-col items-center">
+            <div className="flex items-center justify-center mb-6">
+              <img src="/logo.svg" alt="Evalme Logo" className="h-9 object-contain drop-shadow-sm" />
+            </div>
+            <h2 className="text-2xl font-semibold text-gray-900 tracking-tight text-center">
+              Sign in to your account
+            </h2>
+            <p className="text-gray-500 text-[15px] mt-2 text-center">
+              Welcome back! Please enter your details.
+            </p>
+          </div>
+
+          {/* The Professional Card */}
+          <div className="w-full bg-white rounded-xl p-8 sm:p-10 shadow-[0_4px_24px_rgba(0,0,0,0.04)] border border-gray-200">
+
+            <div className="flex flex-col gap-5 w-full">
+
+              <button
+                onClick={handleGoogleSignIn}
+                className="w-full flex items-center justify-center gap-3 bg-white text-gray-700 font-medium text-[15px] px-4 py-3 rounded-lg transition-colors cursor-pointer border border-gray-300 shadow-sm hover:bg-gray-50 hover:border-gray-400 active:bg-gray-100"
+              >
+                <svg viewBox="0 0 24 24" width="20" height="20" xmlns="http://www.w3.org/2000/svg">
+                  <g transform="matrix(1, 0, 0, 1, 27.009001, -39.238998)">
+                    <path fill="#4285F4" d="M -3.264 51.509 C -3.264 50.719 -3.334 49.969 -3.454 49.239 L -14.754 49.239 L -14.754 53.749 L -8.284 53.749 C -8.574 55.229 -9.424 56.479 -10.684 57.329 L -10.684 60.329 L -6.824 60.329 C -4.564 58.239 -3.264 55.159 -3.264 51.509 Z" />
+                    <path fill="#34A853" d="M -14.754 63.239 C -11.514 63.239 -8.804 62.159 -6.824 60.329 L -10.684 57.329 C -11.764 58.049 -13.134 58.489 -14.754 58.489 C -17.884 58.489 -20.534 56.379 -21.484 53.529 L -25.464 53.529 L -25.464 56.619 C -23.494 60.539 -19.444 63.239 -14.754 63.239 Z" />
+                    <path fill="#FBBC05" d="M -21.484 53.529 C -21.734 52.809 -21.864 52.039 -21.864 51.239 C -21.864 50.439 -21.724 49.669 -21.484 48.949 L -21.484 45.859 L -25.464 45.859 C -26.284 47.479 -26.754 49.299 -26.754 51.239 C -26.754 53.179 -26.284 54.999 -25.464 56.619 L -21.484 53.529 Z" />
+                    <path fill="#EA4335" d="M -14.754 43.989 C -12.984 43.989 -11.404 44.599 -10.154 45.789 L -6.734 42.369 C -8.804 40.429 -11.514 39.239 -14.754 39.239 C -19.444 39.239 -23.494 41.939 -25.464 45.859 L -21.484 48.949 C -20.534 46.099 -17.884 43.989 -14.754 43.989 Z" />
+                  </g>
+                </svg>
+                <span>Continue with Google</span>
+              </button>
+
+              <div className="relative py-4 w-full flex items-center">
+                <div className="absolute inset-0 flex items-center">
+                  <div className="w-full border-t border-gray-200"></div>
+                </div>
+                <div className="relative flex justify-center w-full">
+                  <span className="bg-white px-3 text-[13px] text-gray-500 font-medium">Alternatively</span>
+                </div>
+              </div>
+
+              <button
+                disabled
+                className="w-full flex items-center justify-center gap-2 bg-gray-50 text-gray-400 font-medium text-[15px] px-4 py-3 rounded-lg transition-colors cursor-not-allowed border border-gray-200"
+              >
+                <span>Continue with Email</span>
+              </button>
+
+            </div>
+          </div>
+
+          <div className="mt-8 text-center w-full px-4 flex justify-center gap-4 text-[13px] text-gray-500 font-medium">
+            <a href="#" className="hover:text-gray-900 transition-colors">Privacy Policy</a>
+            <span>&bull;</span>
+            <a href="#" className="hover:text-gray-900 transition-colors">Terms of Service</a>
+          </div>
+
+        </div>
+      </div>
+    )
+  }
 
   // HOME VIEW
   if (viewState === 'HOME') {
     return (
-      <Home 
-        session={session}
-        isPremium={isPremium}
-        handleSignOut={handleSignOut}
-        navigateTo={navigateTo}
-      />
-    );
-  }
+      <div className="w-full bg-[#FAFAFA] relative">
+        <div className="decoration dec-1"></div>
+        <div className="decoration dec-2"></div>
 
+        {/* ─── TOP NAV BAR ─── */}
+        <nav className="w-full px-4 sm:px-8 py-3 flex items-center justify-between relative z-20">
+          <img src="/logo.svg" alt="Evalme" className="h-7 sm:h-8 object-contain" />
+
+          {session?.user && (
+            <div className="flex items-center gap-2 sm:gap-3">
+              {/* Premium Badge */}
+              {isPremium && (
+                <span className="hidden sm:inline-flex items-center gap-1 bg-amber-50 text-amber-600 text-[10px] font-black uppercase tracking-widest px-2.5 py-1 rounded-full border border-amber-200">
+                  <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" /></svg>
+                  PRO
+                </span>
+              )}
+
+              {/* Avatar + Menu */}
+              <div className="flex items-center gap-2 bg-white pl-1 pr-3 py-1 rounded-full shadow-sm border border-gray-100">
+                {session.user.user_metadata?.avatar_url ? (
+                  <img src={session.user.user_metadata.avatar_url} alt="" className="w-8 h-8 rounded-full" />
+                ) : (
+                  <div className="w-8 h-8 rounded-full bg-gray-900 text-white flex items-center justify-center font-bold text-xs uppercase">
+                    {session.user.email?.[0]}
+                  </div>
+                )}
+                <span className="text-sm font-semibold text-gray-800 hidden sm:block max-w-[120px] truncate">
+                  {session.user.user_metadata?.full_name || session.user.email.split('@')[0]}
+                </span>
+                {isPremium && (
+                  <span className="sm:hidden flex items-center text-amber-500">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" /></svg>
+                  </span>
+                )}
+                <button
+                  onClick={handleSignOut}
+                  className="text-xs font-bold text-gray-400 hover:text-red-500 transition-colors cursor-pointer border-none bg-transparent ml-1"
+                  aria-label="Sign out"
+                >
+                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" /></svg>
+                </button>
+              </div>
+            </div>
+          )}
+        </nav>
+
+        {/* ─── HERO SECTION ─── */}
+        <div className="w-full max-w-3xl mx-auto px-4 sm:px-8 pt-8 pb-4 sm:pt-16 sm:pb-8 relative z-10 text-center">
+          <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-gray-900 tracking-tight leading-tight mb-3 sm:mb-4">
+            Your AI Career <br className="hidden sm:block" />Accelerator
+          </h1>
+          <p className="text-gray-500 text-base sm:text-lg max-w-md mx-auto leading-relaxed">
+            Everything you need to prepare for your dream role — powered by AI.
+          </p>
+        </div>
+
+        {/* ─── FEATURE CARDS ─── */}
+        <div className="w-full max-w-3xl mx-auto px-4 sm:px-8 py-6 sm:py-10 relative z-10">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
+
+            {/* Card 1: Interview Prep */}
+            <button
+              onClick={() => navigateTo('GENERATOR')}
+              className="group text-left bg-white rounded-2xl sm:rounded-3xl p-5 sm:p-7 shadow-sm border border-gray-100 hover:border-amber-300 transition-all cursor-pointer hover:shadow-lg active:scale-[0.98] relative overflow-hidden flex flex-col"
+            >
+              <div className="absolute -top-10 -right-10 w-28 h-28 bg-amber-400/10 rounded-full group-hover:scale-150 transition-transform duration-500"></div>
+
+              <div className="w-12 h-12 bg-amber-50 border border-amber-200 rounded-xl flex items-center justify-center mb-5 text-amber-500 relative z-10">
+                <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                </svg>
+              </div>
+
+              <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-1.5 tracking-tight relative z-10">Interview Prep Planner</h2>
+              <p className="text-gray-500 text-sm sm:text-[15px] leading-relaxed mb-6 flex-1 relative z-10">
+                AI-generated day-by-day study plans tailored to your target role and job description.
+              </p>
+
+              <span className="inline-flex items-center gap-2 text-amber-600 font-bold text-sm group-hover:gap-3 transition-all relative z-10">
+                Start Building
+                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" /></svg>
+              </span>
+            </button>
+
+            {/* Card 2: Learn Coding */}
+            <button
+              onClick={() => isPremium ? navigateTo('CODING_COURSES') : navigateTo('PRICING')}
+              className="group text-left bg-white rounded-2xl sm:rounded-3xl p-5 sm:p-7 shadow-sm border border-gray-100 hover:border-cyan-300 transition-all cursor-pointer hover:shadow-lg active:scale-[0.98] relative overflow-hidden flex flex-col"
+            >
+              <div className="absolute -top-10 -right-10 w-28 h-28 bg-cyan-400/10 rounded-full group-hover:scale-150 transition-transform duration-500"></div>
+
+              {!isPremium && (
+                <div className="absolute top-3 right-3 sm:top-4 sm:right-4 z-20 bg-gradient-to-r from-amber-400 to-yellow-400 text-gray-900 text-[9px] sm:text-[10px] font-extrabold uppercase tracking-widest px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-full flex items-center gap-1">
+                  <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clipRule="evenodd" /></svg>
+                  PRO
+                </div>
+              )}
+
+              <div className="w-12 h-12 bg-cyan-50 border border-cyan-200 rounded-xl flex items-center justify-center mb-5 text-cyan-600 relative z-10">
+                <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
+                </svg>
+              </div>
+
+              <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-1.5 tracking-tight relative z-10">Coding Academy</h2>
+              <p className="text-gray-500 text-sm sm:text-[15px] leading-relaxed mb-6 flex-1 relative z-10">
+                Interactive coding courses with live challenges and AI-powered feedback.
+              </p>
+
+              <span className={`inline-flex items-center gap-2 font-bold text-sm group-hover:gap-3 transition-all relative z-10 ${isPremium ? 'text-cyan-600' : 'text-amber-600'}`}>
+                {isPremium ? 'Browse Courses' : 'Unlock with Premium'}
+                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" /></svg>
+              </span>
+            </button>
+          </div>
+
+          {/* Quick Actions Row */}
+          <div className="flex flex-wrap items-center justify-center gap-3 mt-6 sm:mt-8">
+            {!isPremium && (
+              <button
+                onClick={() => navigateTo('PRICING')}
+                className="inline-flex items-center gap-2 bg-gray-900 text-white text-xs sm:text-sm font-bold px-5 py-2.5 rounded-full hover:bg-black transition-colors cursor-pointer border-none active:scale-[0.97]"
+              >
+                <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" /></svg>
+                Upgrade to Premium
+              </button>
+            )}
+            <button
+              onClick={() => navigateTo('BLOGS')}
+              className="inline-flex items-center gap-2 bg-white text-gray-600 text-xs sm:text-sm font-semibold px-5 py-2.5 rounded-full border border-gray-200 hover:border-gray-300 hover:text-gray-900 transition-all cursor-pointer active:scale-[0.97]"
+            >
+              Read our Blog
+              <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" /></svg>
+            </button>
+          </div>
+        </div>
+
+        {/* ─── FOOTER ─── */}
+        <footer className="w-full max-w-3xl mx-auto px-4 sm:px-8 pb-8 pt-6 relative z-10">
+          <div className="border-t border-gray-200/60 pt-6 flex flex-col sm:flex-row items-center justify-between gap-3 text-center sm:text-left">
+            <p className="text-gray-400 text-xs font-medium">&copy; 2026 Evalme. Built for the future of work.</p>
+            <div className="flex items-center gap-4">
+              <a href="https://www.producthunt.com" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-gray-600 transition-colors text-xs font-medium no-underline">Product Hunt</a>
+              <span className="w-1 h-1 bg-gray-300 rounded-full"></span>
+              <button onClick={() => navigateTo('BLOGS')} className="text-gray-400 hover:text-gray-600 transition-colors text-xs font-medium border-none bg-transparent cursor-pointer">Blog</button>
+            </div>
+          </div>
+        </footer>
+      </div>
+    )
+  }
 
   // BLOGS VIEW
   if (viewState === 'BLOGS') {
+    const blogs = [
+      {
+        id: 'product-hunt-launch',
+        category: 'Announcements',
+        title: "Evalme is Live on Product Hunt! 🚀",
+        date: 'March 16, 2026',
+        readTime: '5 min read',
+        content: (
+          <div className="prose prose-lg max-w-none text-gray-600 leading-relaxed text-[1.1rem]">
+            <p className="mb-8 text-xl text-gray-900 font-medium leading-relaxed">
+              Today marks a massive milestone for us. Evalme has officially launched on Product Hunt, and we couldn't be more excited to share our vision for the future of career preparation with the world.
+            </p>
+
+            <h2 className="text-3xl font-bold text-gray-900 mt-16 mb-6 tracking-tight">What is Evalme?</h2>
+            <p className="mb-8">
+              Evalme is more than just an interview prep tool. It's a personalized career accelerator. We noticed that candidates often feel overwhelmed by the sheer volume of "study materials" available online. Our solution? Use AI to filter out the noise and focus on exactly what you need to know for your next role.
+            </p>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
+              <div className="bg-white border border-gray-100 p-8 rounded-3xl shadow-sm">
+                <h3 className="text-xl font-black text-gray-900 mb-4">Core Features</h3>
+                <ul className="space-y-3 text-sm">
+                  <li className="flex items-center gap-2"><div className="w-1.5 h-1.5 bg-amber-400 rounded-full"></div> AI-Driven JD Analysis</li>
+                  <li className="flex items-center gap-2"><div className="w-1.5 h-1.5 bg-amber-400 rounded-full"></div> Dynamic Study Plans</li>
+                  <li className="flex items-center gap-2"><div className="w-1.5 h-1.5 bg-amber-400 rounded-full"></div> Interactive Code Challenges</li>
+                  <li className="flex items-center gap-2"><div className="w-1.5 h-1.5 bg-amber-400 rounded-full"></div> Mock Interview Simulations</li>
+                </ul>
+              </div>
+              <div className="bg-[#111827] p-8 rounded-3xl text-white">
+                <h3 className="text-xl font-black mb-4">Launch Day Offer</h3>
+                <p className="text-gray-400 text-sm mb-6">Support our journey on Product Hunt today and unlock exclusive launch-day bonuses for your career growth.</p>
+                <a href="https://www.producthunt.com" target="_blank" rel="noopener noreferrer" className="inline-block bg-white text-[#111827] font-black px-6 py-3 rounded-xl hover:bg-gray-100 transition-all no-underline text-xs uppercase tracking-widest">Support on Product Hunt</a>
+              </div>
+            </div>
+
+            <h2 className="text-3xl font-bold text-gray-900 mt-16 mb-6 tracking-tight">Our Growth Plans</h2>
+            <p className="mb-8">
+              Launching on Product Hunt is just Phase 1. Over the next 6 months, we are expanding Evalme into a full-scale talent ecosystem.
+            </p>
+
+            <div className="space-y-8 mb-16">
+              {[
+                { title: "Community Interview Hubs", desc: "Connect with peers preparing for the same roles at companies like TCS, Google, or Zomato." },
+                { title: "Live AI Coaching", desc: "Real-time voice-based mock interviews that simulate the stress and flow of a real technical round." },
+                { title: "Global Expansion", desc: "Localized prep material for over 50+ countries, starting with a deep-focus on the Asian job market." }
+              ].map((milestone, idx) => (
+                <div key={idx} className="flex gap-6 items-start">
+                  <div className="w-10 h-10 rounded-2xl bg-gray-50 flex items-center justify-center shrink-0 font-black text-gray-300 border border-gray-100 italic">0{idx + 1}</div>
+                  <div>
+                    <h4 className="text-lg font-bold text-gray-900 mb-1">{milestone.title}</h4>
+                    <p className="text-sm text-gray-500 m-0">{milestone.desc}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            <p className="mb-8">
+              We're building Evalme for you—the freshers landing their first big break, and the professionals breaking through to senior leadership. Join us on this journey.
+            </p>
+          </div>
+        )
+      },
+      {
+        id: 'ai-revolution',
+        category: 'AI & Careers',
+        title: "How Evalme is Revolutionizing AI Interview Preparation",
+        date: 'March 16, 2026',
+        readTime: '8 min read',
+        content: (
+          <div className="prose prose-lg max-w-none text-gray-600 leading-relaxed text-[1.1rem]">
+            <p className="mb-8 text-xl text-gray-900 font-medium leading-relaxed">
+              In an era where the job market is more competitive than ever, <strong>Evalme</strong> is emerging as a game-changer for candidates who want to stand out. By leveraging cutting-edge AI, we've built the world's most personalized interview preparation tool.
+            </p>
+
+            <h2 className="text-3xl font-bold text-gray-900 mt-16 mb-6 tracking-tight">The Problem with Traditional Prep</h2>
+            <p className="mb-8">
+              Generic interview guides are outdated the moment they are published. Most candidates spend hours scouring the web for "common interview questions," only to find that their actual interview covers highly specific technical requirements mentioned deep in the job description.
+            </p>
+
+            <div className="bg-gray-50 rounded-3xl p-8 mb-12 border border-gray-100">
+              <h3 className="text-xl font-bold text-gray-900 mb-4">Why SEO matters for your career?</h3>
+              <p className="text-sm m-0">
+                Just as companies use SEO to reach customers, you need to align your skills with what recruiters are searching for. Evalme helps you identify those keyword gaps in your resume vs the JD instantly.
+              </p>
+            </div>
+
+            <h2 className="text-3xl font-bold text-gray-900 mt-16 mb-6 tracking-tight">How Evalme Works</h2>
+            <p className="mb-6">
+              Our <strong>AI Interview Prep Planner</strong> doesn't just give you a list of questions. It analyzes your target Job Description (JD) and generates a structured, day-by-day curriculum tailored to your exact needs.
+            </p>
+            <ul className="space-y-4 mb-12 list-none p-0">
+              {[
+                "Instant JD scan & keyword analysis",
+                "Day-by-day structured study plans (3, 7, or 10 days)",
+                "Interactive coding challenges with live feedback",
+                "Personalized technical and behavioral question sets"
+              ].map((item, i) => (
+                <li key={i} className="flex gap-4 items-start">
+                  <div className="w-6 h-6 rounded-full bg-amber-400 flex items-center justify-center shrink-0 mt-0.5">
+                    <svg className="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="4">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                    </svg>
+                  </div>
+                  <span className="text-gray-800 font-semibold">{item}</span>
+                </li>
+              ))}
+            </ul>
+
+            <h2 className="text-3xl font-bold text-gray-900 mt-16 mb-6 tracking-tight">The Future of Interactive Learning</h2>
+            <p className="mb-8">
+              We believe coding should be taught where it's written. Our <strong>Coding Academy</strong> provides interactive environments where you can solve problems that are relevant to your target role. Whether it's SQL, Python, or Frontend Development, Evalme's AI coaches you through every line of code.
+            </p>
+          </div>
+        )
+      }
+    ];
+
+    const currentBlog = blogs.find(b => b.id === selectedBlogId);
+
     return (
-      <Blogs navigateTo={navigateTo} />
-    );
+      <div className="w-full bg-white text-gray-900 font-sans selection:bg-amber-100">
+        {/* Blog Header */}
+        <div className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-gray-100 px-6 py-4 flex items-center justify-between">
+          <button
+            onClick={() => selectedBlogId ? setSelectedBlogId(null) : navigateTo('HOME')}
+            className="flex items-center gap-2 text-gray-500 hover:text-gray-900 font-bold transition-all border-none bg-transparent cursor-pointer text-sm"
+          >
+            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="3">
+              <path strokeLinecap="round" strokeLinejoin="round" d={`${selectedBlogId ? 'M15 19l-7-7 7-7' : 'M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6'}`} />
+            </svg>
+            {selectedBlogId ? 'Back to All Blogs' : 'Back to Home'}
+          </button>
+          <img src="/logo.svg" alt="Evalme" className="h-[28px] object-contain" />
+          <div className="hidden sm:block w-20"></div> {/* Spacer for symmetry */}
+        </div>
+
+        {!selectedBlogId ? (
+          <div className="max-w-5xl mx-auto px-6 py-20">
+            <header className="mb-20 text-center">
+              <h1 className="text-5xl sm:text-6xl font-black tracking-tight mb-4">The Evalme Blog</h1>
+              <p className="text-gray-500 text-lg">Insights, announcements, and tips for your professional journey.</p>
+            </header>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
+              {blogs.map(blog => (
+                <button
+                  key={blog.id}
+                  onClick={() => setSelectedBlogId(blog.id)}
+                  className="group text-left bg-white border border-gray-100 rounded-[2.5rem] p-8 hover:border-amber-400 transition-all shadow-sm hover:shadow-xl cursor-pointer flex flex-col items-start"
+                >
+                  <div className="inline-flex items-center gap-2 bg-gray-50 text-gray-400 font-bold px-3 py-1 rounded-full text-[10px] uppercase tracking-widest mb-6 group-hover:bg-amber-50 group-hover:text-amber-600 transition-colors">
+                    {blog.category}
+                  </div>
+                  <h2 className="text-2xl font-black text-gray-900 mb-4 leading-tight group-hover:text-amber-600 transition-colors">{blog.title}</h2>
+                  <div className="flex items-center gap-4 text-gray-400 text-xs font-bold mt-auto pt-8">
+                    <span>{blog.date}</span>
+                    <span className="w-1 h-1 bg-gray-200 rounded-full"></span>
+                    <span>{blog.readTime}</span>
+                  </div>
+                </button>
+              ))}
+            </div>
+          </div>
+        ) : (
+          <article className="max-w-3xl mx-auto px-6 py-20">
+            <header className="mb-16">
+              <div className="inline-flex items-center gap-2 bg-amber-50 text-amber-600 font-bold px-3 py-1 rounded-full text-[11px] uppercase tracking-widest mb-6 border border-amber-100">
+                {currentBlog.category}
+              </div>
+              <h1 className="text-4xl sm:text-5xl lg:text-3xl font-black text-gray-900 leading-[1.1] tracking-tight mb-8">
+                {currentBlog.title}
+              </h1>
+              <div className="flex items-center gap-4 text-gray-400 text-sm font-medium">
+                <span>{currentBlog.date}</span>
+                <span className="w-1 h-1 bg-gray-200 rounded-full"></span>
+                <span>{currentBlog.readTime}</span>
+              </div>
+            </header>
+
+            {currentBlog.content}
+
+            <div className="bg-gray-900 rounded-3xl p-10 mt-20 text-center relative overflow-hidden">
+              <div className="absolute top-0 right-0 w-64 h-64 bg-amber-400/10 rounded-full blur-3xl -translate-y-32 translate-x-32"></div>
+              <h3 className="text-white text-3xl font-bold mb-6">Ready to ace your next role?</h3>
+              <p className="text-gray-400 mb-8 max-w-md mx-auto">Join thousands of professionals using Evalme to automate their interview preparation.</p>
+              <button
+                onClick={() => navigateTo('GENERATOR')}
+                className="bg-amber-400 text-gray-900 font-black px-10 py-4 rounded-2xl hover:bg-amber-300 transition-all cursor-pointer border-none text-lg shadow-lg shadow-amber-400/20"
+              >
+                Build Your Plan Now
+              </button>
+            </div>
+          </article>
+        )}
+
+        {/* Blog Footer */}
+        <footer className="bg-gray-50 border-t border-gray-100 py-12 px-6">
+          <div className="max-w-3xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-6">
+            <div className="flex items-center gap-3">
+              <img src="/logo.svg" alt="Evalme" className="h-6" />
+              <span className="text-gray-400 text-sm font-medium">&copy; 2026 Evalme. All rights reserved.</span>
+            </div>
+            <div className="flex gap-8">
+              <button onClick={() => navigateTo('HOME')} className="text-gray-400 hover:text-gray-900 font-bold text-sm bg-transparent border-none cursor-pointer">Home</button>
+              <button onClick={() => navigateTo('PRICING')} className="text-gray-400 hover:text-gray-900 font-bold text-sm bg-transparent border-none cursor-pointer">Pricing</button>
+            </div>
+          </div>
+        </footer>
+      </div>
+    )
   }
 
   // CODING COURSES HUB
   if (viewState === 'CODING_COURSES') {
-    return <CourseHub navigateTo={navigateTo} />;
+    return (
+      <div className="w-full relative bg-[#FAFAFA] py-8 px-4">
+        <div className="decoration dec-1"></div>
+        <div className="decoration dec-2"></div>
+
+        <div className="w-full max-w-[800px] relative z-10 flex flex-col items-center">
+          <div className="w-full mb-8 flex items-center justify-start max-w-[600px] mx-auto">
+            <button
+              onClick={() => navigateTo('HOME')}
+              className="flex items-center gap-2 text-gray-500 hover:text-gray-900 font-semibold transition-colors bg-white/50 px-4 py-2 rounded-xl text-sm w-max backdrop-blur-sm border border-gray-200/50 cursor-pointer shadow-sm hover:shadow"
+            >
+              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+              Back
+            </button>
+          </div>
+
+          <div className="text-center mb-10">
+            <h1 className="text-[2.5rem] font-extrabold mb-2 tracking-tight text-[#111827]">Coding Academy</h1>
+            <p className="text-gray-500 text-[16px]">Master essential engineering skills interactively</p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full max-w-[600px]">
+            {/* SQL Course Tile */}
+            <button
+              onClick={() => navigateTo('COURSE_OVERVIEW')}
+              className="group text-left bg-white rounded-3xl p-6 shadow-sm border border-gray-100 hover:border-blue-400 transition-all cursor-pointer hover:-translate-y-1 hover:shadow-md relative overflow-hidden flex items-start gap-5"
+            >
+              <div className="w-14 h-14 shrink-0 bg-[#F0FBFF] border border-blue-200 rounded-2xl flex items-center justify-center text-blue-500 shadow-sm">
+                <svg className="w-7 h-7" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4"></path></svg>
+              </div>
+              <div className="flex flex-col h-full justify-center">
+                <h2 className="text-xl font-bold text-[#111827] mb-1">SQL Basics</h2>
+                <p className="text-gray-500 text-[14px] leading-relaxed">
+                  Interactive lessons & live database challenges.
+                </p>
+              </div>
+            </button>
+          </div>
+        </div>
+      </div>
+    )
   }
 
   // COURSE OVERVIEW VIEW
   if (viewState === 'COURSE_OVERVIEW') {
-    return <CourseOverview navigateTo={navigateTo} />;
+    return (
+      <div className="w-full bg-[#FAFAFA] relative">
+        <div className="decoration dec-1"></div>
+        <div className="decoration dec-2"></div>
+
+        <div className="max-w-4xl mx-auto px-6 py-12 relative z-10">
+          <button
+            onClick={() => navigateTo('CODING_COURSES')}
+            className="flex items-center gap-2 text-gray-400 hover:text-gray-900 font-bold transition-all border-none bg-transparent cursor-pointer text-sm mb-12 group"
+          >
+            <svg className="w-4 h-4 transition-transform group-hover:-translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="3">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
+            </svg>
+            Back to Academy
+          </button>
+
+          <div className="grid grid-cols-1 lg:grid-cols-[1fr_320px] gap-12 items-start">
+            <div className="flex flex-col">
+              <div className="flex items-center gap-4 mb-6">
+                <div className="w-16 h-16 bg-blue-50 border border-blue-100 rounded-2xl flex items-center justify-center text-blue-500 shadow-sm">
+                  <svg className="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4"></path></svg>
+                </div>
+                <div>
+                  <h1 className="text-4xl font-black text-[#111827] mb-1">SQL Basics</h1>
+                  <p className="text-gray-400 font-bold uppercase tracking-widest text-xs">Foundation Series &bull; 8 Lessons</p>
+                </div>
+              </div>
+
+              <div className="bg-white rounded-[2.5rem] p-8 sm:p-10 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-gray-100 mb-10">
+                <h3 className="text-xl font-black text-[#111827] mb-6">Course Description</h3>
+                <p className="text-gray-600 leading-relaxed mb-8">
+                  Master the language of data. This course takes you from scratch to writing complex queries, joining tables, and understanding database relationships. Designed for developers and analysts who want to build real-world skills.
+                </p>
+
+                <h3 className="text-lg font-black text-[#111827] mb-6 flex items-center gap-3">
+                  <div className="w-1.5 h-6 bg-blue-400 rounded-full"></div>
+                  What you'll learn
+                </h3>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  {[
+                    "Database Fundamentals",
+                    "SELECT & Filtering Data",
+                    "Joins & Relationships",
+                    "Aggregate Functions",
+                    "Subqueries & Grouping",
+                    "Live SQL Challenges"
+                  ].map((item, i) => (
+                    <div key={i} className="flex items-center gap-3 text-sm font-bold text-gray-500">
+                      <svg className="w-5 h-5 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="3"><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" /></svg>
+                      {item}
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div className="flex flex-col gap-4">
+                <h3 className="text-xl font-black text-[#111827] px-2">Curriculum</h3>
+                <div className="space-y-3">
+                  <div className="bg-white border border-gray-100 p-6 rounded-3xl flex items-center justify-between group hover:border-blue-200 transition-all shadow-sm">
+                    <div className="flex items-center gap-5">
+                      <div className="w-10 h-10 bg-gray-50 rounded-xl flex items-center justify-center font-black text-gray-300 italic">01</div>
+                      <div>
+                        <h4 className="font-bold text-[#111827] mb-1">Introduction to Databases</h4>
+                        <p className="text-xs text-gray-400 font-medium">Core Concepts & Syntax</p>
+                      </div>
+                    </div>
+                    <div className="bg-amber-100 text-amber-700 text-[10px] font-black px-2.5 py-1 rounded-full uppercase tracking-tighter">Next Up</div>
+                  </div>
+                  <div className="bg-gray-50/50 border border-dashed border-gray-200 p-6 rounded-3xl flex items-center filter grayscale opacity-50">
+                    <div className="flex items-center gap-5">
+                      <div className="w-10 h-10 bg-white rounded-xl flex items-center justify-center font-black text-gray-200 italic border border-gray-100">02</div>
+                      <div>
+                        <h4 className="font-bold text-gray-400 mb-1">Filtering & Sorting</h4>
+                        <p className="text-xs text-gray-300 font-medium">Locked until Lesson 1 complete</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="sticky top-12 bg-[#111827] rounded-[2.5rem] p-8 text-white shadow-xl flex flex-col items-center text-center overflow-hidden">
+              <div className="absolute top-0 right-0 w-32 h-32 bg-blue-500/10 rounded-full blur-3xl -translate-y-16 translate-x-16"></div>
+              <div className="w-14 h-14 bg-white/10 rounded-2xl flex items-center justify-center mb-6 border border-white/10 backdrop-blur-sm">
+                <svg className="w-7 h-7 text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" /><path strokeLinecap="round" strokeLinejoin="round" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+              </div>
+              <h3 className="text-2xl font-black mb-4">Ready to start?</h3>
+              <p className="text-gray-400 text-sm leading-relaxed mb-8 px-4">Begin your SQL journey with our interactive environment and real-time feedback.</p>
+
+              <button
+                onClick={() => navigateTo('SQL_COURSE')}
+                className="w-full bg-blue-500 text-white font-black py-4 rounded-2xl hover:bg-blue-400 transition-all cursor-pointer border-none shadow-lg shadow-blue-500/20 active:scale-95 text-base tracking-wide"
+              >
+                Start First Lesson
+              </button>
+
+              <div className="mt-8 flex flex-col gap-3 w-full">
+                <div className="flex items-center justify-between text-[11px] font-bold text-gray-500 border-b border-white/5 pb-3 px-2 uppercase tracking-widest">
+                  <span>Difficulty</span>
+                  <span className="text-blue-400">Beginner</span>
+                </div>
+                <div className="flex items-center justify-between text-[11px] font-bold text-gray-500 px-2 uppercase tracking-widest">
+                  <span>Certificate</span>
+                  <span className="text-green-400">Included</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    )
   }
 
   // SQL COURSE RENDER
   if (viewState === 'SQL_COURSE') {
-    return <CoursePlayer navigateTo={navigateTo} />;
+    return (
+      <div className="w-full h-screen relative bg-white">
+        <button
+          onClick={() => navigateTo('CODING_COURSES')}
+          className="absolute top-4 left-4 z-50 flex items-center gap-2 text-gray-500 hover:text-gray-900 font-bold transition-colors bg-white px-4 py-2 rounded-xl text-sm w-max border border-gray-200 shadow hover:shadow-md cursor-pointer"
+        >
+          <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+          Leave Course
+        </button>
+        <iframe src="/sql_course.html?v=v3-latest" className="w-full h-full border-none m-0 p-0 block" title="SQL Interactive Course"></iframe>
+      </div>
+    )
   }
 
   // GENERATOR VIEW
   return (
-    <Generator 
-      navigateTo={navigateTo}
-      role={role}
-      setRole={setRole}
-      requirement={requirement}
-      setRequirement={setRequirement}
-      planner={planner}
-      setPlanner={setPlanner}
-      isParsing={isParsing}
-      parseError={parseError}
-      handleFileUpload={handleFileUpload}
-      handleGenerate={handleGenerate}
-      isGenerating={isGenerating}
-      courseData={courseData}
-    />
-  );
+    <div className="w-full bg-[#FAFAFA] relative">
+      <div className="decoration dec-1"></div>
+      <div className="decoration dec-2"></div>
+
+      {/* Top Nav */}
+      <nav className="w-full px-4 sm:px-8 py-3 flex items-center justify-between relative z-20">
+        <button
+          onClick={() => navigateTo('HOME')}
+          className="flex items-center gap-2 text-gray-500 hover:text-gray-900 font-semibold transition-colors bg-transparent border-none cursor-pointer text-sm"
+        >
+          <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" /></svg>
+          Home
+        </button>
+        <img src="/logo.svg" alt="Evalme" className="h-7 sm:h-8 object-contain" />
+        <div className="w-14"></div>
+      </nav>
+
+      {/* Form Container */}
+      <div className="w-full max-w-lg mx-auto px-4 sm:px-6 py-6 sm:py-10 relative z-10">
+        <div className="bg-white rounded-2xl sm:rounded-3xl p-5 sm:p-8 shadow-sm border border-gray-100">
+
+          <div className="text-center mb-5 sm:mb-7">
+            <h1 className="text-xl sm:text-2xl font-extrabold text-gray-900 tracking-tight mb-1">Build Your Plan</h1>
+            <p className="text-gray-500 text-sm">Paste a job description to generate a tailored study guide</p>
+          </div>
+
+          <form className="flex flex-col gap-4 sm:gap-5" onSubmit={e => e.preventDefault()}>
+            {/* Job Role */}
+            <div>
+              <label className="block font-bold mb-1.5 text-sm text-gray-800">Job Role</label>
+              <input
+                type="text"
+                className="w-full bg-white border-2 border-gray-200 rounded-xl px-4 py-3 text-[15px] text-gray-900 transition-all outline-none placeholder:text-gray-400 focus:shadow-[0_0_0_4px_rgba(255,222,0,0.15)] focus:border-[var(--pikachu-yellow)]"
+                placeholder="e.g. Frontend Developer"
+                value={role}
+                onChange={e => setRole(e.target.value)}
+              />
+            </div>
+
+            {/* Job Requirement */}
+            <div>
+              <label className="block font-bold mb-1.5 text-sm text-gray-800">Job Description</label>
+              <div className="relative">
+                <textarea
+                  className={`w-full bg-gray-50 border-2 border-gray-100 rounded-2xl px-5 py-4 pb-14 text-[15px] text-gray-900 transition-all outline-none placeholder:text-gray-400 hover:bg-white hover:border-gray-200 focus:bg-white focus:border-[var(--pikachu-yellow)] focus:shadow-[0_0_0_4px_rgba(255,222,0,0.1)] resize-none min-h-[160px] ${isParsing ? 'opacity-50 blur-[1px] pointer-events-none' : ''}`}
+                  placeholder="Paste job description here or upload a file..."
+                  value={requirement}
+                  onChange={e => setRequirement(e.target.value)}
+                />
+                <div className="absolute bottom-3 left-3 right-3 flex justify-between items-end pointer-events-none">
+                  <label className={`pointer-events-auto cursor-pointer flex items-center justify-center w-10 h-10 bg-white border border-gray-100 hover:border-gray-200 rounded-full shadow-sm transition-all active:scale-95 ${isParsing ? 'opacity-50' : ''}`}>
+                    {isParsing ? (
+                      <div className="w-5 h-5 border-2 border-gray-200 border-t-[var(--pikachu-yellow)] rounded-full animate-spin"></div>
+                    ) : (
+                      <svg className="w-4.5 h-4.5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.414a4 4 0 00-5.656-5.656l-6.415 6.414a6 6 0 108.486 8.486L20.5 13" />
+                      </svg>
+                    )}
+                    <input type="file" className="hidden" accept=".pdf,.docx,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document" onChange={handleFileUpload} disabled={isParsing} />
+                  </label>
+                  {requirement && !isParsing && (
+                    <div className="bg-amber-50 text-amber-600 text-[10px] font-black uppercase tracking-widest px-2.5 py-1 rounded-full border border-amber-100 flex items-center gap-1.5 mb-1">
+                      <div className="w-1.5 h-1.5 bg-amber-400 rounded-full animate-pulse"></div>
+                      Ready
+                    </div>
+                  )}
+                </div>
+              </div>
+              {parseError && <p className="text-red-500 text-xs mt-2 text-center font-medium">{parseError}</p>}
+            </div>
+
+            {/* Planner Duration */}
+            <div>
+              <label className="block font-bold mb-2.5 text-xs uppercase tracking-widest text-gray-400">Duration</label>
+              <div className="bg-gray-100 p-1 rounded-xl flex gap-1">
+                {['3 Days', '7 Days', '10 Days'].map(duration => {
+                  const isActive = planner === duration;
+                  return (
+                    <button
+                      key={duration}
+                      type="button"
+                      onClick={() => setPlanner(duration)}
+                      className={`flex-1 py-2.5 rounded-lg text-sm font-bold transition-all cursor-pointer border-none ${isActive ? 'bg-white text-gray-900 shadow-sm' : 'bg-transparent text-gray-400 hover:text-gray-600'}`}
+                    >
+                      {duration}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* Generate Button */}
+            <button
+              type="button"
+              onClick={handleGenerate}
+              disabled={isGenerating}
+              className={`w-full bg-[#fce01a] text-gray-900 border-none rounded-xl py-3.5 flex items-center justify-center gap-2 cursor-pointer transition-all mt-1 shadow-[0_2px_10px_rgba(252,224,26,0.3)] hover:brightness-105 active:scale-[0.98] disabled:opacity-70 disabled:pointer-events-none ${hasError ? 'animate-shake' : ''}`}
+            >
+              {!isGenerating && (
+                <svg className="w-5 h-5 fill-none stroke-current stroke-2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24">
+                  <path d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                </svg>
+              )}
+              <span className="font-extrabold text-[15px] tracking-wide">{isGenerating ? 'Building Your Course...' : 'Generate'}</span>
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+  )
 }
 
 export default App
