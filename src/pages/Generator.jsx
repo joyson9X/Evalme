@@ -179,7 +179,7 @@ const Generator = ({
                     type="button"
                     onClick={handleGenerate}
                     disabled={isGenerating || !role || !requirement || !planner}
-                    className={`magic-btn w-full border-none rounded-full h-[60px] sm:h-[68px] flex items-center justify-center gap-3 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed ${hasError ? 'animate-shake' : ''}`}
+                    className={`magic-btn w-full border-none rounded-full h-[60px] sm:h-[68px] flex items-center justify-center gap-3 ${hasError ? 'animate-shake' : ''} ${isGenerating ? 'is-generating cursor-wait' : (!role || !requirement || !planner ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer')}`}
                   >
                      {!isGenerating ? (
                         <>
@@ -191,11 +191,11 @@ const Generator = ({
                      ) : (
                         <>
                            <div className="flex items-center gap-1.5 pt-[2px]">
-                             <div className="w-2.5 h-2.5 bg-[var(--color-gray-400,#AAAAAA)] rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></div>
-                             <div className="w-2.5 h-2.5 bg-[var(--color-gray-400,#AAAAAA)] rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></div>
-                             <div className="w-2.5 h-2.5 bg-[var(--color-gray-400,#AAAAAA)] rounded-full animate-bounce" style={{ animationDelay: '300ms' }}></div>
+                             <div className="w-2.5 h-2.5 bg-white rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></div>
+                             <div className="w-2.5 h-2.5 bg-white rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></div>
+                             <div className="w-2.5 h-2.5 bg-white rounded-full animate-bounce" style={{ animationDelay: '300ms' }}></div>
                            </div>
-                           <span className="magic-text font-bold text-[17px] sm:text-[19px] tracking-wide ml-2 relative top-[1px]">Synthesizing...</span>
+                           <span className="magic-text font-bold text-[17px] sm:text-[19px] tracking-wide ml-2 relative top-[1px]">Generating...</span>
                         </>
                      )}
                   </button>
