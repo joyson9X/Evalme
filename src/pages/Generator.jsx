@@ -95,11 +95,11 @@ const Generator = ({
                
                {/* 1. Target Role (Underline Style) */}
                <div className="group">
-                  <label className="block text-[12px] font-extrabold text-gray-400 uppercase tracking-widest mb-3 transition-colors group-focus-within:text-gray-900">1. Target Role</label>
+                  <label className="block text-[12.5px] font-[800] text-gray-400 uppercase tracking-[0.15em] mb-4 transition-colors group-focus-within:text-[#111827]">Target Role</label>
                   <div className="relative">
                     <input
                       type="text"
-                      className="w-full bg-transparent border-0 border-b-2 border-gray-200 pb-3 text-2xl sm:text-[32px] font-bold text-gray-900 leading-tight transition-all outline-none placeholder:text-gray-200 placeholder:font-medium focus:border-[#111827] focus:ring-0"
+                      className="w-full bg-transparent border-0 border-b border-gray-200 pb-3 sm:pb-4 text-3xl sm:text-[40px] font-bold text-[#111827] leading-none transition-all outline-none placeholder:text-gray-200 focus:border-[#111827] focus:ring-0"
                       placeholder="e.g. Senior UX Designer"
                       value={role}
                       onChange={e => setRole(e.target.value)}
@@ -110,7 +110,7 @@ const Generator = ({
                {/* 2. Job Context (Minimal Box) */}
                <div className="group">
                  <div className="flex items-end justify-between mb-4">
-                    <label className="block text-[12px] font-extrabold text-gray-400 uppercase tracking-widest transition-colors group-focus-within:text-gray-900">2. JD Context</label>
+                    <label className="block text-[12.5px] font-[800] text-gray-400 uppercase tracking-[0.15em] transition-colors group-focus-within:text-[#111827]">Job Context</label>
                     
                     <div className="relative overflow-hidden cursor-pointer flex items-center gap-1.5 text-gray-500 hover:text-gray-900 bg-gray-50 hover:bg-gray-100 border border-gray-200 px-3.5 py-1.5 rounded-full transition-all text-[12px] font-bold">
                        <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13" /></svg>
@@ -154,7 +154,7 @@ const Generator = ({
 
                {/* 3. Duration Cards */}
                <div>
-                  <label className="block text-[12px] font-extrabold text-gray-400 uppercase tracking-widest mb-4">3. Timeline Limit</label>
+                  <label className="block text-[12.5px] font-[800] text-gray-400 uppercase tracking-[0.15em] mb-4">Timeline</label>
                   <div className="grid grid-cols-3 gap-3">
                      {['3 Days', '7 Days', '10 Days'].map(duration => {
                         const isActive = planner === duration;
