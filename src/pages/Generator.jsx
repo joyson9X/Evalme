@@ -17,175 +17,205 @@ const Generator = ({
   jobData
 }) => {
   return (
-    <div className="min-h-screen bg-[#FDFDFE] text-gray-900 font-sans selection:bg-[#EBFF00]/30 selection:text-gray-900 flex flex-col items-center justify-center p-4 sm:p-8 relative">
+    <div className="flex flex-col lg:flex-row min-h-[100dvh] w-full bg-white font-sans selection:bg-[#EBFF00]/30 overflow-x-hidden">
       
-      {/* Absolute Ambient Backgrounds */}
-      <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-gradient-to-br from-[#EBFF00]/5 to-transparent rounded-full blur-[100px] -z-10 pointer-events-none"></div>
-      <div className="absolute bottom-[-20%] left-[-10%] w-[500px] h-[500px] bg-gradient-to-tr from-gray-200/40 to-transparent rounded-full blur-[120px] -z-10 pointer-events-none"></div>
-
-      {/* Main Container */}
-      <div className="w-full max-w-[640px] relative z-10 flex flex-col gap-6 sm:gap-8 mx-auto mt-4 sm:mt-12 mb-12">
+      {/* Left Column - Branding (Immersive Dark) */}
+      <div className="lg:w-5/12 bg-[#0A0A0B] text-white p-8 lg:p-16 flex flex-col justify-between relative overflow-hidden shrink-0">
         
-        {/* Navigation / Header */}
-        <div className="flex items-center justify-between px-2">
-          <button
-            onClick={() => navigateTo('HOME')}
-             className="group flex items-center justify-center w-10 h-10 rounded-full bg-white border border-gray-200 text-gray-600 hover:text-gray-900 hover:border-gray-300 hover:shadow-sm transition-all active:scale-95"
-          >
-             <svg className="w-5 h-5 transition-transform group-hover:-translate-x-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" /></svg>
-          </button>
-          
-          <img src="/logo.svg" alt="Evalme" className="h-[24px] object-contain cursor-pointer opacity-90 hover:opacity-100 transition-opacity" onClick={() => navigateTo('HOME')} />
+        {/* Glow Effects */}
+        <div className="absolute top-[-10%] left-[-10%] w-[400px] h-[400px] bg-indigo-500/10 rounded-full blur-[100px] pointer-events-none"></div>
+        <div className="absolute bottom-[-10%] right-[-10%] w-[500px] h-[500px] bg-[#EBFF00]/10 rounded-full blur-[100px] pointer-events-none"></div>
+        
+        <div className="relative z-10 flex items-center justify-between lg:block">
+           {/* Logo acts as Home button */}
+           <div 
+             onClick={() => navigateTo('HOME')} 
+             className="text-2xl font-black tracking-tighter cursor-pointer flex items-baseline hover:opacity-80 transition-opacity lg:mb-20"
+           >
+             Evalme<span className="text-[#FFDE00]">.</span>
+           </div>
+           
+           {/* Mobile Back Button (only shows on mobile header) */}
+           <button 
+             onClick={() => navigateTo('HOME')}
+             className="lg:hidden text-gray-400 hover:text-white text-sm font-bold flex items-center gap-2 border-none bg-transparent"
+           >
+             <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" /></svg>
+           </button>
         </div>
 
-        {/* The Card */}
-        <div className="bg-white rounded-[2rem] sm:rounded-[2.5rem] p-6 sm:p-10 shadow-[0_2px_40px_-12px_rgba(0,0,0,0.08)] border border-gray-100 w-full relative overflow-hidden flex flex-col gap-8">
-           
-           {/* Subtle top highlight */}
-           <div className="absolute top-0 left-0 w-full h-[3px] bg-gradient-to-r from-transparent via-gray-200 to-transparent"></div>
+        <div className="relative z-10 mt-8 lg:mt-0 lg:flex-1 lg:flex lg:flex-col lg:justify-center lg:-translate-y-12">
+           <h1 className="text-4xl sm:text-5xl lg:text-[56px] font-black tracking-tighter leading-[1.05] text-white mb-6">
+             Architect your<br className="hidden lg:block"/> ultimate strategy.
+           </h1>
+           <p className="text-gray-400 text-lg max-w-sm leading-relaxed font-medium">
+             Feed us the role and the JD. Our engines will synthesize a hyper-personalized, day-by-day roadmap optimized for success.
+           </p>
+        </div>
 
-           {/* Title Section */}
-           <div className="text-center sm:text-left pt-2 pb-2">
-              <h1 className="text-3xl sm:text-[34px] font-black tracking-tight text-[#111827] mb-2 font-display leading-tight">
-                Architect your path.
-              </h1>
-              <p className="text-gray-500 text-[15px] max-w-[90%] mx-auto sm:mx-0 font-medium">
-                Give us the role and the JD. We'll generate a day-by-day roadmap optimized for success.
-              </p>
-           </div>
-
-           <form className="flex flex-col gap-7" onSubmit={e => e.preventDefault()}>
-             
-             {/* 1. The Role */}
-             <div className="group">
-               <label className="block text-[13px] font-bold text-gray-700 uppercase tracking-widest mb-2.5 ml-1">Target Role</label>
-               <input
-                 type="text"
-                 className="w-full bg-[#F4F5F7] border border-transparent rounded-[1rem] px-5 py-4 text-[16px] text-gray-900 font-medium transition-all outline-none placeholder:text-gray-400 focus:bg-white focus:border-[#111827] focus:ring-4 focus:ring-gray-900/5 hover:bg-gray-100/80 shadow-inner shadow-gray-200/20"
-                 placeholder="e.g. Senior Product Designer"
-                 value={role}
-                 onChange={e => setRole(e.target.value)}
-               />
-             </div>
-
-             {/* 2. The Context (JD) */}
-             <div>
-               <div className="flex items-center justify-between mb-2.5 ml-1">
-                 <label className="block text-[13px] font-bold text-gray-700 uppercase tracking-widest">Job Context</label>
-                 
-                 <div className="relative overflow-hidden cursor-pointer inline-flex items-center gap-1.5 text-gray-500 hover:text-gray-900 bg-white border border-gray-200 px-3 py-1.5 rounded-full transition-all text-[12px] font-bold shadow-sm hover:shadow active:scale-[0.98]">
-                   <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13" /></svg>
-                   Attach JD
-                   <input type="file" className="absolute top-0 left-0 w-full h-full opacity-0 cursor-pointer" accept=".pdf,.docx,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document" onChange={handleFileUpload} disabled={isParsing} />
-                 </div>
+        {/* Feature blocks (Desktop only) */}
+        <div className="relative z-10 hidden lg:flex flex-col gap-6 mt-12">
+            <div className="flex items-center gap-4">
+               <div className="w-12 h-12 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center backdrop-blur-sm">
+                 <svg className="w-6 h-6 text-[#EBFF00]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
                </div>
+               <div>
+                  <div className="font-bold text-white text-[15px]">AI Synthesis</div>
+                  <div className="text-gray-500 text-[13px] font-medium">Context-aware curriculum generation</div>
+               </div>
+            </div>
+            
+             <div className="flex items-center gap-4">
+               <div className="w-12 h-12 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center backdrop-blur-sm">
+                 <svg className="w-6 h-6 text-[#EBFF00]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+               </div>
+               <div>
+                  <div className="font-bold text-white text-[15px]">Interview Ready</div>
+                  <div className="text-gray-500 text-[13px] font-medium">Granular daily objectives</div>
+               </div>
+            </div>
+        </div>
+      </div>
+
+      {/* Right Column - The Interactive Form */}
+      <div className="lg:w-7/12 bg-white flex flex-col relative w-full translate-y-[-20px] rounded-t-3xl lg:translate-y-0 lg:rounded-none shadow-[0_-20px_40px_rgba(0,0,0,0.1)] lg:shadow-none">
+        
+        {/* Desktop Cancel Button */}
+        <button 
+           onClick={() => navigateTo('HOME')}
+           className="hidden lg:flex absolute top-10 right-10 text-gray-400 hover:text-gray-900 font-bold items-center gap-2 group transition-colors text-[14px] border-none bg-transparent cursor-pointer"
+        >
+           Cancel
+           <svg className="w-4 h-4 transition-transform group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
+        </button>
+
+        <div className="flex-1 max-w-2xl w-full mx-auto p-6 sm:p-10 lg:p-20 flex flex-col justify-center pt-10 lg:pt-20">
+            
+            <form className="flex flex-col gap-10 lg:gap-14" onSubmit={e => e.preventDefault()}>
                
-               <div className={`relative rounded-[1rem] bg-[#F4F5F7] border border-transparent transition-all shadow-inner shadow-gray-200/20 focus-within:bg-white focus-within:border-[#111827] focus-within:ring-4 focus-within:ring-gray-900/5 hover:bg-gray-100/80 ${hasError && !requirement ? 'ring-2 ring-red-500 bg-red-50' : ''}`}>
-                 <textarea
-                   className={`w-full bg-transparent border-none px-5 py-4 pb-12 text-[15px] leading-relaxed text-gray-900 font-medium transition-all outline-none placeholder:text-gray-400/80 resize-none min-h-[140px] custom-scrollbar ${isParsing ? 'opacity-40 blur-[1px] pointer-events-none' : ''}`}
-                   placeholder="Paste the requirements, tech stack, or full job description..."
-                   value={requirement}
-                   onChange={e => setRequirement(e.target.value)}
-                 />
-                 
-                 {/* State Indicators inside Textarea */}
-                 <div className="absolute bottom-3 right-3 flex items-center gap-2 pointer-events-none">
-                    {isParsing && (
-                       <div className="bg-[#111827] text-white text-[11px] font-bold uppercase tracking-widest px-3 py-1.5 rounded-md flex items-center gap-2 shadow-lg animate-fade-in pointer-events-auto">
-                         <div className="w-3 h-3 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
-                         Reading...
-                       </div>
-                    )}
-                    {requirement && !isParsing && (
-                       <div className="bg-emerald-50 text-emerald-700 border border-emerald-200/60 text-[11px] font-bold uppercase tracking-widest px-2.5 py-1.5 rounded-md flex items-center gap-1.5 animate-fade-in pointer-events-auto">
-                         <svg className="w-3.5 h-3.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="3"><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" /></svg>
-                       </div>
-                    )}
+               {/* 1. Target Role (Underline Style) */}
+               <div className="group">
+                  <label className="block text-[12px] font-extrabold text-gray-400 uppercase tracking-widest mb-3 transition-colors group-focus-within:text-gray-900">1. Target Role</label>
+                  <div className="relative">
+                    <input
+                      type="text"
+                      className="w-full bg-transparent border-0 border-b-2 border-gray-200 pb-3 text-2xl sm:text-[32px] font-bold text-gray-900 leading-tight transition-all outline-none placeholder:text-gray-200 placeholder:font-medium focus:border-[#111827] focus:ring-0"
+                      placeholder="e.g. Senior UX Designer"
+                      value={role}
+                      onChange={e => setRole(e.target.value)}
+                    />
+                  </div>
+               </div>
+
+               {/* 2. Job Context (Minimal Box) */}
+               <div className="group">
+                 <div className="flex items-end justify-between mb-4">
+                    <label className="block text-[12px] font-extrabold text-gray-400 uppercase tracking-widest transition-colors group-focus-within:text-gray-900">2. JD Context</label>
+                    
+                    <div className="relative overflow-hidden cursor-pointer flex items-center gap-1.5 text-gray-500 hover:text-gray-900 bg-gray-50 hover:bg-gray-100 border border-gray-200 px-3.5 py-1.5 rounded-full transition-all text-[12px] font-bold">
+                       <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13" /></svg>
+                       Attach Document
+                       <input type="file" className="absolute top-0 left-0 w-full h-full opacity-0 cursor-pointer" accept=".pdf,.docx,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document" onChange={handleFileUpload} disabled={isParsing} />
+                    </div>
                  </div>
-               </div>
-               
-               {parseError && (
-                 <div className="mt-2 text-red-600 text-[12px] font-bold flex items-center gap-1.5 px-1 animate-fade-in">
-                   <svg className="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>
-                   {parseError}
+
+                 <div className={`relative rounded-3xl bg-gray-50/50 border border-gray-200 transition-all focus-within:bg-white focus-within:border-[#111827] focus-within:shadow-[0_4px_20px_rgba(0,0,0,0.04)] ${hasError && !requirement ? 'border-red-400 bg-red-50/30' : ''}`}>
+                    <textarea
+                      className={`w-full bg-transparent border-none p-6 pb-16 text-[16px] leading-relaxed text-gray-900 font-medium transition-all outline-none placeholder:text-gray-300 resize-none min-h-[180px] custom-scrollbar focus:ring-0 ${isParsing ? 'opacity-30 blur-[2px] pointer-events-none' : ''}`}
+                      placeholder="Paste the full job description or requirements here..."
+                      value={requirement}
+                      onChange={e => setRequirement(e.target.value)}
+                    />
+
+                    {/* Integrated State Indicators */}
+                    <div className="absolute bottom-4 right-4 flex items-center gap-2 pointer-events-none">
+                       {isParsing && (
+                          <div className="bg-[#111827] text-white text-[11px] font-bold uppercase tracking-widest px-4 py-2 rounded-xl flex items-center gap-2.5 shadow-lg animate-fade-in pointer-events-auto">
+                             <div className="w-3.5 h-3.5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                             Reading...
+                          </div>
+                       )}
+                       {requirement && !isParsing && (
+                          <div className="bg-white text-emerald-600 border border-emerald-100 text-[11px] font-black uppercase tracking-widest px-3 py-1.5 rounded-[10px] flex items-center gap-1.5 shadow-sm animate-fade-in pointer-events-auto">
+                             <span className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse"></span>
+                             Logged
+                          </div>
+                       )}
+                    </div>
                  </div>
-               )}
-             </div>
 
-             {/* 3. Duration Selector (Refined segmented control) */}
-             <div>
-               <div className="flex items-center justify-between mb-2.5 ml-1">
-                  <label className="block text-[13px] font-bold text-gray-700 uppercase tracking-widest m-0">Timeline</label>
-               </div>
-               
-               <div className="flex bg-[#F4F5F7] p-1.5 rounded-[1rem] relative shadow-inner shadow-gray-200/20">
-                  {/* The sliding active pill */}
-                  <div 
-                    className="absolute bg-white top-[6px] bottom-[6px] rounded-[10px] shadow-[0_1px_8px_rgba(0,0,0,0.06)] border border-gray-100/50 transition-all duration-[400ms] ease-[cubic-bezier(0.16,1,0.3,1)]"
-                    style={{
-                      width: 'calc(33.33% - 8px)',
-                      left: planner === '3 Days' ? '6px' : planner === '7 Days' ? 'calc(33.33% + 4px)' : 'calc(66.66% + 2px)'
-                    }}
-                  ></div>
-                  
-                  {['3 Days', '7 Days', '10 Days'].map(duration => {
-                    const isActive = planner === duration;
-                    return (
-                      <button
-                        key={duration}
-                        type="button"
-                        onClick={() => setPlanner(duration)}
-                        className={`flex-1 flex items-center justify-center py-3 relative z-10 rounded-[10px] transition-colors duration-200 cursor-pointer border-none bg-transparent ${isActive ? 'text-[#111827]' : 'text-gray-500 hover:text-gray-900'}`}
-                      >
-                        <span className={`text-[14px] ${isActive ? 'font-black' : 'font-bold'}`}>{duration}</span>
-                      </button>
-                    );
-                  })}
-               </div>
-             </div>
-
-             {/* Final Action */}
-             <div className="mt-4 flex flex-col gap-3">
-                 <button
-                  type="button"
-                  onClick={handleGenerate}
-                  disabled={isGenerating || !role || !requirement || !planner}
-                  className={`relative overflow-hidden group w-full bg-[#111827] text-white font-extrabold border-none rounded-[1rem] h-[58px] flex items-center justify-center gap-2 cursor-pointer transition-all shadow-[0_4px_14px_rgba(17,24,39,0.2)] hover:shadow-[0_8px_24px_rgba(17,24,39,0.3)] hover:-translate-y-0.5 active:scale-[0.98] disabled:opacity-40 disabled:pointer-events-none disabled:transform-none disabled:shadow-none ${hasError ? 'animate-shake bg-red-600 shadow-red-600/30' : ''}`}
-                 >
-                  {/* Subtle shine effect on hover */}
-                  <div className="absolute inset-0 -translate-x-full group-hover:animate-[shimmer_1.5s_infinite] bg-gradient-to-r from-transparent via-white/10 to-transparent pointer-events-none"></div>
-
-                  {!isGenerating ? (
-                    <>
-                      <span className="text-[16px] tracking-wide">Generate Syllabus</span>
-                      <svg className="w-5 h-5 transition-transform group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" /></svg>
-                    </>
-                  ) : (
-                    <>
-                      <div className="flex items-center gap-1.5">
-                         <div className="w-1.5 h-1.5 bg-white rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></div>
-                         <div className="w-1.5 h-1.5 bg-white rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></div>
-                         <div className="w-1.5 h-1.5 bg-white rounded-full animate-bounce" style={{ animationDelay: '300ms' }}></div>
-                      </div>
-                      <span className="text-[16px] tracking-wide ml-2">Building your plan...</span>
-                    </>
-                  )}
-                 </button>
-
-                 {/* Recovery Link */}
-                 {!isGenerating && jobData && (
-                   <button
-                     type="button"
-                     onClick={() => navigateTo('PLAN')}
-                     className="w-full text-gray-500 font-bold py-3 text-[13px] transition-colors duration-200 hover:text-[#111827] bg-transparent border-none cursor-pointer flex items-center justify-center gap-1.5 underline underline-offset-4 decoration-gray-300 hover:decoration-[#111827]"
-                   >
-                     <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M11 15l-3-3m0 0l3-3m-3 3h8M3 12a9 9 0 1118 0 9 9 0 01-18 0z" /></svg>
-                     Resume previous plan session
-                   </button>
+                 {parseError && (
+                    <div className="mt-3 text-red-600 text-[13px] font-bold flex items-center gap-1.5 px-2 animate-fade-in">
+                       <svg className="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>
+                       {parseError}
+                    </div>
                  )}
-             </div>
+               </div>
 
-           </form>
+               {/* 3. Duration Cards */}
+               <div>
+                  <label className="block text-[12px] font-extrabold text-gray-400 uppercase tracking-widest mb-4">3. Timeline Limit</label>
+                  <div className="grid grid-cols-3 gap-3">
+                     {['3 Days', '7 Days', '10 Days'].map(duration => {
+                        const isActive = planner === duration;
+                        return (
+                           <button
+                             key={duration}
+                             type="button"
+                             onClick={() => setPlanner(duration)}
+                             className={`flex flex-col items-center justify-center p-4 rounded-[1.25rem] border-2 transition-all duration-200 cursor-pointer ${isActive ? 'bg-[#111827] border-[#111827] text-white shadow-[0_8px_20px_rgba(17,24,39,0.15)] -translate-y-1' : 'bg-white border-gray-100 text-gray-500 hover:border-gray-300 hover:bg-gray-50'}`}
+                           >
+                              <span className={`text-[16px] sm:text-[18px] ${isActive ? 'font-black' : 'font-bold'}`}>{duration.split(' ')[0]}</span>
+                              <span className={`text-[11px] uppercase tracking-wider mt-1 ${isActive ? 'font-bold opacity-80' : 'font-semibold opacity-60'}`}>{duration.split(' ')[1]}</span>
+                           </button>
+                        );
+                     })}
+                  </div>
+               </div>
+
+               {/* Giant Action Button */}
+               <div className="mt-4 pt-4">
+                  <button
+                    type="button"
+                    onClick={handleGenerate}
+                    disabled={isGenerating || !role || !requirement || !planner}
+                    className={`relative overflow-hidden group w-full bg-[#111827] text-white font-black border-none rounded-[1.25rem] h-[64px] sm:h-[72px] flex items-center justify-center gap-3 cursor-pointer transition-all shadow-[0_8px_24px_rgba(17,24,39,0.15)] hover:shadow-[0_12px_32px_rgba(17,24,39,0.25)] hover:-translate-y-0.5 active:scale-[0.98] disabled:opacity-40 disabled:pointer-events-none disabled:transform-none disabled:shadow-none ${hasError ? 'animate-shake bg-red-600 shadow-red-600/30' : ''}`}
+                  >
+                     <div className="absolute inset-0 -translate-x-full group-hover:animate-[shimmer_2s_infinite] bg-gradient-to-r from-transparent via-white/10 to-transparent pointer-events-none"></div>
+
+                     {!isGenerating ? (
+                        <>
+                           <span className="text-[18px] sm:text-[20px] tracking-wide">Generate Plan</span>
+                           <div className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center transition-transform group-hover:translate-x-1 group-hover:bg-white/20">
+                             <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M14 5l7 7m0 0l-7 7m-7-7H3" /></svg>
+                           </div>
+                        </>
+                     ) : (
+                        <>
+                           <div className="flex items-center gap-1.5">
+                             <div className="w-2 h-2 bg-white rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></div>
+                             <div className="w-2 h-2 bg-white rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></div>
+                             <div className="w-2 h-2 bg-white rounded-full animate-bounce" style={{ animationDelay: '300ms' }}></div>
+                           </div>
+                           <span className="text-[18px] sm:text-[20px] tracking-wide ml-3">Synthesizing...</span>
+                        </>
+                     )}
+                  </button>
+
+                  <div className="mt-6 text-center">
+                    {!isGenerating && jobData && (
+                       <button
+                         type="button"
+                         onClick={() => navigateTo('PLAN')}
+                         className="text-gray-400 hover:text-gray-900 font-bold text-[13px] underline underline-offset-4 decoration-gray-200 hover:decoration-gray-900 transition-colors cursor-pointer bg-transparent border-none"
+                       >
+                         Or continue to previous plan 
+                       </button>
+                    )}
+                  </div>
+               </div>
+
+            </form>
         </div>
       </div>
     </div>
