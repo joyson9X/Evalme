@@ -250,6 +250,41 @@ input[type="radio"]:checked ~ .radio-custom:after {
     justify-content: center;
   }
 }
+
+/* Magic Generate Button */
+.magic-btn {
+  background: #111827; /* Matched to Evalme dark theme instead of 1C1A1C for consistency with side panel */
+  transition: all 450ms ease-in-out;
+}
+
+.magic-sparkle {
+  fill: #AAAAAA;
+  transition: all 800ms ease;
+}
+
+.magic-text {
+  color: #AAAAAA;
+  transition: all 450ms ease-in-out;
+}
+
+.magic-btn:not(:disabled):hover {
+  background: linear-gradient(0deg, #A47CF3, #683FEA);
+  box-shadow: inset 0px 1px 0px 0px rgba(255, 255, 255, 0.4),
+  inset 0px -4px 0px 0px rgba(0, 0, 0, 0.2),
+  0px 0px 0px 4px rgba(255, 255, 255, 0.2),
+  0px 0px 80px 0px #9917FF;
+  transform: translateY(-2px);
+}
+
+.magic-btn:not(:disabled):hover .magic-text {
+  color: white;
+}
+
+.magic-btn:not(:disabled):hover .magic-sparkle {
+  fill: white;
+  transform: scale(1.2);
+}
+
 @theme {
   --animate-shimmer: shimmer 2s linear infinite;
   --animate-fade-in: fadeIn 0.4s ease-out forwards;

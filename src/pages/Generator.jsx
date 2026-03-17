@@ -179,25 +179,23 @@ const Generator = ({
                     type="button"
                     onClick={handleGenerate}
                     disabled={isGenerating || !role || !requirement || !planner}
-                    className={`relative overflow-hidden group w-full bg-[#111827] text-white font-[800] border-none rounded-full h-[60px] sm:h-[68px] flex items-center justify-center gap-3.5 cursor-pointer transition-all shadow-[0_8px_24px_rgba(17,24,39,0.15)] hover:shadow-[0_12px_32px_rgba(17,24,39,0.25)] hover:-translate-y-0.5 active:scale-[0.98] disabled:opacity-40 disabled:pointer-events-none disabled:transform-none disabled:shadow-none ${hasError ? 'animate-shake bg-red-600 shadow-red-600/30' : ''}`}
+                    className={`magic-btn w-full border-none rounded-full h-[60px] sm:h-[68px] flex items-center justify-center gap-3 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed ${hasError ? 'animate-shake' : ''}`}
                   >
-                     <div className="absolute inset-0 -translate-x-full group-hover:animate-[shimmer_2s_infinite] bg-gradient-to-r from-transparent via-white/10 to-transparent pointer-events-none"></div>
-
                      {!isGenerating ? (
                         <>
-                           <span className="text-[17px] sm:text-[19px] tracking-wide ml-2">Generate Plan</span>
-                           <div className="w-[34px] h-[34px] rounded-full bg-white/10 flex items-center justify-center transition-transform group-hover:translate-x-1 group-hover:bg-white/20">
-                             <svg className="w-[18px] h-[18px]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M14 5l7 7m0 0l-7 7m-7-7H3" /></svg>
-                           </div>
+                           <svg height={24} width={24} viewBox="0 0 24 24" data-name="Layer 1" id="Layer_1" className="magic-sparkle shrink-0">
+                             <path d="M10,21.236,6.755,14.745.264,11.5,6.755,8.255,10,1.764l3.245,6.491L19.736,11.5l-6.491,3.245ZM18,21l1.5,3L21,21l3-1.5L21,18l-1.5-3L18,18l-3,1.5ZM19.333,4.667,20.5,7l1.167-2.333L24,3.5,21.667,2.333,20.5,0,19.333,2.333,17,3.5Z" />
+                           </svg>
+                           <span className="magic-text font-bold text-[17px] sm:text-[19px] tracking-wide relative top-[1px]">Generate</span>
                         </>
                      ) : (
                         <>
-                           <div className="flex items-center gap-1.5">
-                             <div className="w-2 h-2 bg-white rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></div>
-                             <div className="w-2 h-2 bg-white rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></div>
-                             <div className="w-2 h-2 bg-white rounded-full animate-bounce" style={{ animationDelay: '300ms' }}></div>
+                           <div className="flex items-center gap-1.5 pt-[2px]">
+                             <div className="w-2.5 h-2.5 bg-[var(--color-gray-400,#AAAAAA)] rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></div>
+                             <div className="w-2.5 h-2.5 bg-[var(--color-gray-400,#AAAAAA)] rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></div>
+                             <div className="w-2.5 h-2.5 bg-[var(--color-gray-400,#AAAAAA)] rounded-full animate-bounce" style={{ animationDelay: '300ms' }}></div>
                            </div>
-                           <span className="text-[17px] sm:text-[19px] tracking-wide ml-3">Synthesizing...</span>
+                           <span className="magic-text font-bold text-[17px] sm:text-[19px] tracking-wide ml-2 relative top-[1px]">Synthesizing...</span>
                         </>
                      )}
                   </button>
