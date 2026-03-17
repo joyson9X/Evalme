@@ -1,10 +1,19 @@
-import React, { useMemo, useState } from 'react';
+import React, { useMemo, useState, useEffect } from 'react';
 
 const PlanDetails = ({ jobData, planData, navigateTo }) => {
-  // State for Accordion
-  const [expandedModules, setExpandedModules] = useState({});
+  const [activeModule, setActiveModule] = useState(0);
+  const [scrolled, setScrolled] = useState(false);
 
-  // Calculate total syllabus items across all modules (topics + quizzes)
+  // Track scroll for sticky header effects
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 50);
+    };
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  // Calculate total syllabus items across all modules
   const totalItems = useMemo(() => {
     return planData?.reduce((acc, module) => {
       const topicsCount = module.topics?.length || 0;
@@ -13,224 +22,264 @@ const PlanDetails = ({ jobData, planData, navigateTo }) => {
     }, 0) || 0;
   }, [planData]);
 
-  // Handle course navigation
   const handleStart = () => {
     navigateTo('COURSE_PLAYER');
   };
 
-  const toggleModule = (mIdx) => {
-    setExpandedModules(prev => ({
-      ...prev,
-      [mIdx]: !prev[mIdx]
-    }));
-  };
-
   return (
-    <div className="w-full min-h-[100dvh] bg-[#fafafa] relative font-sans text-gray-900 pb-24 selection:bg-[#EBFF00]/40 selection:text-[#111827]">
+    <div className="w-full min-h-[100dvh] bg-[#0A0A0A] font-sans text-white pb-32 selection:bg-[#EBFF00] selection:text-black">
       
-      {/* Dynamic Background Elements */}
-      <div className="absolute top-0 left-0 w-full h-[500px] bg-gradient-to-b from-gray-100/80 to-[#fafafa] pointer-events-none opacity-50 z-0 overflow-hidden">
-         <div className="absolute -top-[10%] -left-[10%] w-[50%] h-[50%] bg-[#EBFF00]/10 blur-[100px] rounded-full mix-blend-multiply"></div>
-         <div className="absolute top-[20%] right-[-10%] w-[40%] h-[40%] bg-blue-100/40 blur-[100px] rounded-full mix-blend-multiply"></div>
+      {/* Abstract Background Elements */}
+      <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden">
+        <div className="absolute top-[-20%] right-[-10%] w-[60%] h-[60%] bg-[#EBFF00]/5 blur-[120px] rounded-full"></div>
+        <div className="absolute bottom-[-10%] left-[-10%] w-[50%] h-[50%] bg-[#111827]/80 blur-[120px] rounded-full"></div>
       </div>
 
-      {/* Main Container */}
-      <div className="max-w-4xl mx-auto px-4 md:px-8 pt-6 md:pt-12 relative z-10 w-full">
+      {/* Sticky Top Nav */}
+      <div className={`fixed top-0 left-0 w-full z-50 transition-all duration-300 ${scrolled ? 'bg-[#0A0A0A]/80 backdrop-blur-md border-b border-white/10 py-4' : 'bg-transparent py-6'}`}>
+        <div className="max-w-[1200px] mx-auto px-6 flex justify-between items-center">
+          <button
+            onClick={() => navigateTo('GENERATOR')}
+            className="flex items-center gap-2 text-gray-400 hover:text-white font-bold text-xs uppercase tracking-widest transition-colors bg-transparent border-none cursor-pointer group"
+          >
+            <div className="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center group-hover:bg-white/10 transition-colors">
+              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" /></svg>
+            </div>
+            Planner
+          </button>
+
+          {scrolled && (
+            <button 
+              onClick={handleStart}
+              className="bg-[#EBFF00] text-black font-bold text-sm px-6 py-2.5 rounded-full hover:scale-105 transition-transform shadow-[0_0_20px_rgba(235,255,0,0.3)] duration-300"
+            >
+               Start Learning
+            </button>
+          )}
+        </div>
+      </div>
+
+      {/* Main Content Layout */}
+      <div className="max-w-[1200px] mx-auto px-6 pt-32 relative z-10">
         
-        {/* Top Navbar / Back Link */}
-        <button
-          onClick={() => navigateTo('GENERATOR')}
-          className="flex items-center gap-2 text-gray-500 hover:text-[#111827] font-bold text-xs uppercase tracking-[0.15em] transition-all bg-transparent border-none cursor-pointer mb-8 md:mb-12 group"
-        >
-          <div className="w-6 h-6 rounded-full bg-white border border-gray-200 flex items-center justify-center font-bold text-gray-400 group-hover:border-gray-900 group-hover:text-gray-900 transition-colors shadow-sm">
-             <svg className="w-3.5 h-3.5 transition-transform group-hover:-translate-x-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="3"><path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" /></svg>
+        {/* Header Section */}
+        <div className="mb-16">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/5 border border-white/10 text-gray-300 text-[10px] md:text-xs font-bold uppercase tracking-widest mb-6 backdrop-blur-sm">
+             <span className="w-2 h-2 rounded-full bg-[#EBFF00] animate-pulse"></span>
+             {jobData?.duration || '3 DAYS'} Intensive Track
           </div>
-          Back to Generator
-        </button>
+          
+          <h1 className="text-4xl md:text-6xl lg:text-7xl font-[900] text-white tracking-tighter mb-6 leading-none">
+             {jobData?.role || 'Analyst'} <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#EBFF00] to-green-400">Mastery</span>
+          </h1>
+          
+          <p className="text-lg md:text-2xl text-gray-400 max-w-2xl font-light leading-relaxed mb-10">
+             Your hyper-focused curriculum to conquer the {jobData?.role || 'Analyst'} interviews and requirements.
+          </p>
 
-        {/* Header Hero Section */}
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-8 mb-12 relative">
-           <div className="max-w-2xl relative z-10">
-              <div className="inline-flex items-center gap-2 bg-white border border-gray-200 shadow-sm text-[#111827] text-[10px] md:text-xs font-[900] uppercase tracking-widest px-3 py-1.5 rounded-md mb-5">
-                 <span className="w-2 h-2 rounded-full bg-[#EBFF00] animate-pulse"></span>
-                 {jobData?.duration || '3 DAYS'} INTENSIVE
+          <div className="flex flex-col sm:flex-row items-start sm:items-center gap-6">
+            <button 
+              onClick={handleStart}
+              className="group relative bg-white text-black font-[900] text-base md:text-lg px-8 py-4 md:py-5 rounded-2xl flex items-center gap-3 transition-all hover:scale-[1.02] shadow-[0_0_40px_rgba(255,255,0,0.15)] overflow-hidden w-full sm:w-auto justify-center cursor-pointer border-none"
+            >
+               <div className="absolute inset-0 bg-gradient-to-r from-transparent via-black/5 to-transparent -translate-x-[150%] group-hover:animate-[shine_1.5s_ease-out]"></div>
+               Initialize Training
+               <div className="w-8 h-8 rounded-full bg-black/10 flex items-center justify-center group-hover:bg-black/20 transition-colors">
+                 <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="3"><path strokeLinecap="round" strokeLinejoin="round" d="M14 5l7 7m0 0l-7 7m-7-7H3" /></svg>
+               </div>
+            </button>
+
+            {/* Progress Stats */}
+            <div className="flex items-center gap-4 bg-white/5 border border-white/10 rounded-2xl p-4 px-6 backdrop-blur-md w-full sm:w-auto">
+              <div className="text-3xl font-black text-[#EBFF00]">0%</div>
+              <div className="w-px h-10 bg-white/10"></div>
+              <div>
+                <div className="text-[10px] md:text-xs text-gray-500 font-bold uppercase tracking-wider mb-1">Items Completed</div>
+                <div className="text-white font-bold">0 <span className="text-gray-500 font-normal">/ {totalItems}</span></div>
               </div>
-              <h1 className="text-4xl md:text-6xl font-[900] text-[#111827] tracking-tight mb-4 leading-[1.05]">
-                 {jobData?.role || 'Analyst'}
-              </h1>
-              <p className="text-gray-500 font-medium text-lg md:text-xl leading-relaxed">
-                 Your customized pathway to master <span className="text-gray-900 font-bold">{jobData?.role || 'Analyst'}</span> in {jobData?.duration || '3 Days'}.
-              </p>
-           </div>
-           
-           <button 
-             onClick={handleStart}
-             className="relative overflow-hidden group bg-[#111827] text-white font-[800] text-base px-8 py-4 md:py-5 rounded-[1.25rem] flex items-center justify-center gap-3 transition-all shadow-xl hover:shadow-[0_20px_40px_rgba(17,24,39,0.25)] hover:-translate-y-1 border border-transparent cursor-pointer flex-shrink-0 w-full md:w-auto z-10"
-           >
-              {/* Shine effect */}
-              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-[150%] group-hover:animate-[shine_1.5s_ease-out]"></div>
-              
-              Start Preparation
-              <span className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center group-hover:bg-white/20 transition-colors">
-                 <svg className="w-4 h-4 transition-transform group-hover:translate-x-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="3"><path strokeLinecap="round" strokeLinejoin="round" d="M14 5l7 7m0 0l-7 7m-7-7H3" /></svg>
-              </span>
-           </button>
+            </div>
+          </div>
         </div>
 
-        {/* Global Progress Card - Glassmorphism style */}
-        <div className="w-full bg-white/80 backdrop-blur-xl rounded-[1.5rem] md:rounded-[2rem] border border-gray-100 p-6 md:p-8 flex items-center gap-6 shadow-[0_8px_30px_rgb(0,0,0,0.04)] mb-16 md:mb-20">
-           {/* Circular Progress Indicator (0%) */}
-           <div className="w-[70px] h-[70px] md:w-[80px] md:h-[80px] rounded-full bg-white border border-gray-100 flex items-center justify-center relative shrink-0 shadow-inner">
-              <svg className="w-[85%] h-[85%] -rotate-90 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2" viewBox="0 0 36 36">
-                 <path
-                   className="text-gray-100"
-                   d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
-                   fill="none"
-                   stroke="currentColor"
-                   strokeWidth="3.5"
-                 />
-                 <path
-                   className="text-[#EBFF00]"
-                   strokeDasharray="0, 100" // Change this based on actual progress
-                   d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
-                   fill="none"
-                   stroke="currentColor"
-                   strokeWidth="3.5"
-                   strokeLinecap="round"
-                 />
-              </svg>
-              <span className="font-extrabold text-[#111827] text-lg md:text-xl z-10 relative">0%</span>
-           </div>
+        {/* Two Column Layout for Curriculum */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 md:gap-12 items-start relative mt-10 md:mt-20">
+          
+          {/* Left Column: Module Navigation (Tabs on mobile, Sticky sidebar on desktop) */}
+          <div className="lg:col-span-4 lg:sticky lg:top-32 space-y-3">
+             <div className="text-xs font-bold text-gray-500 uppercase tracking-[0.2em] mb-6 px-2 hidden lg:block">Syllabus Overview</div>
+             
+             {/* Mobile Module Selector Row */}
+             <div className="flex lg:hidden overflow-x-auto gap-3 pb-4 mb-4 scrollbar-hide snap-x">
+                {planData?.map((module, mIdx) => (
+                  <button
+                    key={mIdx}
+                    onClick={() => setActiveModule(mIdx)}
+                    className={`shrink-0 snap-start whitespace-nowrap px-6 py-3 rounded-xl border font-bold text-sm transition-colors duration-300 ${
+                      activeModule === mIdx 
+                      ? 'bg-white/10 border-white/20 text-white' 
+                      : 'bg-transparent border-white/10 text-gray-400 hover:bg-white/5'
+                    }`}
+                  >
+                    Day {module.day}
+                  </button>
+                ))}
+             </div>
 
-           <div className="flex-1 max-w-[500px]">
-              <div className="flex flex-col md:flex-row md:items-end justify-between mb-3 gap-1">
-                 <span className="font-[800] text-[#111827] text-lg">Overall Progress</span>
-                 <span className="text-gray-400 font-bold text-sm bg-gray-50 px-2.5 py-1 rounded-md border border-gray-100 w-max">
-                   0 <span className="font-medium">of</span> {totalItems} <span className="font-medium">items</span>
-                 </span>
-              </div>
-              <div className="w-full h-3 bg-gray-100/80 rounded-full overflow-hidden border border-gray-200/50 shadow-inner">
-                 <div className="h-full bg-gradient-to-r from-[#111827] to-gray-700 rounded-full w-0 transition-all duration-700 ease-out relative">
-                    <div className="absolute top-0 right-0 bottom-0 w-8 bg-gradient-to-r from-transparent to-white/20"></div>
-                 </div>
-              </div>
-           </div>
-        </div>
-
-        {/* Linear Timeline & Module Cards */}
-        <div className="relative">
-           {/* Vertical Timeline Line */}
-           <div className="absolute left-[15px] md:left-[31px] top-8 bottom-0 w-0.5 bg-gradient-to-b from-gray-200 via-gray-200 to-transparent"></div>
-
-           <div className="space-y-8 md:space-y-12 mt-6">
-              {planData?.map((module, mIdx) => {
-                 const isFirst = mIdx === 0;
-                 const isExpanded = expandedModules[mIdx] !== false; // Default expanded
-
-                 const topicsCount = module.topics?.length || 0;
-                 const hasQuiz = Array.isArray(module.quiz) && module.quiz.length > 0;
-                 const moduleTotalItems = topicsCount + (hasQuiz ? 1 : 0);
-
-                 return (
-                    <div key={mIdx} className="relative pl-[44px] md:pl-[80px]">
-                       
-                       {/* Timeline Marker */}
-                       <div className={`absolute left-0 md:left-[16px] top-6 w-8 h-8 rounded-full border-[6px] border-[#fafafa] box-content bg-white z-10 flex items-center justify-center transition-all duration-300 ${isFirst ? 'shadow-[0_0_0_2px_#EBFF00]' : 'shadow-[0_0_0_1px_#e5e7eb]'} `}>
-                          <div className={`w-3 h-3 rounded-full ${isFirst ? 'bg-[#111827]' : 'bg-gray-200'}`}></div>
-                       </div>
-                       
-                       {/* Module Card */}
-                       <div className="bg-white rounded-[1.5rem] border border-gray-100 shadow-[0_4px_20px_rgba(0,0,0,0.03)] overflow-hidden transition-all duration-300 hover:shadow-[0_8px_30px_rgba(0,0,0,0.06)] group/card">
-                          
-                          {/* Module Header (Clickable for mobile Accordion) */}
-                          <div 
-                             onClick={() => toggleModule(mIdx)}
-                             className="p-6 md:p-8 flex flex-col md:flex-row md:items-start justify-between gap-4 cursor-pointer relative"
-                          >
-                             {/* Subtle hover gradient */}
-                             <div className="absolute top-0 left-0 w-2 h-full bg-gradient-to-b from-gray-50 to-white opacity-0 group-hover/card:opacity-100 transition-opacity"></div>
-                             
-                             <div className="pl-1">
-                                <div className="flex items-center gap-3 mb-2">
-                                  <div className={`text-[10px] md:text-xs font-[900] uppercase tracking-[0.15em] px-2 py-1 rounded ${isFirst ? 'bg-[#EBFF00]/20 text-yellow-800' : 'bg-gray-100 text-gray-500'}`}>
-                                     Day {module.day}
-                                  </div>
-                                </div>
-                                <h2 className="text-xl md:text-3xl font-[900] text-[#111827] leading-tight max-w-[500px]">
-                                   {module.title}
-                                </h2>
-                             </div>
-                             
-                             <div className="flex items-center gap-4 self-start">
-                                <div className="bg-gray-50 border border-gray-100 rounded-lg px-3 py-1.5 flex flex-col items-center min-w-[60px]">
-                                   <span className="text-xs text-gray-400 font-bold uppercase tracking-wider mb-0.5">Items</span>
-                                   <span className="text-[14px] font-[800] text-gray-700 leading-none">0/{moduleTotalItems}</span>
-                                </div>
-                                {/* Accordion toggle icon */}
-                                <div className={`w-8 h-8 rounded-full border border-gray-100 flex items-center justify-center text-gray-400 bg-gray-50/50 transition-transform duration-300 md:hidden ${isExpanded ? 'rotate-180' : 'rotate-0'}`}>
-                                   <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" /></svg>
-                                </div>
-                             </div>
-                          </div>
-
-                          {/* Syllabus List Container (Collapsible) */}
-                          <div className={`transition-all duration-300 ease-in-out border-t border-gray-50 ${isExpanded ? 'max-h-[3000px] opacity-100' : 'max-h-0 opacity-0 overflow-hidden'}`}>
-                             <div className="p-4 md:p-8 md:pt-6 bg-gray-50/30">
-                                
-                                <div className="flex flex-col gap-2 md:gap-3">
-                                   {module.topics?.map((topic, tIdx) => (
-                                      <div 
-                                        key={tIdx} 
-                                        onClick={handleStart}
-                                        className="flex items-center gap-4 p-4 md:p-5 bg-white border border-gray-100 rounded-xl hover:border-gray-200 hover:shadow-sm cursor-pointer group transition-all duration-200 hover:-translate-y-0.5"
-                                      >
-                                         <div className="w-[32px] h-[32px] rounded-full bg-[#fafafa] border border-gray-100 flex items-center justify-center shrink-0 group-hover:bg-gray-100 transition-colors">
-                                            <span className="text-xs font-bold text-gray-400 group-hover:text-gray-600">{tIdx + 1}</span>
-                                         </div>
-                                         <div className="flex-1 font-[700] text-gray-700 text-[15px] md:text-[17px] group-hover:text-[#111827] transition-colors pr-2">
-                                            {topic.name}
-                                         </div>
-                                         
-                                         {/* Action icon */}
-                                         <div className="w-8 h-8 rounded-full bg-gray-50 flex items-center justify-center text-gray-300 group-hover:bg-[#111827] group-hover:text-white transition-all opacity-0 group-hover:opacity-100 -translate-x-2 group-hover:translate-x-0 shrink-0 hidden md:flex">
-                                            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" /></svg>
-                                         </div>
-                                         {/* Mobile visible icon */}
-                                         <svg className="w-5 h-5 text-gray-300 group-hover:text-gray-500 transition-colors shrink-0 md:hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" /></svg>
-
-                                      </div>
-                                   ))}
-
-                                   {/* Quiz Item (if exists) */}
-                                   {hasQuiz && (
-                                     <div 
-                                      onClick={handleStart}
-                                      className="flex items-center gap-4 p-4 md:p-5 bg-[#111827] border border-[#111827] rounded-xl hover:bg-gray-900 cursor-pointer group transition-all duration-200 hover:-translate-y-0.5 mt-2"
-                                     >
-                                       <div className="w-[32px] h-[32px] rounded-full bg-white/10 flex items-center justify-center shrink-0">
-                                          <svg className="w-4 h-4 text-[#EBFF00]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-                                       </div>
-                                       <div className="flex-1 font-[700] text-white text-[15px] md:text-[17px] pr-2">
-                                          Module {module.day} Quiz
-                                       </div>
-                                       <div className="text-xs font-bold text-gray-400 bg-white/5 px-2 py-1 rounded">
-                                          {module.quiz.length} Questions
-                                       </div>
-                                     </div>
-                                   )}
-                                </div>
-                             </div>
-                          </div>
-                          
-                       </div>
+             {/* Desktop Module List */}
+             <div className="hidden lg:flex flex-col gap-3">
+               {planData?.map((module, mIdx) => (
+                  <button
+                    key={'lg-'+mIdx}
+                    onClick={() => setActiveModule(mIdx)}
+                    className={`w-full text-left p-5 rounded-2xl transition-all duration-300 border flex items-center justify-between group ${
+                      activeModule === mIdx 
+                      ? 'bg-white/10 border-white/20 shadow-[0_4px_20px_rgba(0,0,0,0.5)]' 
+                      : 'bg-transparent border-transparent hover:bg-white/5 text-gray-400'
+                    }`}
+                  >
+                    <div>
+                      <div className={`text-[10px] font-bold uppercase tracking-widest mb-1 transition-colors ${activeModule === mIdx ? 'text-[#EBFF00]' : 'text-gray-500'}`}>
+                        Day {module.day}
+                      </div>
+                      <div className={`font-bold text-lg transition-colors ${activeModule === mIdx ? 'text-white' : 'text-gray-300 group-hover:text-white'}`}>
+                        {module.title}
+                      </div>
                     </div>
-                 );
-              })}
+                    <div className={`w-8 h-8 rounded-full border flex items-center justify-center transition-all duration-300 ${
+                      activeModule === mIdx ? 'border-[#EBFF00]/30 bg-[#EBFF00]/10 text-[#EBFF00]' : 'border-white/10 bg-white/5 text-white/50 group-hover:bg-white/10 group-hover:text-white'
+                    }`}>
+                      <svg className={`w-4 h-4 transition-transform duration-300 ${activeModule === mIdx ? 'translate-x-0.5' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" /></svg>
+                    </div>
+                  </button>
+               ))}
+             </div>
+          </div>
 
-           </div>
+          {/* Right Column: Active Module Content */}
+          <div className="lg:col-span-8 min-h-[500px]">
+             {planData?.map((module, mIdx) => {
+                if (mIdx !== activeModule) return null;
+
+                const hasQuiz = Array.isArray(module.quiz) && module.quiz.length > 0;
+
+                return (
+                  <div key={'content-'+mIdx} className="animate-[fade-in-up_0.4s_ease-out]">
+                    
+                    {/* Active Module Header */}
+                    <div className="bg-gradient-to-br from-white/10 to-white/5 border border-white/10 rounded-[2rem] p-8 md:p-12 mb-6 md:mb-8 backdrop-blur-xl relative overflow-hidden group">
+                      {/* Decorative large day number */}
+                      <div className="absolute -right-8 -bottom-16 text-[150px] md:text-[200px] font-black text-white/5 leading-none select-none pointer-events-none group-hover:scale-105 transition-transform duration-700">
+                        {module.day}
+                      </div>
+
+                      <div className="relative z-10">
+                        <div className="inline-flex items-center gap-2 bg-[#EBFF00]/10 text-[#EBFF00] border border-[#EBFF00]/20 text-[10px] md:text-xs font-bold uppercase tracking-widest px-4 py-2 rounded-full mb-6">
+                           Day {module.day} Foundation
+                        </div>
+                        <h2 className="text-3xl md:text-5xl font-black text-white leading-[1.1] mb-6 max-w-xl">
+                          {module.title}
+                        </h2>
+                        <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 sm:gap-6">
+                           <div className="flex items-center gap-2 text-gray-400 font-medium text-sm md:text-base">
+                              <svg className="w-5 h-5 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6m0 0v6m0-6h6m-6 0H6" /></svg>
+                              {module.topics?.length} Essential Topics
+                           </div>
+                           {hasQuiz && (
+                             <div className="flex items-center gap-2 text-gray-400 font-medium text-sm md:text-base">
+                                <svg className="w-5 h-5 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                                {module.quiz.length} Question Checkpoint
+                             </div>
+                           )}
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Topics List as Sleek Cards */}
+                    <div className="space-y-4 md:space-y-5 relative">
+                       {/* Subtle connecting line background for desktop */}
+                       <div className="absolute left-[39px] top-10 bottom-10 w-px bg-white/5 hidden sm:block"></div>
+
+                       {module.topics?.map((topic, tIdx) => (
+                          <div 
+                            key={'t-'+tIdx}
+                            onClick={handleStart}
+                            className="group flex flex-col sm:flex-row gap-4 sm:gap-6 bg-white/[0.03] hover:bg-white/[0.08] border border-white/5 hover:border-white/20 rounded-2xl p-4 sm:p-6 sm:pr-8 transition-all duration-300 cursor-pointer relative z-10"
+                          >
+                             {/* Number Badge */}
+                             <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-xl bg-black/50 border border-white/10 flex items-center justify-center shrink-0 group-hover:bg-[#EBFF00] group-hover:border-[#EBFF00] transition-all duration-300 shadow-inner group-hover:shadow-[0_0_15px_rgba(235,255,0,0.3)]">
+                                <span className="font-black text-lg sm:text-xl text-gray-400 group-hover:text-black transition-colors">{tIdx + 1}</span>
+                             </div>
+
+                             <div className="flex-1 flex flex-col justify-center">
+                                <h3 className="text-lg sm:text-xl font-bold text-gray-200 group-hover:text-white transition-colors mb-2 leading-snug">
+                                  {topic.name}
+                                </h3>
+                                <p className="text-gray-500 text-xs sm:text-sm line-clamp-2 md:pr-8 md:leading-relaxed">
+                                  {topic.readingMaterial ? topic.readingMaterial.substring(0, 150) + '...' : 'Dive deep into the core mechanics, practical applications, and industry best practices for this critical topic.'}
+                                </p>
+                             </div>
+
+                             {/* Desktop hover arrow */}
+                             <div className="hidden sm:flex items-center justify-center shrink-0 w-12 h-12 rounded-full bg-white/5 border border-white/10 group-hover:bg-white group-hover:text-black transition-all text-white/30 self-center">
+                               <svg className="w-5 h-5 group-hover:translate-x-0.5 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M14 5l7 7m0 0l-7 7m-7-7H3" /></svg>
+                             </div>
+                             
+                             {/* Mobile persistent arrow */}
+                             <div className="absolute top-4 right-4 sm:hidden text-white/20 group-hover:text-white/50 transition-colors">
+                                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" /></svg>
+                             </div>
+                          </div>
+                       ))}
+
+                       {/* Quiz Card */}
+                       {hasQuiz && (
+                         <div 
+                            onClick={handleStart}
+                            className="group flex flex-col sm:flex-row gap-4 sm:gap-6 bg-gradient-to-r from-[#EBFF00]/10 to-transparent border border-[#EBFF00]/30 hover:border-[#EBFF00]/60 rounded-2xl p-4 sm:p-6 transition-all duration-300 cursor-pointer relative z-10 mt-6 sm:mt-8"
+                          >
+                             <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-xl bg-[#EBFF00] flex items-center justify-center shrink-0 text-black shadow-[0_0_20px_rgba(235,255,0,0.3)] group-hover:shadow-[0_0_30px_rgba(235,255,0,0.5)] transition-shadow">
+                                <svg className="w-6 h-6 sm:w-7 sm:h-7" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                             </div>
+
+                             <div className="flex-1 flex flex-col justify-center">
+                                <div className="text-[#EBFF00] text-[10px] font-black uppercase tracking-widest mb-1 md:mb-2">Knowledge Verification</div>
+                                <h3 className="text-lg sm:text-xl font-bold text-white mb-1">
+                                  Day {module.day} Mastery Quiz
+                                </h3>
+                                <p className="text-gray-400 text-xs sm:text-sm">
+                                  Validate your understanding with {module.quiz.length} challenge questions.
+                                </p>
+                             </div>
+
+                             <div className="hidden sm:flex items-center justify-center shrink-0 bg-[#EBFF00] text-black w-12 h-12 rounded-full shadow-[0_4px_10px_rgba(0,0,0,0.3)] transition-transform group-hover:scale-110 self-center">
+                               <svg className="w-5 h-5 ml-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="3"><path strokeLinecap="round" strokeLinejoin="round" d="M5 12h14M12 5l7 7-7 7" /></svg>
+                             </div>
+                             
+                             <div className="absolute top-4 right-4 sm:hidden text-[#EBFF00]/50 group-hover:text-[#EBFF00] transition-colors">
+                                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" /></svg>
+                             </div>
+                          </div>
+                       )}
+
+                    </div>
+                  </div>
+                );
+             })}
+          </div>
+
         </div>
-
       </div>
+      
+      {/* Global simple keyframes injected via style tag for self-contained component */}
+      <style dangerouslySetInnerHTML={{__html: `
+        @keyframes fade-in-up {
+          0% { opacity: 0; transform: translateY(20px); }
+          100% { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fade-in-up {
+          animation: fade-in-up 0.5s ease-out forwards;
+        }
+      `}} />
     </div>
   );
 };
