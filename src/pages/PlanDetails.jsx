@@ -1,6 +1,6 @@
 import React, { useMemo, useState, useEffect } from 'react';
 
-const PlanDetails = ({ jobData, planData, navigateTo }) => {
+const PlanDetails = ({ jobData, planData, navigateTo, isPremium }) => {
   const [activeModule, setActiveModule] = useState(0);
   const [scrolled, setScrolled] = useState(false);
 
@@ -199,6 +199,15 @@ const PlanDetails = ({ jobData, planData, navigateTo }) => {
                        {/* Subtle connecting line background for desktop */}
                        <div className="absolute left-[39px] top-10 bottom-10 w-px bg-white/5 hidden sm:block"></div>
 
+                       {!isPremium && mIdx > 0 ? (
+                          <div className="p-8 text-center flex flex-col items-center justify-center bg-white/5 border border-white/10 rounded-2xl relative z-20">
+                             <svg className="w-12 h-12 text-[#EBFF00] mb-4 opacity-70" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
+                             <h4 className="text-white font-bold mb-2 text-xl">Locked Premium Module</h4>
+                             <p className="text-gray-400 text-sm mb-6 max-w-sm">Upgrade to Pro or Lifetime to get full access to the rest of this intensive curriculum.</p>
+                             <button onClick={() => navigateTo('PRICING')} className="bg-[#EBFF00] text-black border-none font-bold text-sm px-8 py-3 rounded-full cursor-pointer shadow-[0_0_15px_rgba(235,255,0,0.3)] hover:scale-105 transition-transform">Unlock Full Plan</button>
+                          </div>
+                       ) : (
+                       <>
                        {module.topics?.map((topic, tIdx) => (
                           <div 
                             key={'t-'+tIdx}
@@ -259,6 +268,8 @@ const PlanDetails = ({ jobData, planData, navigateTo }) => {
                                 <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" /></svg>
                              </div>
                           </div>
+                       )}
+                       </>
                        )}
 
                     </div>

@@ -420,6 +420,15 @@ function App() {
       return
     }
 
+    if (!isPremium && session?.user?.id) {
+       const hasGenerated = localStorage.getItem(`evalme_gen_${session.user.id}`);
+       if (hasGenerated) {
+         alert('You have reached the limit of 1 free course generation. Please upgrade to Pro or Lifetime for unlimited access.');
+         navigateTo('PRICING');
+         return;
+       }
+    }
+
     setIsGenerating(true)
 
     const prompt = `Generate a concise job overview for the role of "${role}".
@@ -571,6 +580,10 @@ You must return a valid JSON object matching this exact structure:
         parsedPlan = Array.isArray(fallbackParse) ? fallbackParse : (fallbackParse.plan || Object.values(fallbackParse)[0]);
       }
 
+      if (!isPremium && session?.user?.id) {
+        localStorage.setItem(`evalme_gen_${session.user.id}`, 'true');
+      }
+
       setPlanData(parsedPlan);
       setActiveModuleIndex(0);
       setActiveTopicIndex(0);
@@ -585,6 +598,15 @@ You must return a valid JSON object matching this exact structure:
   }
 
   const handleGeneratePlan = async () => {
+    if (!isPremium && session?.user?.id) {
+       const hasGenerated = localStorage.getItem(`evalme_gen_${session.user.id}`);
+       if (hasGenerated) {
+         alert('You have reached the limit of 1 free course generation. Please upgrade to Pro or Lifetime for unlimited access.');
+         navigateTo('PRICING');
+         return;
+       }
+    }
+
     setIsGeneratingPlan(true)
 
     // Convert text like "7 Days" to number 7
@@ -684,6 +706,10 @@ You must return a valid JSON object matching this exact structure:
         // If it's forced into an object by Groq response_format we extract the values.
         const fallbackParse = JSON.parse(rawContent);
         parsedPlan = Array.isArray(fallbackParse) ? fallbackParse : (fallbackParse.plan || Object.values(fallbackParse)[0]);
+      }
+
+      if (!isPremium && session?.user?.id) {
+        localStorage.setItem(`evalme_gen_${session.user.id}`, 'true');
       }
 
       setPlanData(parsedPlan);
@@ -846,6 +872,15 @@ You must return a valid JSON object matching this exact structure:
                     <div className="p-6 md:p-8">
                       <h4 className="text-xs font-black uppercase text-gray-400 mb-6 tracking-widest">Syllabus Items</h4>
                       <div className="flex flex-col gap-0 border border-gray-100 rounded-xl overflow-hidden bg-gray-50/30">
+                        {!isPremium && index > 0 ? (
+                           <div className="p-8 text-center flex flex-col items-center justify-center bg-gray-50">
+                             <svg className="w-10 h-10 text-gray-300 mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
+                             <h4 className="text-gray-900 font-bold mb-2">Locked in Free Plan</h4>
+                             <p className="text-gray-500 text-sm mb-4">Upgrade to access all modules and complete the curriculum.</p>
+                             <button onClick={() => navigateTo('PRICING')} className="bg-[var(--volt-yellow)] text-gray-900 border-none font-bold text-xs uppercase tracking-widest px-6 py-2 rounded-full cursor-pointer shadow-sm hover:scale-105 transition-transform">Unlock Course</button>
+                           </div>
+                        ) : (
+                        <>
                         {dayObj.topics?.map((topic, tIdx) => {
                           const isCompleted = completedTopics.has(`${index}-${tIdx}`);
                           return (
@@ -910,6 +945,8 @@ You must return a valid JSON object matching this exact structure:
                             </button>
                           )
                         })()}
+                        </>
+                        )}
                       </div>
                     </div>
                   </div>
@@ -957,6 +994,11 @@ You must return a valid JSON object matching this exact structure:
     }
     // Advance to next module if one exists
     else if (activeModuleIndex < planData.length - 1) {
+      if (!isPremium && activeModuleIndex + 1 > 0) {
+        alert("You have completed the free preview. Please upgrade to Pro to continue the curriculum.");
+        navigateTo('PRICING');
+        return;
+      }
       setActiveModuleIndex(activeModuleIndex + 1);
       setActiveTopicIndex(0); // Start at first topic of next module
     }
@@ -1103,6 +1145,14 @@ You must return a valid JSON object matching this exact structure:
 
                     {/* Topic Items */}
                     <div className="flex flex-col border-b border-gray-100 pb-2 bg-[#FAFBFC]">
+                      {!isPremium && mIdx > 0 ? (
+                        <div className="flex flex-col items-center justify-center py-6 px-4 text-center">
+                          <svg className="w-8 h-8 text-gray-300 mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
+                          <span className="text-gray-500 text-xs font-bold mb-3">Locked in Free Plan</span>
+                          <button onClick={() => navigateTo('PRICING')} className="bg-[var(--volt-yellow)] text-gray-900 border-none font-bold text-[11px] px-4 py-1.5 rounded-full cursor-pointer shadow-sm">Upgrade to Unlock</button>
+                        </div>
+                      ) : (
+                      <>
                       {mod.topics?.map((topic, tIdx) => {
                         const isActive = mIdx === activeModuleIndex && tIdx === activeTopicIndex;
                         const isCompleted = completedTopics.has(`${mIdx}-${tIdx}`);
@@ -1184,6 +1234,8 @@ You must return a valid JSON object matching this exact structure:
                           </button>
                         );
                       })()}
+                      </>
+                      )}
                     </div>
                   </div>
                 );
@@ -1506,6 +1558,7 @@ You must return a valid JSON object matching this exact structure:
         jobData={jobData}
         planData={planData}
         navigateTo={navigateTo}
+        isPremium={isPremium}
       />
     );
   }
@@ -1575,6 +1628,17 @@ You must return a valid JSON object matching this exact structure:
 
   // CODING COURSES HUB
   if (viewState === 'CODING_COURSES') {
+    if (!isPremium) {
+       return (
+         <div className="w-full flex-col min-h-[100dvh] flex items-center justify-center p-6 text-center bg-gray-50">
+           <svg className="w-16 h-16 text-gray-400 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
+           <h2 className="text-2xl font-bold mb-2 text-gray-900">Coding Academy Locked</h2>
+           <p className="text-gray-500 mb-6 max-w-sm">Upgrade to Pro or Lifetime to get full access to interactive coding challenges and SQL courses.</p>
+           <button onClick={() => navigateTo('PRICING')} className="bg-gray-900 border-none cursor-pointer text-white font-bold py-3 px-8 rounded-xl shadow-lg hover:-translate-y-1 transition-transform">View Plans</button>
+           <button onClick={() => navigateTo('HOME')} className="mt-6 text-gray-500 font-semibold cursor-pointer border-none bg-transparent hover:text-gray-800 transition-colors">Back to Home</button>
+         </div>
+       );
+    }
     return <CourseHub navigateTo={navigateTo} />;
   }
 
