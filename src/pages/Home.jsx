@@ -81,23 +81,22 @@ const Home = ({
 
         {/* ─── INTEGRATED GENERATOR ─── */}
       <div className="w-full max-w-3xl mx-auto px-6 pb-24 relative z-10">
-        <div className="bg-white/80 backdrop-blur-xl rounded-[2.5rem] p-6 sm:p-12 shadow-[0_20px_60px_rgba(0,0,0,0.04)] border border-white/60 relative overflow-hidden group/card shadow-[inset_0_1px_0_rgba(255,255,255,0.6)]">
-          {/* Subtle meshed glow backdrops */}
-          <div className="absolute -top-40 -right-40 w-96 h-96 bg-gradient-to-br from-[#EBFF00]/20 to-transparent rounded-full blur-[80px] pointer-events-none opacity-50 group-hover/card:opacity-100 transition-opacity duration-1000"></div>
-          <div className="absolute -bottom-40 -left-40 w-96 h-96 bg-gradient-to-tr from-gray-200/50 to-transparent rounded-full blur-[80px] pointer-events-none opacity-50 group-hover/card:opacity-100 transition-opacity duration-1000"></div>
+        <div className="bg-[#0B0F19] rounded-[2.5rem] p-6 sm:p-12 shadow-[0_30px_60px_rgba(11,15,25,0.25)] border border-white/10 relative overflow-hidden group/card shadow-[inset_0_1px_0_rgba(255,255,255,0.05)]">
+          {/* Subtle meshed glow backdrops inside dark card */}
+          <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-gradient-to-bl from-[#EBFF00]/10 to-transparent rounded-full blur-[100px] pointer-events-none opacity-60"></div>
 
           <form className="flex flex-col gap-8 sm:gap-10 relative z-10" onSubmit={e => e.preventDefault()}>
             
             {/* 1. Target Role */}
             <div className="group/input relative flex flex-col">
-              <label className="flex items-center gap-2 text-[11px] font-[800] text-gray-400 uppercase tracking-[0.15em] mb-4 transition-colors group-focus-within/input:text-gray-900">
-                <svg className="w-4 h-4 text-gray-300 group-focus-within/input:text-[#EBFF00] transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg>
+              <label className="flex items-center gap-2 text-[11px] font-[800] text-gray-500 uppercase tracking-[0.15em] mb-4 transition-colors group-focus-within/input:text-[#EBFF00]">
+                <svg className="w-4 h-4 text-gray-600 group-focus-within/input:text-[#EBFF00] transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg>
                 Target Role
               </label>
               <div className="relative">
                 <input
                   type="text"
-                  className="w-full bg-transparent border-0 border-b-2 border-gray-100 pb-3 text-3xl sm:text-[40px] font-bold text-gray-900 leading-none transition-all outline-none placeholder:text-gray-200 focus:border-gray-900 focus:ring-0"
+                  className="w-full bg-transparent border-0 border-b-2 border-gray-800 pb-3 text-3xl sm:text-[40px] font-bold text-white leading-none transition-all outline-none placeholder:text-gray-700 focus:border-[#EBFF00] focus:ring-0"
                   placeholder="e.g. Senior Data Analyst"
                   value={role}
                   onChange={e => setRole(e.target.value)}
@@ -108,21 +107,21 @@ const Home = ({
             {/* 2. Job Context */}
             <div className="group/textarea flex flex-col pt-2">
               <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-4 gap-4">
-                <label className="flex items-center gap-2 text-[11px] font-[800] text-gray-400 uppercase tracking-[0.15em] transition-colors group-focus-within/textarea:text-gray-900">
-                  <svg className="w-4 h-4 text-gray-300 group-focus-within/textarea:text-gray-900 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
+                <label className="flex items-center gap-2 text-[11px] font-[800] text-gray-500 uppercase tracking-[0.15em] transition-colors group-focus-within/textarea:text-[#EBFF00]">
+                  <svg className="w-4 h-4 text-gray-600 group-focus-within/textarea:text-[#EBFF00] transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
                   Job Requirements
                 </label>
                 
-                <div className="relative overflow-hidden cursor-pointer flex items-center gap-2 text-gray-500 hover:text-gray-900 bg-gray-50 hover:bg-gray-100 border border-gray-200/80 px-4 py-2 rounded-xl transition-all text-xs font-bold shadow-sm whitespace-nowrap">
+                <div className="relative overflow-hidden cursor-pointer flex items-center gap-2 text-gray-300 hover:text-black bg-white/5 hover:bg-[#EBFF00] border border-white/10 px-4 py-2 rounded-xl transition-all text-xs font-bold shadow-sm whitespace-nowrap">
                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" /></svg>
                    Upload PDF / DOCX
                    <input type="file" className="absolute top-0 left-0 w-full h-full opacity-0 cursor-pointer" accept=".pdf,.docx,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document" onChange={handleFileUpload} disabled={isParsing} />
                 </div>
               </div>
 
-              <div className={`relative rounded-2xl bg-gray-50/50 border-2 transition-all focus-within:bg-white focus-within:border-gray-900 focus-within:shadow-[0_0_0_4px_rgba(17,24,39,0.05)] ${hasError && !requirement ? 'border-red-300 bg-red-50/30' : 'border-gray-100 hover:border-gray-200'}`}>
+              <div className={`relative rounded-2xl bg-white/[0.03] border-2 transition-all focus-within:bg-black/20 focus-within:border-[#EBFF00] focus-within:shadow-[0_0_20px_rgba(235,255,0,0.1)] ${hasError && !requirement ? 'border-red-500/50 bg-red-900/10' : 'border-gray-800 hover:border-gray-700'}`}>
                 <textarea
-                  className={`w-full bg-transparent border-none p-5 sm:p-6 text-sm sm:text-base leading-relaxed text-gray-800 font-medium transition-all outline-none placeholder:text-gray-300 resize-none min-h-[150px] custom-scrollbar focus:ring-0 ${isParsing ? 'opacity-30 blur-[2px] pointer-events-none' : ''}`}
+                  className={`w-full bg-transparent border-none p-5 sm:p-6 text-sm sm:text-base leading-relaxed text-gray-200 font-medium transition-all outline-none placeholder:text-gray-700 resize-none min-h-[150px] custom-scrollbar focus:ring-0 ${isParsing ? 'opacity-30 blur-[2px] pointer-events-none' : ''}`}
                   placeholder="Paste the full job description or core skills you need to master..."
                   value={requirement}
                   onChange={e => setRequirement(e.target.value)}
@@ -131,13 +130,13 @@ const Home = ({
                 {/* Overlays inside textarea */}
                 <div className="absolute bottom-4 right-4 flex items-center gap-2 pointer-events-none">
                    {isParsing && (
-                      <div className="bg-gray-900 text-white text-[10px] sm:text-xs font-bold uppercase tracking-widest px-4 py-2.5 rounded-xl flex items-center gap-2.5 shadow-xl animate-fade-in pointer-events-auto">
-                         <div className="w-3.5 h-3.5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                      <div className="bg-[#EBFF00] text-black text-[10px] sm:text-xs font-bold uppercase tracking-widest px-4 py-2.5 rounded-xl flex items-center gap-2.5 shadow-[0_0_20px_rgba(235,255,0,0.3)] animate-fade-in pointer-events-auto">
+                         <div className="w-3.5 h-3.5 border-2 border-black/20 border-t-black rounded-full animate-spin"></div>
                          Extracting...
                       </div>
                    )}
                    {requirement && !isParsing && (
-                      <div className="bg-white text-gray-800 border-2 border-gray-100 text-[10px] sm:text-xs font-black uppercase tracking-widest px-4 py-2 rounded-xl flex items-center gap-2 shadow-sm animate-fade-in pointer-events-auto">
+                      <div className="bg-white/10 backdrop-blur-md text-white border border-white/20 text-[10px] sm:text-xs font-black uppercase tracking-widest px-4 py-2 rounded-xl flex items-center gap-2 shadow-sm animate-fade-in pointer-events-auto">
                          <span className="w-2 h-2 bg-[#EBFF00] rounded-full shadow-[0_0_8px_rgba(235,255,0,0.8)] animate-pulse"></span>
                          Context Loaded
                       </div>
@@ -146,31 +145,31 @@ const Home = ({
               </div>
 
               {parseError && (
-                 <div className="mt-3 text-red-500 text-[13px] font-bold flex items-center gap-1.5 px-2">
+                 <div className="mt-3 text-red-400 text-[13px] font-bold flex items-center gap-1.5 px-2">
                     <svg className="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>
                     {parseError}
                  </div>
               )}
             </div>
 
-            <div className="w-full h-px bg-gradient-to-r from-transparent via-gray-100 to-transparent my-1"></div>
+            <div className="w-full h-px bg-gradient-to-r from-transparent via-gray-800 to-transparent my-1"></div>
 
             {/* 3. Timeline Segmented Control (Fluid) */}
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
-               <div className="shrink-0 flex items-center gap-2">
-                 <div className="w-10 h-10 rounded-full bg-gray-50 flex items-center justify-center border border-gray-100">
+               <div className="shrink-0 flex items-center gap-3">
+                 <div className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center border border-white/10">
                     <svg className="w-5 h-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
                  </div>
                  <div>
-                   <label className="block text-[11px] font-[800] text-gray-400 uppercase tracking-widest mb-0.5">Timeline</label>
-                   <p className="text-sm font-bold text-gray-900 m-0">Prep Duration</p>
+                   <label className="block text-[11px] font-[800] text-gray-500 uppercase tracking-widest mb-0.5">Timeline</label>
+                   <p className="text-sm font-bold text-white m-0">Prep Duration</p>
                  </div>
                </div>
 
-               <div className="w-full sm:w-auto relative flex bg-gray-50/80 p-1.5 rounded-2xl border border-gray-100 shadow-inner">
+               <div className="w-full sm:w-auto relative flex bg-black/40 p-1.5 rounded-2xl border border-white/5 shadow-inner">
                   {/* Sliding pill background */}
                   <div 
-                    className="absolute top-1.5 bottom-1.5 w-[calc(33.33%-4px)] bg-white rounded-xl shadow-[0_2px_10px_rgba(0,0,0,0.06)] border border-gray-200/60 transition-transform duration-300 ease-out z-0"
+                    className="absolute top-1.5 bottom-1.5 w-[calc(33.33%-4px)] bg-white/10 rounded-xl shadow-[inset_0_1px_0_rgba(255,255,255,0.1)] border border-white/10 transition-transform duration-300 ease-out z-0"
                     style={{
                       transform: `translateX(${(() => {
                         const idx = ['3 Days', '7 Days', '10 Days'].indexOf(planner);
@@ -187,7 +186,7 @@ const Home = ({
                           key={duration}
                           type="button"
                           onClick={() => setPlanner(duration)}
-                          className={`flex-1 sm:w-28 py-2.5 sm:py-3 px-4 rounded-xl text-sm font-black transition-colors duration-300 whitespace-nowrap relative z-10 border-none bg-transparent cursor-pointer ${isActive ? 'text-gray-900' : 'text-gray-400 hover:text-gray-600'}`}
+                          className={`flex-1 sm:w-28 py-2.5 sm:py-3 px-4 rounded-xl text-sm font-black transition-colors duration-300 whitespace-nowrap relative z-10 border-none bg-transparent cursor-pointer outline-none ${isActive ? 'text-white' : 'text-gray-500 hover:text-gray-300'}`}
                         >
                            {duration}
                         </button>
@@ -202,18 +201,18 @@ const Home = ({
                  type="button"
                  onClick={handleGenerate}
                  disabled={isGenerating || !role || !requirement || !planner}
-                 className={`relative w-full overflow-hidden rounded-[1.25rem] h-[64px] sm:h-[72px] flex items-center justify-center gap-3 transition-all duration-500 group border-none ${hasError ? 'animate-shake' : ''} ${isGenerating ? 'bg-gray-100 text-gray-400 cursor-wait' : (!role || !requirement || !planner ? 'bg-gray-50 shadow-inner border border-gray-100 text-gray-400 cursor-not-allowed' : 'bg-[#111827] text-white cursor-pointer shadow-[0_8px_30px_rgba(17,24,39,0.2)] hover:shadow-[0_15px_40px_rgba(17,24,39,0.3)] hover:-translate-y-1')}`}
+                 className={`relative w-full overflow-hidden rounded-[1.25rem] h-[64px] sm:h-[72px] flex items-center justify-center gap-3 transition-all duration-300 group border-none ${hasError ? 'animate-shake' : ''} ${isGenerating ? 'bg-black text-gray-500 cursor-wait' : (!role || !requirement || !planner ? 'bg-white/5 text-gray-600 cursor-not-allowed border border-white/5' : 'bg-[#EBFF00] text-black cursor-pointer shadow-[0_0_40px_rgba(235,255,0,0.2)] hover:shadow-[0_0_60px_rgba(235,255,0,0.4)] hover:-translate-y-1 hover:bg-[#dfff00]')}`}
                >
                   {!isGenerating ? (
                      <>
-                        <div className={`absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent -translate-x-full transition-all duration-1000 ${(!role || !requirement || !planner) ? '' : 'group-hover:animate-[shine_1.5s_ease-out]'}`}></div>
-                        <svg className={`w-5 h-5 sm:w-6 sm:h-6 shrink-0 transition-transform duration-300 ${(!role || !requirement || !planner) ? 'opacity-40' : 'text-[#EBFF00] group-hover:rotate-12 group-hover:scale-110'}`} fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.573l7-10a1 1 0 011.12-.38z" clipRule="evenodd" /></svg>
+                        <div className={`absolute inset-0 bg-gradient-to-r from-transparent via-white/40 to-transparent -translate-x-full transition-all duration-1000 ${(!role || !requirement || !planner) ? '' : 'group-hover:animate-[shine_1.5s_ease-out]'}`}></div>
+                        <svg className={`w-5 h-5 sm:w-6 sm:h-6 shrink-0 transition-transform duration-300 ${(!role || !requirement || !planner) ? 'opacity-40' : 'group-hover:rotate-12 group-hover:scale-110'}`} fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.573l7-10a1 1 0 011.12-.38z" clipRule="evenodd" /></svg>
                         <span className="font-[800] text-[17px] sm:text-[19px] tracking-wide relative z-10 transition-colors">Start Building Plan</span>
                      </>
                   ) : (
                      <div className="flex items-center gap-3 z-10">
-                        <div className="w-4 h-4 border-[2.5px] border-gray-300 border-t-gray-600 rounded-full animate-spin"></div>
-                        <span className="font-[800] text-[17px] sm:text-[19px] tracking-wide text-gray-600">Initializing...</span>
+                        <div className="w-4 h-4 border-[2.5px] border-gray-600 border-t-white rounded-full animate-spin"></div>
+                        <span className="font-[800] text-[17px] sm:text-[19px] tracking-wide text-gray-300">Initializing...</span>
                      </div>
                   )}
                </button>
