@@ -155,7 +155,7 @@ const Home = ({
 
             <div className="w-full h-px bg-gradient-to-r from-transparent via-gray-100 to-transparent my-1"></div>
 
-            {/* 3. Timeline Segmented Control */}
+            {/* 3. Timeline Segmented Control (Fluid) */}
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
                <div className="shrink-0 flex items-center gap-2">
                  <div className="w-10 h-10 rounded-full bg-gray-50 flex items-center justify-center border border-gray-100">
@@ -167,15 +167,27 @@ const Home = ({
                  </div>
                </div>
 
-               <div className="w-full sm:w-auto flex bg-gray-50/80 p-1.5 rounded-2xl border border-gray-100 shadow-inner overflow-x-auto sm:overflow-visible custom-scrollbar">
-                  {['3 Days', '7 Days', '10 Days'].map(duration => {
+               <div className="w-full sm:w-auto relative flex bg-gray-50/80 p-1.5 rounded-2xl border border-gray-100 shadow-inner">
+                  {/* Sliding pill background */}
+                  <div 
+                    className="absolute top-1.5 bottom-1.5 w-[calc(33.33%-4px)] bg-white rounded-xl shadow-[0_2px_10px_rgba(0,0,0,0.06)] border border-gray-200/60 transition-transform duration-300 ease-out z-0"
+                    style={{
+                      transform: `translateX(${(() => {
+                        const idx = ['3 Days', '7 Days', '10 Days'].indexOf(planner);
+                        return idx === 1 ? '100%' : idx === 2 ? '200%' : '0%';
+                      })()})`,
+                      marginLeft: ['3 Days', '7 Days', '10 Days'].indexOf(planner) === 1 ? '4px' : ['3 Days', '7 Days', '10 Days'].indexOf(planner) === 2 ? '8px' : '0'
+                    }}
+                  ></div>
+
+                  {['3 Days', '7 Days', '10 Days'].map((duration) => {
                      const isActive = planner === duration;
                      return (
                         <button
                           key={duration}
                           type="button"
                           onClick={() => setPlanner(duration)}
-                          className={`flex-1 sm:w-28 py-2.5 sm:py-3 px-4 rounded-xl text-sm font-black transition-all duration-300 whitespace-nowrap ${isActive ? 'bg-white shadow-[0_2px_10px_rgba(0,0,0,0.06)] border border-gray-200/60 text-gray-900 scale-[1.02]' : 'bg-transparent text-gray-400 hover:text-gray-600 hover:bg-black/[0.02] border border-transparent'}`}
+                          className={`flex-1 sm:w-28 py-2.5 sm:py-3 px-4 rounded-xl text-sm font-black transition-colors duration-300 whitespace-nowrap relative z-10 border-none bg-transparent cursor-pointer ${isActive ? 'text-gray-900' : 'text-gray-400 hover:text-gray-600'}`}
                         >
                            {duration}
                         </button>
