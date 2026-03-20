@@ -1,7 +1,18 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 const Pricing = ({ PLANS, handlePayment, navigateTo, couponCode, setCouponCode, couponError, setCouponError, handleCoupon }) => {
   const [currency, setCurrency] = useState('INR');
+
+  useEffect(() => {
+    fetch('https://ipapi.co/json/')
+      .then(res => res.json())
+      .then(data => {
+        if (data && data.country_code) {
+          setCurrency(data.country_code === 'IN' ? 'INR' : 'USD');
+        }
+      })
+      .catch(err => console.error('Error fetching location:', err));
+  }, []);
 
   return (
     <div className="w-full relative bg-[#F9FAFB] min-h-[100dvh] pt-12 pb-24 px-4 font-sans overflow-hidden">
