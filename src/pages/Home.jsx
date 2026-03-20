@@ -85,18 +85,20 @@ const Home = ({
           {/* Subtle meshed glow backdrops inside dark card */}
           <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-gradient-to-bl from-[#EBFF00]/10 to-transparent rounded-full blur-[100px] pointer-events-none opacity-60"></div>
 
-          <form className="flex flex-col gap-8 sm:gap-10 relative z-10" onSubmit={e => e.preventDefault()}>
+          <form className="flex flex-col gap-8 relative z-10" onSubmit={e => e.preventDefault()}>
             
             {/* 1. Target Role */}
-            <div className="group/input relative flex flex-col">
-              <label className="flex items-center gap-2 text-[11px] font-[800] text-gray-500 uppercase tracking-[0.15em] mb-4 transition-colors group-focus-within/input:text-[#EBFF00]">
-                <svg className="w-4 h-4 text-gray-600 group-focus-within/input:text-[#EBFF00] transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg>
-                Target Role
-              </label>
-              <div className="relative">
+            <div className="group/input flex flex-col">
+              <div className="flex items-center justify-between mb-3">
+                <label className="flex items-center gap-2 text-[11px] font-[800] text-gray-500 uppercase tracking-[0.15em] transition-colors group-focus-within/input:text-[#EBFF00]">
+                  <svg className="w-4 h-4 text-gray-600 group-focus-within/input:text-[#EBFF00] transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg>
+                  Target Role
+                </label>
+              </div>
+              <div className="relative rounded-2xl bg-white/[0.03] border border-white/10 transition-all focus-within:bg-black/20 focus-within:border-[#EBFF00] focus-within:shadow-[0_0_20px_rgba(235,255,0,0.1)] hover:border-gray-700">
                 <input
                   type="text"
-                  className="w-full bg-transparent border-0 border-b-2 border-gray-800 pb-3 text-3xl sm:text-[40px] font-bold text-white leading-none transition-all outline-none placeholder:text-gray-700 focus:border-[#EBFF00] focus:ring-0"
+                  className="w-full bg-transparent border-none px-6 py-5 text-xl sm:text-2xl font-bold text-white transition-all outline-none placeholder:text-gray-700 focus:ring-0"
                   placeholder="e.g. Senior Data Analyst"
                   value={role}
                   onChange={e => setRole(e.target.value)}
@@ -105,23 +107,23 @@ const Home = ({
             </div>
 
             {/* 2. Job Context */}
-            <div className="group/textarea flex flex-col pt-2">
-              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-4 gap-4">
+            <div className="group/textarea flex flex-col">
+              <div className="flex flex-row items-center justify-between mb-3 gap-4">
                 <label className="flex items-center gap-2 text-[11px] font-[800] text-gray-500 uppercase tracking-[0.15em] transition-colors group-focus-within/textarea:text-[#EBFF00]">
                   <svg className="w-4 h-4 text-gray-600 group-focus-within/textarea:text-[#EBFF00] transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
                   Job Requirements
                 </label>
                 
-                <div className="relative overflow-hidden cursor-pointer flex items-center gap-2 text-gray-300 hover:text-black bg-white/5 hover:bg-[#EBFF00] border border-white/10 px-4 py-2 rounded-xl transition-all text-xs font-bold shadow-sm whitespace-nowrap">
-                   <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" /></svg>
+                <div className="relative overflow-hidden cursor-pointer flex items-center gap-1.5 text-gray-300 hover:text-black bg-white/5 hover:bg-[#EBFF00] border border-white/10 px-3 py-1.5 rounded-lg transition-all text-[11px] font-bold shadow-sm whitespace-nowrap">
+                   <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" /></svg>
                    Upload PDF / DOCX
                    <input type="file" className="absolute top-0 left-0 w-full h-full opacity-0 cursor-pointer" accept=".pdf,.docx,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document" onChange={handleFileUpload} disabled={isParsing} />
                 </div>
               </div>
 
-              <div className={`relative rounded-2xl bg-white/[0.03] border-2 transition-all focus-within:bg-black/20 focus-within:border-[#EBFF00] focus-within:shadow-[0_0_20px_rgba(235,255,0,0.1)] ${hasError && !requirement ? 'border-red-500/50 bg-red-900/10' : 'border-gray-800 hover:border-gray-700'}`}>
+              <div className={`relative rounded-2xl bg-white/[0.03] border transition-all focus-within:bg-black/20 focus-within:border-[#EBFF00] focus-within:shadow-[0_0_20px_rgba(235,255,0,0.1)] ${hasError && !requirement ? 'border-red-500/50 bg-red-900/10' : 'border-white/10 hover:border-gray-700'}`}>
                 <textarea
-                  className={`w-full bg-transparent border-none p-5 sm:p-6 text-sm sm:text-base leading-relaxed text-gray-200 font-medium transition-all outline-none placeholder:text-gray-700 resize-none min-h-[150px] custom-scrollbar focus:ring-0 ${isParsing ? 'opacity-30 blur-[2px] pointer-events-none' : ''}`}
+                  className={`w-full bg-transparent border-none p-6 text-sm sm:text-base leading-relaxed text-gray-200 font-medium transition-all outline-none placeholder:text-gray-700 resize-none min-h-[160px] custom-scrollbar focus:ring-0 ${isParsing ? 'opacity-30 blur-[2px] pointer-events-none' : ''}`}
                   placeholder="Paste the full job description or core skills you need to master..."
                   value={requirement}
                   onChange={e => setRequirement(e.target.value)}
@@ -130,7 +132,7 @@ const Home = ({
                 {/* Overlays inside textarea */}
                 <div className="absolute bottom-4 right-4 flex items-center gap-2 pointer-events-none">
                    {isParsing && (
-                      <div className="bg-[#EBFF00] text-black text-[10px] sm:text-xs font-bold uppercase tracking-widest px-4 py-2.5 rounded-xl flex items-center gap-2.5 shadow-[0_0_20px_rgba(235,255,0,0.3)] animate-fade-in pointer-events-auto">
+                      <div className="bg-[#EBFF00] text-black text-[10px] sm:text-xs font-bold uppercase tracking-widest px-4 py-2 rounded-xl flex items-center gap-2 shadow-[0_0_20px_rgba(235,255,0,0.3)] animate-fade-in pointer-events-auto">
                          <div className="w-3.5 h-3.5 border-2 border-black/20 border-t-black rounded-full animate-spin"></div>
                          Extracting...
                       </div>
@@ -152,24 +154,19 @@ const Home = ({
               )}
             </div>
 
-            <div className="w-full h-px bg-gradient-to-r from-transparent via-gray-800 to-transparent my-1"></div>
+            {/* 3. Timeline Segmented Control */}
+            <div className="group/timeline flex flex-col">
+              <div className="flex items-center justify-between mb-3">
+                <label className="flex items-center gap-2 text-[11px] font-[800] text-gray-500 uppercase tracking-[0.15em] transition-colors group-focus-within/timeline:text-[#EBFF00] group-hover/timeline:text-gray-300">
+                  <svg className="w-4 h-4 text-gray-600 transition-colors group-hover/timeline:text-gray-400 group-focus-within/timeline:text-[#EBFF00]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
+                  Prep Duration
+                </label>
+              </div>
 
-            {/* 3. Timeline Segmented Control (Fluid) */}
-            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
-               <div className="shrink-0 flex items-center gap-3">
-                 <div className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center border border-white/10">
-                    <svg className="w-5 h-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
-                 </div>
-                 <div>
-                   <label className="block text-[11px] font-[800] text-gray-500 uppercase tracking-widest mb-0.5">Timeline</label>
-                   <p className="text-sm font-bold text-white m-0">Prep Duration</p>
-                 </div>
-               </div>
-
-               <div className="w-full sm:w-auto relative flex bg-black/40 p-1.5 rounded-2xl border border-white/5 shadow-inner">
+               <div className="w-full relative flex bg-white/[0.03] p-1.5 rounded-2xl border border-white/10 hover:border-gray-700 transition-colors">
                   {/* Sliding pill background */}
                   <div 
-                    className="absolute top-1.5 bottom-1.5 w-[calc(33.33%-4px)] bg-white/10 rounded-xl shadow-[inset_0_1px_0_rgba(255,255,255,0.1)] border border-white/10 transition-transform duration-300 ease-out z-0"
+                    className="absolute top-1.5 bottom-1.5 w-[calc(33.33%-4px)] bg-white/15 rounded-xl shadow-[inset_0_1px_0_rgba(255,255,255,0.1)] border border-white/5 transition-transform duration-300 ease-out z-0"
                     style={{
                       transform: `translateX(${(() => {
                         const idx = ['3 Days', '7 Days', '10 Days'].indexOf(planner);
@@ -186,7 +183,7 @@ const Home = ({
                           key={duration}
                           type="button"
                           onClick={() => setPlanner(duration)}
-                          className={`flex-1 sm:w-28 py-2.5 sm:py-3 px-4 rounded-xl text-sm font-black transition-colors duration-300 whitespace-nowrap relative z-10 border-none bg-transparent cursor-pointer outline-none ${isActive ? 'text-white' : 'text-gray-500 hover:text-gray-300'}`}
+                          className={`flex-1 py-3.5 px-4 rounded-xl text-sm sm:text-base font-black transition-colors duration-300 whitespace-nowrap relative z-10 border-none bg-transparent cursor-pointer outline-none ${isActive ? 'text-white' : 'text-gray-500 hover:text-gray-300'}`}
                         >
                            {duration}
                         </button>
@@ -196,7 +193,7 @@ const Home = ({
             </div>
 
             {/* Action Button */}
-            <div className="pt-6">
+            <div className="pt-2">
                <button
                  type="button"
                  onClick={handleGenerate}
