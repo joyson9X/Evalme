@@ -63,8 +63,8 @@ const Home = ({ session, isPremium, handleSignOut, navigateTo }) => {
       </div>
 
       {/* ─── FEATURE CARDS ─── */}
-      <div className="w-full max-w-5xl mx-auto px-6 pb-20 relative z-10">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8">
+      <div className="w-full max-w-3xl mx-auto px-6 pb-20 relative z-10">
+        <div className="flex flex-col gap-6 sm:gap-8">
 
           {/* Card 1: Interview Prep */}
           <button
@@ -87,38 +87,6 @@ const Home = ({ session, isPremium, handleSignOut, navigateTo }) => {
 
             <span className="inline-flex items-center gap-2 text-[#111827] font-bold text-[15px] group-hover:gap-3 transition-all mt-auto">
               Start Building Let's Go
-              <svg className="w-4.5 h-4.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="3"><path strokeLinecap="round" strokeLinejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" /></svg>
-            </span>
-          </button>
-
-          {/* Card 2: Learn Coding */}
-          <button
-            onClick={() => isPremium ? navigateTo('CODING_COURSES') : navigateTo('PRICING')}
-            className="group relative text-left bg-white rounded-3xl p-8 sm:p-10 shadow-[0_4px_20px_rgba(0,0,0,0.04)] border border-gray-200 transition-all duration-300 cursor-pointer hover:shadow-[0_12px_40px_rgba(0,0,0,0.08)] hover:-translate-y-1 hover:border-gray-300 overflow-hidden flex flex-col"
-          >
-            {/* Subtle highlight */}
-            <div className="absolute top-0 right-0 w-32 h-32 bg-gray-50 rounded-bl-[100px] -z-10 group-hover:scale-110 transition-transform duration-500"></div>
-
-            {!isPremium && (
-              <div className="absolute top-6 right-6 z-20 bg-gradient-to-r from-gray-900 to-gray-800 text-[#EBFF00] text-[10px] sm:text-[11px] font-extrabold uppercase tracking-widest px-3 py-1.5 rounded-full flex items-center gap-1.5 shadow-sm">
-                <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clipRule="evenodd" /></svg>
-                PRO
-              </div>
-            )}
-
-            <div className="w-14 h-14 bg-gray-100/80 border border-gray-200 rounded-2xl flex items-center justify-center mb-6 text-gray-700">
-              <svg className="w-7 h-7" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
-              </svg>
-            </div>
-
-            <h2 className="text-2xl font-bold text-gray-900 mb-2 tracking-tight">Coding Academy</h2>
-            <p className="text-gray-500 text-base leading-relaxed mb-8 flex-1">
-              Interactive coding courses with live environments, real-world challenges, and AI-powered feedback.
-            </p>
-
-            <span className={`inline-flex items-center gap-2 font-bold text-[15px] group-hover:gap-3 transition-all mt-auto ${isPremium ? 'text-[#111827]' : 'text-gray-500'}`}>
-              {isPremium ? 'Browse Courses' : 'Unlock with Premium'}
               <svg className="w-4.5 h-4.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="3"><path strokeLinecap="round" strokeLinejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" /></svg>
             </span>
           </button>

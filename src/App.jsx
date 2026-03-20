@@ -9,9 +9,6 @@ import Generator from './pages/Generator';
 import Overview from './pages/Overview';
 import PlanDetails from './pages/PlanDetails';
 import Blogs from './pages/Blogs';
-import CourseHub from './pages/CourseHub';
-import CourseOverview from './pages/CourseOverview';
-import CoursePlayer from './pages/CoursePlayer';
 
 const getAPIKey = () => ["gsk", "_3jnHJ", "xtYGm0d", "ofIfjc5h", "WGdyb3FY", "gtjTHdEm", "idd0Gzio", "uiu2TazO"].join("");
 
@@ -39,10 +36,7 @@ const VIEW_PATH_MAP = {
   'GENERATOR': '/planner',
   'PLAN': '/study-plan',
   'OVERVIEW': '/job-overview',
-  'BLOGS': '/blogs',
-  'CODING_COURSES': '/academy',
-  'SQL_COURSE': '/sql-basics',
-  'COURSE_OVERVIEW': '/sql-overview',
+  'BLOGS': '/blogs'
 };
 
 const PATH_VIEW_MAP = Object.entries(VIEW_PATH_MAP).reduce((acc, [view, path]) => {
@@ -1624,32 +1618,6 @@ You must return a valid JSON object matching this exact structure:
     return (
       <Blogs navigateTo={navigateTo} />
     );
-  }
-
-  // CODING COURSES HUB
-  if (viewState === 'CODING_COURSES') {
-    if (!isPremium) {
-       return (
-         <div className="w-full flex-col min-h-[100dvh] flex items-center justify-center p-6 text-center bg-gray-50">
-           <svg className="w-16 h-16 text-gray-400 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
-           <h2 className="text-2xl font-bold mb-2 text-gray-900">Coding Academy Locked</h2>
-           <p className="text-gray-500 mb-6 max-w-sm">Upgrade to Pro or Lifetime to get full access to interactive coding challenges and SQL courses.</p>
-           <button onClick={() => navigateTo('PRICING')} className="bg-gray-900 border-none cursor-pointer text-white font-bold py-3 px-8 rounded-xl shadow-lg hover:-translate-y-1 transition-transform">View Plans</button>
-           <button onClick={() => navigateTo('HOME')} className="mt-6 text-gray-500 font-semibold cursor-pointer border-none bg-transparent hover:text-gray-800 transition-colors">Back to Home</button>
-         </div>
-       );
-    }
-    return <CourseHub navigateTo={navigateTo} />;
-  }
-
-  // COURSE OVERVIEW VIEW
-  if (viewState === 'COURSE_OVERVIEW') {
-    return <CourseOverview navigateTo={navigateTo} />;
-  }
-
-  // SQL COURSE RENDER
-  if (viewState === 'SQL_COURSE') {
-    return <CoursePlayer navigateTo={navigateTo} />;
   }
 
   // GENERATOR VIEW
