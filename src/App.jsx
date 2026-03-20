@@ -5,7 +5,6 @@ import Mermaid from 'react-mermaid2';
 import Auth from './pages/Auth';
 import Home from './pages/Home';
 import Pricing from './pages/Pricing';
-import Generator from './pages/Generator';
 import Overview from './pages/Overview';
 import PlanDetails from './pages/PlanDetails';
 import Blogs from './pages/Blogs';
@@ -33,7 +32,6 @@ const VIEW_PATH_MAP = {
   'HOME': '/',
   'PRICING': '/pricing',
   'AUTH': '/login',
-  'GENERATOR': '/planner',
   'PLAN': '/study-plan',
   'OVERVIEW': '/job-overview',
   'BLOGS': '/blogs'
@@ -1600,19 +1598,6 @@ You must return a valid JSON object matching this exact structure:
   }
 
 
-  // HOME VIEW
-  if (viewState === 'HOME') {
-    return (
-      <Home 
-        session={session}
-        isPremium={isPremium}
-        handleSignOut={handleSignOut}
-        navigateTo={navigateTo}
-      />
-    );
-  }
-
-
   // BLOGS VIEW
   if (viewState === 'BLOGS') {
     return (
@@ -1620,9 +1605,12 @@ You must return a valid JSON object matching this exact structure:
     );
   }
 
-  // GENERATOR VIEW
+  // DEFAULT / HOME VIEW
   return (
-    <Generator 
+    <Home 
+      session={session}
+      isPremium={isPremium}
+      handleSignOut={handleSignOut}
       navigateTo={navigateTo}
       role={role}
       setRole={setRole}
@@ -1635,7 +1623,6 @@ You must return a valid JSON object matching this exact structure:
       handleFileUpload={handleFileUpload}
       handleGenerate={handleGenerate}
       isGenerating={isGenerating}
-      jobData={jobData}
     />
   );
 }
