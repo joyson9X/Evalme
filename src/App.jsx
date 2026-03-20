@@ -126,7 +126,7 @@ function App() {
   // Google Analytics Page View Tracking
   useEffect(() => {
     if (typeof window.gtag === 'function') {
-      window.gtag('config', 'G-7JCQNHEWCZ', {
+      window.gtag('config', 'G-8DPK5J3YT0', {
         page_title: viewState,
         page_path: `/${viewState.toLowerCase().replace(/_/g, '-')}`
       });
