@@ -279,18 +279,25 @@ function App() {
   }
 
   const PLANS = [
-    { id: '10_days', name: '10 Days', price: 49, duration: '10 Days Access', days: 10, color: '#f59e0b' },
-    { id: '2_months', name: '2 Months', price: 99, duration: '60 Days Access', days: 60, color: '#3b82f6', popular: true },
-    { id: 'lifetime', name: 'Lifetime', price: 159, duration: 'Forever', days: null, color: '#8b5cf6' },
+    { id: 'free', name: 'Free', priceINR: 0, priceUSD: 0, duration: 'Basic Access', days: null, color: '#10b981' },
+    { id: 'pro', name: 'Pro', priceINR: 49, priceUSD: 9, duration: 'Monthly Access', days: 30, color: '#3b82f6', popular: true },
+    { id: 'lifetime', name: 'Lifetime', priceINR: 199, priceUSD: 19, duration: 'Forever', days: null, color: '#8b5cf6' },
   ]
 
-  const handlePayment = (plan) => {
+  const handlePayment = (plan, currency = 'INR') => {
     if (!session?.user) return alert('Please sign in first')
+
+    if (plan.id === 'free') {
+      navigateTo('HOME')
+      return;
+    }
+
+    const currentPrice = currency === 'INR' ? plan.priceINR : plan.priceUSD;
 
     const options = {
       key: import.meta.env.VITE_RAZORPAY_KEY_ID,
-      amount: plan.price * 100,
-      currency: 'INR',
+      amount: currentPrice * 100,
+      currency: currency,
       name: 'Evalme Premium',
       description: `${plan.name} Plan - Full Access`,
       prefill: {
@@ -308,7 +315,7 @@ function App() {
             user_id: session.user.id,
             plan: plan.id,
             payment_id: response.razorpay_payment_id,
-            amount: plan.price,
+            amount: currentPrice,
             expires_at: expiresAt,
           })
 

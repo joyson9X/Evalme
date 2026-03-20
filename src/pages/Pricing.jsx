@@ -1,6 +1,8 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 const Pricing = ({ PLANS, handlePayment, navigateTo, couponCode, setCouponCode, couponError, setCouponError, handleCoupon }) => {
+  const [currency, setCurrency] = useState('INR');
+
   return (
     <div className="w-full relative bg-[#F9FAFB] min-h-[100dvh] pt-12 pb-24 px-4 font-sans overflow-hidden">
       
@@ -30,9 +32,23 @@ const Pricing = ({ PLANS, handlePayment, navigateTo, couponCode, setCouponCode, 
           <h1 className="text-4xl sm:text-5xl font-extrabold mb-4 tracking-tight text-gray-900 leading-tight">
              Accelerate Your Career
           </h1>
-          <p className="text-gray-500 text-lg sm:text-xl">
+          <p className="text-gray-500 text-lg sm:text-xl mb-6">
              Choose a plan that fits your timeline. Unlock limitless course generations and full Coding Academy access.
           </p>
+          <div className="flex justify-center items-center gap-2 bg-white p-1.5 rounded-full border border-gray-200 shadow-sm inline-flex">
+            <button 
+              onClick={() => setCurrency('INR')}
+              className={`px-6 py-2 rounded-full text-sm font-bold transition-all border-none cursor-pointer ${currency === 'INR' ? 'bg-gray-900 text-white shadow-md' : 'bg-transparent text-gray-500 hover:text-gray-900'}`}
+            >
+              India (INR)
+            </button>
+            <button 
+              onClick={() => setCurrency('USD')}
+              className={`px-6 py-2 rounded-full text-sm font-bold transition-all border-none cursor-pointer ${currency === 'USD' ? 'bg-gray-900 text-white shadow-md' : 'bg-transparent text-gray-500 hover:text-gray-900'}`}
+            >
+              Global (USD)
+            </button>
+          </div>
         </div>
 
         {/* Pricing Cards */}
@@ -59,9 +75,10 @@ const Pricing = ({ PLANS, handlePayment, navigateTo, couponCode, setCouponCode, 
               <h3 className="text-xl font-extrabold text-gray-900 mb-1">{plan.name}</h3>
               <p className="text-gray-400 text-sm font-medium mb-6">{plan.duration}</p>
               
-              <div className="mb-8 flex items-baseline gap-1 relative">
-                <span className="text-2xl font-bold text-gray-400 self-start mt-1">₹</span>
-                <span className="text-[3.5rem] leading-none font-black text-gray-900 tracking-tighter">{plan.price}</span>
+              <div className="mb-8 flex items-baseline gap-1 relative justify-center w-full">
+                <span className="text-2xl font-bold text-gray-400 self-start mt-1">{currency === 'INR' ? '₹' : '$'}</span>
+                <span className="text-[3.5rem] leading-none font-black text-gray-900 tracking-tighter">{currency === 'INR' ? plan.priceINR : plan.priceUSD}</span>
+                {plan.id === 'pro' && <span className="text-gray-400 font-bold ml-1 self-end mb-2">/mo</span>}
               </div>
               
               <ul className="text-left text-[15px] font-medium text-gray-600 space-y-4 mb-8 w-full flex-1">
@@ -84,7 +101,7 @@ const Pricing = ({ PLANS, handlePayment, navigateTo, couponCode, setCouponCode, 
               </ul>
               
               <button
-                onClick={() => handlePayment(plan)}
+                onClick={() => handlePayment(plan, currency)}
                 className="w-full py-4 rounded-xl font-bold text-white text-base transition-all hover:shadow-lg active:scale-[0.98] cursor-pointer border-none flex justify-center items-center gap-2"
                 style={{ backgroundColor: plan.popular ? '#3b82f6' : '#111827' }}
               >
