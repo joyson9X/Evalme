@@ -1,6 +1,32 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { supabase } from '../supabaseClient';
 
 const Auth = ({ handleGoogleSignIn }) => {
+  const [email, setEmail] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [message, setMessage] = useState(null);
+
+  const handleEmailLogin = async (e) => {
+    e.preventDefault();
+    if (!email) return;
+    setLoading(true);
+    setMessage(null);
+    
+    const { error } = await supabase.auth.signInWithOtp({
+      email,
+      options: {
+        emailRedirectTo: window.location.origin
+      }
+    });
+    
+    if (error) {
+      setMessage({ type: 'error', text: error.message });
+    } else {
+      setMessage({ type: 'success', text: 'Check your email for the login link!' });
+    }
+    setLoading(false);
+  };
+
   return (
     <div className="w-full min-h-[100dvh] flex flex-col justify-center items-center bg-[#F3F4F6] relative overflow-hidden font-sans">
       
@@ -48,24 +74,39 @@ const Auth = ({ handleGoogleSignIn }) => {
             </span>
           </div>
 
-          <div className="space-y-4">
+          <form className="space-y-4" onSubmit={handleEmailLogin}>
             <div>
               <label className="block text-sm font-bold text-gray-700 mb-2">Email Address</label>
               <input 
                 type="email" 
                 placeholder="you@company.com" 
-                disabled
-                className="w-full px-4 py-3.5 rounded-2xl bg-gray-50 border border-gray-200 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#EBFF00] focus:border-transparent transition-all cursor-not-allowed opacity-60"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                disabled={loading}
+                className="w-full px-4 py-3.5 rounded-2xl bg-gray-50 border border-gray-200 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#EBFF00] focus:border-transparent transition-all disabled:opacity-50"
+                required
               />
             </div>
             
              <button 
-                disabled
-                className="w-full bg-[#111827] text-white font-bold py-3.5 rounded-2xl cursor-not-allowed opacity-70 transition-all flex items-center justify-center gap-2"
+                type="submit"
+                disabled={loading || !email}
+                className="w-full bg-[#111827] text-white font-bold py-3.5 rounded-2xl hover:bg-black disabled:cursor-not-allowed disabled:opacity-70 transition-all flex items-center justify-center gap-2"
               >
-                Sign In
+                {loading ? (
+                   <>
+                      <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                      Sending Link...
+                   </>
+                ) : 'Sign In with Magic Link'}
              </button>
-          </div>
+
+             {message && (
+                <div className={`text-center text-sm font-bold mt-4 ${message.type === 'error' ? 'text-red-500' : 'text-emerald-600'}`}>
+                   {message.text}
+                </div>
+             )}
+          </form>
         </div>
 
         {/* Footer Links */}
